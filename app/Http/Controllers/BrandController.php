@@ -12,7 +12,8 @@ class BrandController extends Controller
      */
     public function index()
     {
-        //
+        $brands = Brand::get();
+        return view('brand.index', compact('brands'));
     }
 
     /**
@@ -20,6 +21,7 @@ class BrandController extends Controller
      */
     public function create()
     {
+        return view('brand.create');
         //
     }
 
@@ -28,7 +30,15 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+        ]);
+
+        $brand = new Brand();
+        $brand->name = $request->name;
+        $brand->save();
+
+        return redirect()->route('admin.brand.index')->with('success', 'Brand created successfully.');
     }
 
     /**
@@ -42,24 +52,43 @@ class BrandController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Brand $brand)
+    public function edit(Brand $brand, $id)
     {
+        $data = Brand::find($id);
+        return view('brand.edit', compact('data'));
         //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Brand $brand)
+    public function update(Request $request, Brand $brand, $id)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+        ]);
+
+        $brand = Brand::find($id);
+        $brand->name = $request->name;
+        $brand->save();
+
+        return redirect()->route('admin.brand.index')->with('success', 'Brand updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Brand $brand)
+    public function destroy(Brand $brand, $id)
     {
-        //
+        $brand = Brand::find($id);
+        $brand->delete();
+
+        return response()->json(
+            [
+                'status' => 'success',
+                'message' => 'Brand deleted successfully.',
+            ]
+            );
     }
+  
 }

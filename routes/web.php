@@ -14,14 +14,31 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('login');
+})->name('login');
+
+
+Route::post('/login', [App\Http\Controllers\UserController::class, 'login'])->name('admin.login.post');
+
+
+Route::prefix('admin')->middleware('auth')->group(function(){
+Route::get('/logout', [App\Http\Controllers\UserController::class, 'logout'])->name('admin.logout');
 
 
 
-Route::get('/admin', function () {
-    return view('admin/index');
+Route::get('/', function () {
+    return view('
+    index');
+})->name('dashboard');
+
+    Route::controller(App\Http\Controllers\BrandController::class)->group(function(){
+        Route::get('/brand', 'index')->name('admin.brand.index');
+        Route::get('/brand/create', 'create')->name('admin.brand.create');
+        Route::post('/brand/store', 'store')->name('admin.brand.store');
+        Route::get('/brand/edit/{id}', 'edit')->name('admin.brand.edit');
+        Route::put('/brand/update/{id}', 'update')->name('admin.brand.update');
+        Route::delete('/brand/delete/{id}', 'destroy')->name('admin.brand.delete');
+    });
+
 });
-Route::get('/admin/login', function () {
-    return view('admin/login');
-});
+

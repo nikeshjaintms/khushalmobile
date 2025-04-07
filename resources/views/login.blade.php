@@ -68,12 +68,19 @@
 <body>
     <div class="login-container">
         <h2>Admin Login</h2>
-        <form>
+        <form method="POST" action="{{ route('admin.login.post')}}">
+            @csrf
+            @if(Session::has('error'))
+                <div class="alert alert-danger">
+                    {{ Session::get('error') }}
+                </div>
+            @endif
+
             <div class="mb-3">
-                <input type="text" class="form-control" placeholder="Username" required>
+                <input type="text" class="form-control" placeholder="Username" name="email" required>
             </div>
             <div class="mb-3">
-                <input type="password" class="form-control" placeholder="Password" required>
+                <input type="password" class="form-control" placeholder="Password" name="password" required>
             </div>
             <button class="btn btn-primary w-100" type="submit">Login</button>
         </form>
