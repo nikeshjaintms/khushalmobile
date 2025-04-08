@@ -23,15 +23,16 @@ Route::get('/', function () {
 Route::post('/login', [App\Http\Controllers\UserController::class, 'login'])->name('admin.login.post');
 
 
-Route::prefix('admin')->middleware('auth')->group(function () {
-    Route::get('/logout', [App\Http\Controllers\UserController::class, 'logout'])->name('admin.logout');
+Route::prefix('admin')->middleware('auth')->group(function(){
+Route::get('/logout', [App\Http\Controllers\UserController::class, 'logout'])->name('admin.logout');
 
 
-    Route::get('/', function () {
-        return view('index');
-    })->name('dashboard');
 
-    Route::controller(App\Http\Controllers\BrandController::class)->group(function () {
+Route::get('/', function () {
+    return view('index');
+})->name('dashboard');
+
+    Route::controller(App\Http\Controllers\BrandController::class)->group(function(){
         Route::get('/brand', 'index')->name('admin.brand.index');
         Route::get('/brand/create', 'create')->name('admin.brand.create');
         Route::post('/brand/store', 'store')->name('admin.brand.store');
@@ -40,10 +41,10 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::delete('/brand/delete/{id}', 'destroy')->name('admin.brand.delete');
     });
 
-    Route::controller(\App\Http\Controllers\ProductController::class)->group(function () {
-        Route::get('/product', 'index')->name('admin.product.index');
-        Route::get('/product/create', 'create')->name('admin.product.create');
-        Route::post('/product/store', 'store')->name('admin.product.store');
+    Route::controller(\App\Http\Controllers\ProductController::class)->group(function(){
+        Route::get('/product','index')->name('admin.product.index');
+        Route::get('/product/create','create')->name('admin.product.create');
+        Route::post('/product/store','store')->name('admin.product.store');
         Route::get('/product/edit/{id}', 'edit')->name('admin.product.edit');
         Route::put('/product/update/{id}', 'update')->name('admin.product.update');
         Route::delete('/product/delete/{id}', 'destroy')->name('admin.product.delete');
