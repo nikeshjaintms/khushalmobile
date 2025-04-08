@@ -6,6 +6,7 @@
 @include('layouts.footer')
 @include('layouts.footer-script')
 @yield('footer-script')
+@include('layouts.flash')
 </body>
 </html>
 

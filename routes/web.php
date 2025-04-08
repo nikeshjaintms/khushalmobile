@@ -27,8 +27,7 @@ Route::get('/logout', [App\Http\Controllers\UserController::class, 'logout'])->n
 
 
 Route::get('/', function () {
-    return view('
-    index');
+    return view('index');
 })->name('dashboard');
 
     Route::controller(App\Http\Controllers\BrandController::class)->group(function(){
@@ -39,6 +38,18 @@ Route::get('/', function () {
         Route::put('/brand/update/{id}', 'update')->name('admin.brand.update');
         Route::delete('/brand/delete/{id}', 'destroy')->name('admin.brand.delete');
     });
+
+    Route::controller(\App\Http\Controllers\ProductController::class)->group(function(){
+        Route::get('/product','index')->name('admin.product.index');
+        Route::get('/product/create','create')->name('admin.product.create');
+        Route::post('/product/store','store')->name('admin.product.store');
+        Route::get('/product/edit/{id}', 'edit')->name('admin.product.edit');
+        Route::put('/product/update/{id}', 'update')->name('admin.product.update');
+        Route::delete('/product/delete/{id}', 'destroy')->name('admin.product.delete');
+
+    });
+
+
 
 });
 

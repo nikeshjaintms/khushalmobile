@@ -61,6 +61,12 @@
     fillColor: "rgba(255, 165, 52, .14)",
   });
 
+  $(document).ready(function () {
+    $("#basic-datatables").DataTable({
+        order: [[0, 'desc']]
+    });
+  });
+
 
 </script>
 
