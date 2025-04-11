@@ -19,9 +19,12 @@ class ProductController extends Controller
         return view('products.index',compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function getProducts($brand_id)
+    {
+        $products = Product::where('brand_id', $brand_id)->get();
+
+        return response()->json($products);
+    }
     public function create()
     {
         $brands = Brand::get();

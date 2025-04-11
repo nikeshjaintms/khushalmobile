@@ -100,7 +100,6 @@
                     phone:{
                         required:true
                     },
-
                     address:{
                         required:true
                     },

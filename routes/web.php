@@ -2,7 +2,11 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DealerController;
+use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\TransctionController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +36,10 @@ Route::get('/', function () {
     return view('index');
 })->name('dashboard');
 
+    Route::get('/notes', [DashboardController::class, 'displaynotes'])->name('notes.index');
+    Route::post('/notes', [DashboardController::class, 'store'])->name('notes.store');
+    Route::delete('/notes/destroy/{id}', [DashboardController::class, 'destroy'])->name('notes.destroy');
+Route::get('/dashboard-data', [DashboardController::class, 'index'])->name('dashboard.data');
     Route::controller(App\Http\Controllers\BrandController::class)->group(function(){
         Route::get('/brand', 'index')->name('admin.brand.index');
         Route::get('/brand/create', 'create')->name('admin.brand.create');
@@ -48,6 +56,8 @@ Route::get('/', function () {
         Route::get('/product/edit/{id}', 'edit')->name('admin.product.edit');
         Route::put('/product/update/{id}', 'update')->name('admin.product.update');
         Route::delete('/product/delete/{id}', 'destroy')->name('admin.product.delete');
+        Route::get('/get-products/{brand_id}', 'getProducts')->name('admin.product.getproducts');
+
 
     });
 
@@ -68,6 +78,29 @@ Route::get('/', function () {
         Route::put('update/{id}', 'update')->name('admin.dealer.update');
         Route::delete('delete/{id}', 'destroy')->name('admin.dealer.delete');
     });
+
+    Route::prefix('purchase')->controller(PurchaseController::class)->group(function () {
+        Route::get('/', 'index')->name('admin.purchase.index');
+        Route::get('create', 'create')->name('admin.purchase.create');
+        Route::post('store', 'store')->name('admin.purchase.store');
+        Route::get('/{id}', 'show')->name('admin.purchase.show');
+        Route::get('edit/{id}', 'edit')->name('admin.purchase.edit');
+        Route::put('update/{id}', 'update')->name('admin.purchase.update');
+        Route::delete('delete/{id}', 'destroy')->name('admin.purchase.delete');
+    });
+
+    Route::prefix('transaction')->controller(TransctionController::class)->group(function () {
+        Route::get('/', 'index')->name('admin.transaction.index');
+        Route::get('create', 'create')->name('admin.transaction.create');
+        Route::post('store', 'store')->name('admin.transaction.store');
+        Route::get('/{id}', 'show')->name('admin.transaction.show');
+        Route::get('edit/{id}', 'edit')->name('admin.transaction.edit');
+        Route::put('update/{id}', 'update')->name('admin.transaction.update');
+        Route::delete('delete/{id}', 'destroy')->name('admin.transaction.delete');
+    });
+// web.php
+Route::get('/daily-notes', [DashboardController::class, 'display'])->name('daily-notes.index');
+Route::post('/daily-notes', [DashboardController::class, 'store'])->name('daily-note.store');
 
 
 });

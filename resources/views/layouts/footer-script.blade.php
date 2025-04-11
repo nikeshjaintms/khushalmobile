@@ -32,6 +32,28 @@
 
 <!-- Kaiadmin DEMO methods, don't include it in your project! -->
 <script src="{{ asset('backend/assets/js/setting-demo.js')}}"></script>
+<script>
+    function loadDashboardData() {
+        $.ajax({
+            url: '{{ route('dashboard.data') }} ',
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                $('#productCount').text(response.product_count);
+                $('#customerCount').text(response.customer_count);
+                $('#transaction').text('₹'+response.transaction);
+            },
+            error: function () {
+                console.error("Failed to fetch dashboard data.");
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        loadDashboardData(); // Load once when page loads
+        setInterval(loadDashboardData, 10000); // Refresh every 10 seconds
+    });
+</script>
 <script src="{{ asset('backend/assets/js/demo.js')}}"></script>
 <script>
   $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
