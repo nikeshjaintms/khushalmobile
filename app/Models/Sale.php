@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Sale extends Model
+{
+    use HasFactory, softDeletes;
+
+    protected $fillable = [
+        'customer_id',
+        'invoice_no',
+        'invoice_date',
+        'sub_total',
+        'tax_type',
+        'tax_amount',
+        'total_tax_amount',
+        'total_amount',
+        'payment_method',
+    ];
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
+    public function products()
+    {
+        return $this->hasMany(SaleProduct::class, 'sales_id');
+    }
+
+}

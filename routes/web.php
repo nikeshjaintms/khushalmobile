@@ -5,6 +5,7 @@ use App\Http\Controllers\DealerController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\TransctionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SaleController;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
@@ -58,6 +59,7 @@ Route::get('/dashboard-data', [DashboardController::class, 'index'])->name('dash
         Route::delete('/product/delete/{id}', 'destroy')->name('admin.product.delete');
         Route::get('/get-products/{brand_id}', 'getProducts')->name('admin.product.getproducts');
 
+        Route::get('/get-product-price/{id}',  'getPrice')->name('admin.product.getPrice');
 
     });
 
@@ -101,6 +103,16 @@ Route::get('/dashboard-data', [DashboardController::class, 'index'])->name('dash
 // web.php
 Route::get('/daily-notes', [DashboardController::class, 'display'])->name('daily-notes.index');
 Route::post('/daily-notes', [DashboardController::class, 'store'])->name('daily-note.store');
+
+    Route::prefix('sale')->controller(SaleController::class)->group(function () {
+        Route::get('/', 'index')->name('admin.sale.index');
+        Route::get('create', 'create')->name('admin.sale.create');
+        Route::post('store', 'store')->name('admin.sale.store');
+        Route::get('edit/{id}', 'edit')->name('admin.sale.edit');
+        Route::put('update/{id}', 'update')->name('admin.sale.update');
+        Route::delete('delete/{id}', 'destroy')->name('admin.sale.delete');
+
+    });
 
 
 });
