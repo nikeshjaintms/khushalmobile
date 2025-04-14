@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+
 class Product extends Model
 {
     protected $table = 'products';
@@ -14,4 +15,9 @@ class Product extends Model
 
     protected $fillable = ['brand_id','product_name','mrp','price','serial'];
     use HasFactory, SoftDeletes;
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
 }

@@ -55,8 +55,7 @@
 
                                             <div>
                                                 <label for="">Address<span style="color: red">*</span></label>
-                                                <textarea type="text" class="form-control" name="address"  id="address" placeholder="Enter your address" required> {{$data->address}}
-                                                </textarea>
+                                                <textarea type="text" class="form-control" name="address"  id="address" placeholder="Enter your address" required>{{$data->address}}</textarea>
                                             </div>
 
                                             <div>

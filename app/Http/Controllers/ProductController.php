@@ -12,6 +12,18 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function getProducts($brand_id)
+    {
+        $products = Product::where('brand_id', $brand_id)->get();
+        return response()->json($products);
+    }
+
+    public function getPrice($id)
+    {
+        $product = Product::find($id);
+        return response()->json(['mrp' => $product->mrp]);
+    }
+
     public function index()
     {
         $products = Product::get();

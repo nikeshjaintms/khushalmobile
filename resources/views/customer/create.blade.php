@@ -41,20 +41,17 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-
                                             <div>
                                                 <label for="">Name<span style="color: red">*</span></label>
                                                 <input type="text" class="form-control" name="name" id="name" placeholder="Enter Customer Name" required/>
                                             </div>
-
                                             <div>
                                                 <label for="">Phone<span style="color: red">*</span></label>
                                                 <input type="text" class="form-control" name="phone" id="phone" placeholder="Enter Phone Number" required/>
                                             </div>
-
                                             <div>
                                                 <label for="">Address<span style="color: red">*</span></label>
-                                                <textarea type="text" class="form-control" name="address" id="address" placeholder="Enter your address" required> </textarea>
+                                                <textarea type="text" class="form-control" name="address" id="address" placeholder="Enter your address" required></textarea>
                                             </div>
                                             <div>
                                                 <label for="">City<span style="color: red">*</span></label>

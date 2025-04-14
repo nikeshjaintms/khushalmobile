@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DealerController;
+use App\Http\Controllers\SaleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,6 +49,8 @@ Route::get('/', function () {
         Route::get('/product/edit/{id}', 'edit')->name('admin.product.edit');
         Route::put('/product/update/{id}', 'update')->name('admin.product.update');
         Route::delete('/product/delete/{id}', 'destroy')->name('admin.product.delete');
+        Route::get('/get-products/{brand_id}', 'getProducts')->name('admin.product.getproducts');
+        Route::get('/get-product-price/{id}',  'getPrice')->name('admin.product.getPrice');
 
     });
 
@@ -67,6 +70,16 @@ Route::get('/', function () {
         Route::get('edit/{id}', 'edit')->name('admin.dealer.edit');
         Route::put('update/{id}', 'update')->name('admin.dealer.update');
         Route::delete('delete/{id}', 'destroy')->name('admin.dealer.delete');
+    });
+
+    Route::prefix('sale')->controller(SaleController::class)->group(function () {
+        Route::get('/', 'index')->name('admin.sale.index');
+        Route::get('create', 'create')->name('admin.sale.create');
+        Route::post('store', 'store')->name('admin.sale.store');
+        Route::get('edit/{id}', 'edit')->name('admin.sale.edit');
+        Route::put('update/{id}', 'update')->name('admin.sale.update');
+        Route::delete('delete/{id}', 'destroy')->name('admin.sale.delete');
+
     });
 
 
