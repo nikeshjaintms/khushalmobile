@@ -22,13 +22,14 @@ return new class extends Migration
             $table->double('total_amount')->nullable();
             $table->string('payment_method')->nullable();
             $table->timestamps();
-            $table->softDeletes();
+            $table->softDeletes(); 
         });
 
         Schema::create('sales_products',function(Blueprint $table){
             $table->id();
             $table->foreignId('sales_id')->constrained('sales')->onDelete('cascade');
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+            $table->foreignId('imei_id')->constrained('purchase_product')->onDelete('cascade');
             $table->double('price')->nullable();
             $table->decimal('discount')->nullable();
             $table->decimal('discount_amount')->nullable();
