@@ -74,6 +74,10 @@
                                                 <td>{{ $item->po_no }}</td>
                                                 <td>{{ $item->name }}</td>
                                                 <td>
+                                                    <a href="{{ route('admin.purchase.show', $item->id) }}"
+                                                        class="btn btn-lg btn-link btn-primary">
+                                                        <i class="fa fa-eye">
+                                                        </i></a>
                                                     <a href="{{ route('admin.purchase.edit', $item->id) }}"
                                                         class="btn btn-lg btn-link btn-primary">
                                                         <i class="fa fa-edit">
