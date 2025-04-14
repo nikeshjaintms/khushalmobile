@@ -51,7 +51,7 @@
                   <div class="card">
                     <div class="card-header">
                         <a href="{{ route('admin.transaction.create') }}" class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i> Brand</a>
-                        <h4 class="card-title">Brand</h4>
+                        <h4 class="card-title">Transaction</h4>
                     </div>
                     <div class="card-body">
                       <div class="table-responsive">
