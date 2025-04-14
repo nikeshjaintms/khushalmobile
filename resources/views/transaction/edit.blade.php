@@ -33,7 +33,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">Add Transaction</div>
+                            <div class="card-title">Edit Transaction</div>
                         </div>
                         <form method="POST" action="{{ route('admin.transaction.update' , $transction->id ) }}" id="transactionForm">
                             @csrf
