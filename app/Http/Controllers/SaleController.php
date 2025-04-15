@@ -19,9 +19,7 @@ class SaleController extends Controller
      */
     public function index()
     {
-        //$sales = Sale::with('products')->get();
         $sales = Sale::with(['customer', 'products.brand', 'products.product', 'products'])->get();
-
         return view('sale.index', compact('sales'));
     }
 
@@ -39,17 +37,12 @@ class SaleController extends Controller
      */
     public function create(Request $request)
     {
+
         $customers = Customer::all();
         $date = now()->format('Ymd');
         $random = mt_rand(1000, 9999);
         $invoiceNo = 'INV-' . $date . '-' . $random;
         $products = Product::all();
-        //$product = Product::all()->pluck('mrp');
-        //dd($product);
-        // $brandId=1;
-        // $brandId = $request->input('brand_id');
-        // $products = Product::where('brand_id', $brandId)->with('brand')->get();
-        // dd($products);
         $brands = Brand::all();
         return view('sale.create', compact('customers', 'invoiceNo', 'brands', 'products'));
     }
@@ -66,18 +59,11 @@ class SaleController extends Controller
             'invoice_date' => 'required',
             'sub_total' => 'required',
             'tax_type' => 'required',
-            //'tax' => 'required',
             'total_tax_amount' => 'required',
             'total_amount' => 'required',
             'payment_method' => 'required',
-            //'discount' => 'required|string',
-            //'discount_amount' => 'required',
-            //'price' => 'required',
-            //'brand_name' => 'required',
-            //'product_name' => 'required',
             'products' => 'required|array|min:1',
             'products.*.product_id' => 'required|exists:products,id',
-            //'products.*.brand_id' => 'required|exists:products,id',
             'products.*.price' => 'required|numeric|min:0',
             'products.*.discount' => 'nullable|numeric|min:0',
             'products.*.discount_amount' => 'nullable|numeric|min:0',
@@ -165,9 +151,15 @@ class SaleController extends Controller
      */
     public function edit(Sale $sales, $id)
     {
-        $customers = Customer::all();
+
         $data = Sale::find($id);
-        return view('sale.edit', compact('data','customers'));
+        $data1 = saleproduct::find($id);
+        $customers = Customer::all();
+        $selectedCustomer = $data->customer->pluck('id');
+        $products = Product::all();
+        $selectedProductId = $data1->product_id;
+
+        return view('sale.edit', compact('data', 'data1', 'customers', 'selectedCustomer', 'selectedProductId', 'products'));
     }
 
     /**
