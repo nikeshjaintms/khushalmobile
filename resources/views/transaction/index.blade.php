@@ -42,7 +42,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="#">Add Transaction</a>
+                        <a href="#">Transaction</a>
                     </li>
                 </ul>
             </div>
