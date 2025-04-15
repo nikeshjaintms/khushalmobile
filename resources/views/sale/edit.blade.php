@@ -43,11 +43,16 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <div>
+                                                <label for="">Invoice No<span style="color: red">*</span></label>
+                                                <input type="text" class="form-control" name="invoice_no" value="{{$data->invoice_no}}" id="invoice_no" placeholder="invoice no" required/>
+                                            </div>
+
+                                            <div>
                                                 <label for="">Customer<span style="color: red">*</span></label>
                                                 <select class="form-select customer" aria-label="Default select example" name="customer_id">
                                                     <option selected> Select Customer</option>
                                                     @foreach($customers as $item)
-                                                        <option value="{{$item->id}}" {{ $selectedCustomer->contains($item->id) ? 'selected' : '' }}>{{$item->name}}</option>
+                                                        <option value="1">{{$item->name}}</option>
                                                     @endforeach
                                                     @error('customer') <p style="color: red;">{{ $message }}</p> @enderror
                                                 </select>

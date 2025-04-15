@@ -111,6 +111,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('edit/{id}', 'edit')->name('admin.sale.edit');
         Route::put('update/{id}', 'update')->name('admin.sale.update');
         Route::delete('delete/{id}', 'destroy')->name('admin.sale.delete');
+        Route::get('/get-imeis/{product_id}', 'getImeis')->name('admin.sale.get-imeis');
 
     });
     Route::get('invoice-pdf/{id}', [InvoiceController::class, 'generatePDF'])->name('admin.invoice.index');
