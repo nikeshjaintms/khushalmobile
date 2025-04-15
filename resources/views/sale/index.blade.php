@@ -61,20 +61,7 @@
                                         <th>Id</th>
                                         <th>Customer</th>
                                         <th>Invoice no</th>
-{{--                                        <th>Invoice date</th>--}}
-{{--                                        <th>Brand</th>--}}
                                         <th>Product</th>
-{{--                                        <th>Price</th>--}}
-{{--                                        <th>Discount</th>--}}
-{{--                                        <th>Discount amount</th>--}}
-{{--                                        <th>Price Sub Total</th>--}}
-{{--                                        <th>Tax</th>--}}
-{{--                                        <th>Tax amount</th>--}}
-{{--                                        <th>Total amount</th>--}}
-{{--                                        <th>Sub total</th>--}}
-{{--                                        <th>Tax type</th>--}}
-{{--                                        <th>Total Tax Amount</th>--}}
-{{--                                        <th>Payment method</th>--}}
                                         <th>Final Total amount</th>
 
                                         <th>Action</th>
@@ -86,28 +73,21 @@
                                             <td>{{$item->id }}</td>
                                             <td>{{$item->customer->name}}</td>
                                             <td>{{$item->invoice_no }}</td>
-{{--                                            <td>{{$item->invoice_date }}</td>--}}
+
 
                                             @foreach($item->products as $product)
-{{--                                            <td>{{ $product->name  }}</td>--}}
                                             <td>{{$product->product->product_name}}</td>
-{{--                                            <td>{{ $product->price }}</td>--}}
-{{--                                            <td>{{ $product->discount }}</td>--}}
-{{--                                            <td>{{ $product->discount_amount }}</td>--}}
-{{--                                            <td>{{ $product->price_subtotal }}</td>--}}
-{{--                                            <td>{{ $product->tax }}</td>--}}
-{{--                                                <td>{{ $product->tax_amount }}</td>--}}
-{{--                                                <td>{{ $product->price_total }}</td>--}}
                                             @endforeach
-
-
-{{--                                            <td>{{ $item->sub_total }}</td>--}}
-{{--                                            <td>{{ $item->tax_type }}</td>--}}
-{{--                                            <td>{{ $item->total_tax_amount }}</td>--}}
-{{--                                            <td>{{ $item->payment_method }}</td>--}}
                                             <td>{{ $item->total_amount }}</td>
 
                                             <td>
+                                                @foreach($sales as $sale)
+                                                    <a href="{{ route('admin.invoice.index',$sale->id) }}">
+                                                <i  class="btn btn-link btn-danger">
+                                                    <i class="fa fa-file-pdf"></i>
+                                                </i>
+                                                    </a>
+                                                @endforeach
                                                 <a href="{{ route('admin.sale.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
@@ -123,81 +103,6 @@
                                     @endforelse
                                     </tbody>
                                 </table>
-
-
-                                {{--                                <table id="basic-datatables" class="display table table-striped table-hover">--}}
-{{--                                    <thead>--}}
-{{--                                    <tr>--}}
-{{--                                        <th>Id</th>--}}
-{{--                                        <th>Customer</th>--}}
-{{--                                        <th>Invoice no</th>--}}
-{{--                                        <th>Invoice date</th>--}}
-{{--                                        <th>Brand</th>--}}
-{{--                                        <th>Product</th>--}}
-{{--                                        <th>Price</th>--}}
-{{--                                        <th>Discount</th>--}}
-{{--                                        <th>Discount amount</th>--}}
-{{--                                        <th>Price Sub Total</th>--}}
-{{--                                        <th>Tax</th>--}}
-{{--                                        <th>Tax amount</th>--}}
-{{--                                        <th>Total amount</th>--}}
-{{--                                        <th>Sub total</th>--}}
-{{--                                        <th>Tax type</th>--}}
-{{--                                        <th>Total Tax Amount</th>--}}
-{{--                                        <th>Payment method</th>--}}
-{{--                                        <th>final Total amount</th>--}}
-{{--                                        <th>Action</th>--}}
-{{--                                    </tr>--}}
-{{--                                    </thead>--}}
-{{--                                    <tbody>--}}
-
-{{--                                    @forelse($sales as $item)--}}
-{{--                                        <tr>--}}
-{{--                                            <td>{{$item->id }}</td>--}}
-{{--                                            <td>{{$item->customer_id}}</td>--}}
-{{--                                            <td>{{$item->invoice_no }}</td>--}}
-{{--                                            <td>{{$item->invoice_date }}</td>--}}
-
-{{--                                            @foreach($sales_products as $product)--}}
-{{--                                                <td> {{$product->brand_id}} </td>--}}
-{{--                                                <td>{{$product->price }} </td>--}}
-{{--                                                <td>{{$product->discount }} </td>--}}
-{{--                                                <td> {{$product->discount_amount }} </td>--}}
-{{--                                                <td> {{$product->price_subtotal }} </td>--}}
-{{--                                                <td> {{$product->tax }} </td>--}}
-{{--                                            @endforeach--}}
-
-{{--                                            --}}{{--                                <td>{{$item->brand_id}}</td>--}}
-{{--                                            --}}{{--                                <td>{{$item->price }}</td>--}}
-{{--                                            --}}{{--                                <td>{{$item->discount }}</td>--}}
-{{--                                            --}}{{--                                <td>{{$item->discount_amount }}</td>--}}
-{{--                                            --}}{{--                                <td>{{$item->price_subtotal }}</td>--}}
-{{--                                            --}}{{--                                <td>{{$item->tax }}</td>--}}
-
-{{--                                            <td>{{$item->tax_amount }}</td>--}}
-{{--                                            <td>{{$item->sub_total }}</td>--}}
-{{--                                            <td>{{$item->tax_type }}</td>--}}
-{{--                                            <td>{{$item->total_tax_amount }}</td>--}}
-{{--                                            <td>{{$item->payment_method }}</td>--}}
-{{--                                            <td>{{$item->total_amount}}</td>--}}
-{{--                                            <td>{{$item->total_amount }}</td>--}}
-{{--                                            <td>--}}
-{{--                                                <a href="{{ route('admin.sale.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">--}}
-{{--                                                    <i class="fa fa-edit">--}}
-{{--                                                    </i></a>--}}
-{{--                                                <button onclick="deletesale_info({{ $item->id }})" class="btn btn-link btn-danger">--}}
-{{--                                                    <i class="fa fa-trash">--}}
-{{--                                                    </i>--}}
-{{--                                                </button>--}}
-{{--                                            </td>--}}
-{{--                                        </tr>--}}
-{{--                                    @empty--}}
-{{--                                        <tr>--}}
-{{--                                            <td colspan="3" class="text-center">No data available</td>--}}
-{{--                                        </tr>--}}
-{{--                                    @endforelse--}}
-{{--                                    </tbody>--}}
-{{--                                </table>--}}
                             </div>
                         </div>
                     </div>

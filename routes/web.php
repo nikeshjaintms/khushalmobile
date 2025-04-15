@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DealerController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\SaleController;
 use Illuminate\Support\Facades\Route;
 
@@ -72,6 +73,7 @@ Route::get('/', function () {
         Route::delete('delete/{id}', 'destroy')->name('admin.dealer.delete');
     });
 
+
     Route::prefix('sale')->controller(SaleController::class)->group(function () {
         Route::get('/', 'index')->name('admin.sale.index');
         Route::get('create', 'create')->name('admin.sale.create');
@@ -81,7 +83,7 @@ Route::get('/', function () {
         Route::delete('delete/{id}', 'destroy')->name('admin.sale.delete');
 
     });
-
+    Route::get('invoice-pdf/{id}', [InvoiceController::class, 'generatePDF'])->name('admin.invoice.index');
 
 });
 
