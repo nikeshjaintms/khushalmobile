@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DealerController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\TransctionController;
 use App\Http\Controllers\DashboardController;
@@ -28,20 +29,19 @@ Route::get('/', function () {
 Route::post('/login', [App\Http\Controllers\UserController::class, 'login'])->name('admin.login.post');
 
 
-Route::prefix('admin')->middleware('auth')->group(function(){
-Route::get('/logout', [App\Http\Controllers\UserController::class, 'logout'])->name('admin.logout');
+Route::prefix('admin')->middleware('auth')->group(function () {
+    Route::get('/logout', [App\Http\Controllers\UserController::class, 'logout'])->name('admin.logout');
 
 
-
-Route::get('/', function () {
-    return view('index');
-})->name('dashboard');
+    Route::get('/', function () {
+        return view('index');
+    })->name('dashboard');
 
     Route::get('/notes', [DashboardController::class, 'displaynotes'])->name('notes.index');
     Route::post('/notes', [DashboardController::class, 'store'])->name('notes.store');
     Route::delete('/notes/destroy/{id}', [DashboardController::class, 'destroy'])->name('notes.destroy');
-Route::get('/dashboard-data', [DashboardController::class, 'index'])->name('dashboard.data');
-    Route::controller(App\Http\Controllers\BrandController::class)->group(function(){
+    Route::get('/dashboard-data', [DashboardController::class, 'index'])->name('dashboard.data');
+    Route::controller(App\Http\Controllers\BrandController::class)->group(function () {
         Route::get('/brand', 'index')->name('admin.brand.index');
         Route::get('/brand/create', 'create')->name('admin.brand.create');
         Route::post('/brand/store', 'store')->name('admin.brand.store');
@@ -50,16 +50,16 @@ Route::get('/dashboard-data', [DashboardController::class, 'index'])->name('dash
         Route::delete('/brand/delete/{id}', 'destroy')->name('admin.brand.delete');
     });
 
-    Route::controller(\App\Http\Controllers\ProductController::class)->group(function(){
-        Route::get('/product','index')->name('admin.product.index');
-        Route::get('/product/create','create')->name('admin.product.create');
-        Route::post('/product/store','store')->name('admin.product.store');
+    Route::controller(\App\Http\Controllers\ProductController::class)->group(function () {
+        Route::get('/product', 'index')->name('admin.product.index');
+        Route::get('/product/create', 'create')->name('admin.product.create');
+        Route::post('/product/store', 'store')->name('admin.product.store');
         Route::get('/product/edit/{id}', 'edit')->name('admin.product.edit');
         Route::put('/product/update/{id}', 'update')->name('admin.product.update');
         Route::delete('/product/delete/{id}', 'destroy')->name('admin.product.delete');
         Route::get('/get-products/{brand_id}', 'getProducts')->name('admin.product.getproducts');
 
-        Route::get('/get-product-price/{id}',  'getPrice')->name('admin.product.getPrice');
+        Route::get('/get-product-price/{id}', 'getPrice')->name('admin.product.getPrice');
 
     });
 
@@ -101,8 +101,8 @@ Route::get('/dashboard-data', [DashboardController::class, 'index'])->name('dash
         Route::delete('delete/{id}', 'destroy')->name('admin.transaction.delete');
     });
 // web.php
-Route::get('/daily-notes', [DashboardController::class, 'display'])->name('daily-notes.index');
-Route::post('/daily-notes', [DashboardController::class, 'store'])->name('daily-note.store');
+    Route::get('/daily-notes', [DashboardController::class, 'display'])->name('daily-notes.index');
+    Route::post('/daily-notes', [DashboardController::class, 'store'])->name('daily-note.store');
 
     Route::prefix('sale')->controller(SaleController::class)->group(function () {
         Route::get('/', 'index')->name('admin.sale.index');
@@ -114,7 +114,7 @@ Route::post('/daily-notes', [DashboardController::class, 'store'])->name('daily-
         Route::get('/get-imeis/{product_id}', 'getImeis')->name('admin.sale.get-imeis');
 
     });
-
+    Route::get('invoice-pdf/{id}', [InvoiceController::class, 'generatePDF'])->name('admin.invoice.index');
 
 });
 
