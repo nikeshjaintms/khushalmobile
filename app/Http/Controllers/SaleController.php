@@ -57,7 +57,7 @@ class SaleController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         $validatedData = $request->validate([
             'customer_id' => 'required',
             'invoice_no' => 'required',
@@ -101,7 +101,7 @@ class SaleController extends Controller
             $sale->products()->create([
                 'product_id' => $product['product_id'],
                 'brand_id' => $product['brand_id'],
-                // 'imei_id' => $product['imei_id'],
+                'imei_id' => $product['imei_id'],
                 'price' => $product['price'],
                 'discount' => $product['discount'] ?? 0,
                 'discount_amount' => $product['discount_amount'] ?? 0,

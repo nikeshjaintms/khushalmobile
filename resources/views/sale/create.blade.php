@@ -143,7 +143,7 @@
                                                     </td>
 
                                                     <td>
-                                                        <select class="form-control form-select imei_id " name="imei_id[]"
+                                                        <select class="form-control form-select imei_id " name="products[0][imei_id]"
                                                             aria-label="Default select example" required>
                                                             <option selected> Select Imi No</option>
                                                         </select>
