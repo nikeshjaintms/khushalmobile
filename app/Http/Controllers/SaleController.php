@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use App\Models\Customer;
+use App\Models\Finance;
 use App\Models\Product;
 use App\Models\PurchaseProduct;
 use App\Models\Sale;
 use App\Models\SaleProduct;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SaleController extends Controller
 {
@@ -83,8 +85,13 @@ class SaleController extends Controller
             'products.*.tax' => 'numeric|min:0',
             'products.*.tax_amount' => 'numeric|min:0',
             'products.*.price_total' => 'numeric|min:0',
-        ]);
 
+
+             ]);
+
+          DB::beginTransaction();
+
+          try {
         $sale = Sale::create([
             'customer_id' => $request->customer_id,
             'invoice_no' => $request->invoice_no,
@@ -95,6 +102,28 @@ class SaleController extends Controller
             'total_amount' => $request->total_amount,
             'payment_method' => $request->payment_method,
         ]);
+
+        // dd($request->all());
+        if($request->payment_method == '3' )
+        {
+
+        $finance = Finance::create([
+            'invoice_no' => $request->invoice_no,
+            'product_id' => $request->products[0]['product_id'],
+            'customer_id' => $request->customer_id,
+            'customer_id' => $request->customer_id,
+            'price' => $request->sub_total,
+            'downpayment' => $request->DownPayment,
+            'processing_fee' => $request->Processing,
+            'emi_charger' => $request->EMICharge,
+            'finance_amount' => is_numeric($request->FinanceAmount) ? $request->FinanceAmount : 0,
+            'month_duration' => is_numeric($request->MonthDuration) ? $request->MonthDuration : 0,
+            'emi_value' => $request->permonthvalue,
+            'penalty' => $request->Penalty,
+            'dedication_date' => $request->DeductionDate,
+            'finance_year' => $request->financ_year ?? date('Y')
+        ]);
+    }
         // Insert related products
         foreach ($request->products as $product) {
 
@@ -111,9 +140,16 @@ class SaleController extends Controller
                 'price_total' => $product['price_total'] ?? 0,
             ]);
         }
-        // Sale::create();
-        // dd($request->all());
+        DB::commit();
+
         return redirect()->route('admin.sale.index')->with('success', 'Sale created successfully.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        dd($e->getMessage());
+        return redirect()->route('admin.sale.index')->with('error', 'Something went wrong. Please try again.');
+    }
+        // Sale::create();
+       // dd($request->all());
     }
 
     /**
