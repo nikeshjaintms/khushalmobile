@@ -111,8 +111,7 @@ class SaleController extends Controller
             }
             // Insert related products
             foreach ($request->products as $product) {
-
-                $sale->products()->create([
+                $sale->saleProducts()->create([
                     'product_id' => $product['product_id'],
                     'brand_id' => $product['brand_id'],
                     'imei_id' => $product['imei_id'],

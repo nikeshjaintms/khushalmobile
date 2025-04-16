@@ -75,8 +75,7 @@
                                                 <td>{{ $item->customer->name }}</td>
                                                 <td>{{ $item->invoice_no }}</td>
                                                 @foreach ($item->saleProducts as $product)
-                                                @dd($product)
-                                                    <td>{{ $product->product->product_name }}</td>
+                                                    <td>{{ $product->product->product_name ?? '-' }}</td>
                                                 @endforeach
                                                 <td>{{ $item->total_amount }}</td>
                                                 <td>
