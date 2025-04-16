@@ -133,7 +133,7 @@
                                 </div>
                                 <div class="col col-stats ms-3 ms-sm-0">
                                     <div class="numbers">
-                                        <p class="card-category">Today Transcation</p>
+                                        <p class="card-category">Today Transcation IN</p>
                                         <h4 id="transaction">₹ 0</h4>
                                     </div>
                                 </div>
@@ -155,8 +155,6 @@
                     </div>
                 </div>
             </form>
-
-            <div id="notesList" class=" row mt-3"></div>
         </div>
     </div>
 
