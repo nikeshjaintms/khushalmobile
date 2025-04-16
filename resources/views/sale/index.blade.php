@@ -75,7 +75,7 @@
                                             <td>{{$item->invoice_no }}</td>
 
 
-                                            @foreach($item->products as $product)
+                                            @foreach($item->saleProducts as $product)
                                             <td>{{$product->product->product_name}}</td>
                                             @endforeach
                                             <td>{{ $item->total_amount }}</td>
@@ -87,7 +87,6 @@
                                                     <i class="fa fa-file-pdf"></i>
                                                 </i>
                                                     </a>
-
                                                 <a href="{{ route('admin.sale.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
