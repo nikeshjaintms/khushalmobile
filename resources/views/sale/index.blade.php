@@ -1,6 +1,6 @@
 @extends('layouts.app')
-{{-- @if(Auth::guard('admin')->check()) --}}
-@section('title','Admin Panel')
+{{-- @if (Auth::guard('admin')->check()) --}}
+@section('title', 'Admin Panel')
 
 {{-- @endif --}}
 
@@ -36,7 +36,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.sale.index')}}">Sale</a>
+                        <a href="{{ route('admin.sale.index') }}">Sale</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
@@ -50,56 +50,56 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <a href="{{ route('admin.sale.create') }}" class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i>Sale</a>
+                            <a href="{{ route('admin.sale.create') }}"
+                                class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i>Sale</a>
                             <h4 class="card-title">Sale</h4>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="basic-datatables" class="display table table-striped table-hover">
                                     <thead>
-                                    <tr>
-                                        <th>Id</th>
-                                        <th>Customer</th>
-                                        <th>Invoice no</th>
-                                        <th>Product</th>
-                                        <th>Final Total amount</th>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Customer</th>
+                                            <th>Invoice no</th>
+                                            <th>Product</th>
+                                            <th>Final Total amount</th>
 
-                                        <th>Action</th>
-                                    </tr>
+                                            <th>Action</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    @forelse($sales as $item)
-                                        <tr>
-                                            <td>{{$item->id }}</td>
-                                            <td>{{$item->customer->name}}</td>
-                                            <td>{{$item->invoice_no }}</td>
-
-
-                                            @foreach($item->saleProducts as $product)
-                                            <td>{{$product->product->product_name}}</td>
-                                            @endforeach
-                                            <td>{{ $item->total_amount }}</td>
-
-                                            <td>
-
-                                                    <a href="{{ route('admin.invoice.index',$item->id) }}">
-                                                <i  class="btn btn-link btn-danger">
-                                                    <i class="fa fa-file-pdf"></i>
-                                                </i>
+                                        @forelse($sales as $item)
+                                            <tr>
+                                                <td>{{ $item->id }}</td>
+                                                <td>{{ $item->customer->name }}</td>
+                                                <td>{{ $item->invoice_no }}</td>
+                                                @foreach ($item->saleProducts as $product)
+                                                @dd($product)
+                                                    <td>{{ $product->product->product_name }}</td>
+                                                @endforeach
+                                                <td>{{ $item->total_amount }}</td>
+                                                <td>
+                                                    <a href="{{ route('admin.invoice.index', $item->id) }}">
+                                                        <i class="btn btn-link btn-danger">
+                                                            <i class="fa fa-file-pdf"></i>
+                                                        </i>
                                                     </a>
-                                                <a href="{{ route('admin.sale.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">
-                                                    <i class="fa fa-edit"></i>
-                                                </a>
-                                                <button onclick="deletesale_info({{ $item->id }})" class="btn btn-link btn-danger">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="6" class="text-center">No data available</td>
-                                        </tr>
-                                    @endforelse
+                                                    <a href="{{ route('admin.sale.edit', $item->id) }}"
+                                                        class="btn btn-lg btn-link btn-primary">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                    <button onclick="deletesale_info({{ $item->id }})"
+                                                        class="btn btn-link btn-danger">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="6" class="text-center">No data available</td>
+                                            </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
@@ -113,7 +113,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function deletesale_info(id) {
-            var url = '{{ route("admin.sale.delete", "id") }}'.replace("id", id);
+            var url = '{{ route('admin.sale.delete', 'id') }}'.replace("id", id);
 
             Swal.fire({
                 title: 'Are you sure?',
@@ -137,7 +137,7 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        success: function (response) {
+                        success: function(response) {
                             if (response.status == 'success') {
                                 Swal.fire(
                                     'Deleted!',
@@ -154,7 +154,7 @@
                                 );
                             }
                         },
-                        error: function (xhr) {
+                        error: function(xhr) {
                             Swal.fire(
                                 'Error!',
                                 'An error occurred: ' + xhr.responseText,
@@ -168,6 +168,3 @@
     </script>
 
 @endsection
-
-
-

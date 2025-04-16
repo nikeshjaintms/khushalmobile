@@ -20,9 +20,10 @@ class SaleController extends Controller
      */
     public function index()
     {
-        $sales = Sale::with(['customer', 'saleProducts.brand', 'saleProducts.product','saleProducts'])->get();
+        $sales = Sale::with(['customer', 'saleProducts.brand', 'saleProducts.product', 'saleProducts'])->get();
         return view('sale.index', compact('sales'));
     }
+
 
     public function getImeis($product_id)
     {
@@ -89,18 +90,8 @@ class SaleController extends Controller
                 'payment_method' => $request->payment_method,
             ]);
 
-
-            if ($request->payment_method == '1') {
-
-                SaleTransaction::create([
-                    'invoice_id' => $sale->id,
-                    'amount' => $sale->total_amount,
-                    'payment_mode' => $sale->payment_method,
-                    'reference_no' => $request->reference_no,
-                ]);
-
-
-            } elseif ($request->payment_method == '3') {
+            // dd($request->all());
+            if ($request->payment_method == '3') {
 
                 $finance = Finance::create([
                     'invoice_no' => $request->invoice_no,
@@ -121,7 +112,7 @@ class SaleController extends Controller
             // Insert related products
             foreach ($request->products as $product) {
 
-                $sale->saleProducts()->create([
+                $sale->products()->create([
                     'product_id' => $product['product_id'],
                     'brand_id' => $product['brand_id'],
                     'imei_id' => $product['imei_id'],
