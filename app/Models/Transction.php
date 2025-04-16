@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transction extends Model
 {
-    protected $table = 'transactions';
+    protected $table = 'transctions';
     protected $primaryKey = 'id';
     protected $fillable = ['amount','type','remark'];
     use HasFactory, SoftDeletes;
