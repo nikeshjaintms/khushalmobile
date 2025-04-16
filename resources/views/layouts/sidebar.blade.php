@@ -99,7 +99,7 @@
               <li class="nav-item">
                 <a  href="{{ route('admin.daily-notes.index') }}">
                   <i class="fas fa-layer-group"></i>
-                  <p>Transacation</p>
+                  <p>Notes</p>
                   <span class="caret"></span>
                 </a>
               </li>
