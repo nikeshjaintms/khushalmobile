@@ -250,6 +250,334 @@
                                                     <p style="color: red;">{{ $message }}</p>
                                                 @enderror
                                             </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div>
+                                                <label for=""> Total Tax Amount<span
+                                                        style="color: red">*</span></label>
+                                                <input type="text" class="form-control totalTaxAmount"
+                                                    name="total_tax_amount" id="total_tax_amount"
+                                                    placeholder="Enter Total Tax Amount" readonly required />
+                                                @error('tax_amount')
+                                                    <p style="color: red;">{{ $message }}</p>
+                                                @enderror
+                                            </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div>
+                                                <label for="">Total Amount<span
+                                                        style="color: red">*</span></label>
+                                                <input type="text" class="form-control finalTotalAmount"
+                                                    name="total_amount" id="total_amount"
+                                                    placeholder="Enter Total  Amount" readonly required />
+                                                @error('total_amount')
+                                                    <p style="color: red;">{{ $message }}</p>
+                                                @enderror
+                                            </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div>
+                                                <label for="">Payment Method<span
+                                                        style="color: red">*</span></label>
+                                                <select class="form-select paymentMethod"
+                                                    aria-label="Default select example" name="payment_method">
+                                                    <option selected> Select Payment Method</option>
+                                                    <option value="1">Online</option>
+                                                    <option value="2">Cash</option>
+                                                    <option value="3">Finance</option>
+                                                </select>
+                                                @error('payment_method')
+                                                    <p style="color: red;">{{ $message }}</p>
+                                                @enderror
+                                            </div>
+
+
+                                </div>
+                                <div class="row mt-3" id="finance_detail">
+                                    <h4>Finance Details</h4>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div>
+                                                <label> Select Finance </label>
+                                                <select class="select2 form-control required" name="Finance" id="Finance">
+                                                    <option value=""> --Select Finance-- </option>
+                                                    <option value="Bajaj Finance"> Bajaj Finance </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div  class="col-md-4">
+                                        <div class="form-group">
+                                            <label> Processing Fee </label>
+                                            <input type="text" name="Processing" id="Processing" class="form-control required" placeholder="--Processing Fee--" onkeyup="SetFinanceAmount()";>
+                                        </div>
+                                    </div>
+                                    <div  class="col-md-4">
+                                        <div class="form-group">
+                                            <label> Per Month EMI Charge </label>
+                                            <input type="text" name="EMICharge" id="EMICharge" class="form-control required" placeholder="--Per Month EMI Charge--" value='0' onkeyup="SetMonthDuration()";>
+                                        </div>
+                                    </div>
+                                    <div  class="col-md-4">
+                                        <div class="form-group">
+                                            <label> Down Payment </label>
+                                            <input type="text" name="DownPayment" id="DownPayment" class="form-control required" placeholder="--Down Payment--" onkeyup="SetFinanceAmount()";>
+                                        </div>
+                                    </div>
+                                    <div  class="col-md-4">
+
+                                    <div class="form-group">
+                                        <label> Payable Amount </label>
+                                        <input type="text" name="FinanceAmount" id="FinanceAmount" class="form-control required" placeholder="--Payable Amount--" readonly>
+                                    </div>
+                                    </div>
+                                    <div  class="col-md-4">
+                                        <div class="form-group">
+                                            <label> Month Duration </label>
+                                            <input type="text" name="MonthDuration" id="MonthDuration" class="form-control required" placeholder="--Month Duration--" onkeyup="SetMonthDuration()";>
+                                        </div>
+                                    </div>
+                                    <div  class="col-md-4">
+                                        <div class="form-group">
+                                            <label> Deduction Date </label>
+                                            <select class="form-control required" name="DeductionDate" id="DeductionDate">
+                                                <?php
+                                                for($i=1;$i<=28;$i++){
+                                                    echo'<option value="'.$i.'">'.$i.'</option>';
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div  class="col-md-4">
+                                        <div class="form-group">
+                                            <label> Penalty Charges </label>
+                                            <input type="text" name="Penalty" id="Penalty" class="form-control required" placeholder="--Penalty Charges--">
+                                        </div>
+                                    </div>
+                                    <div  class="col-md-4">
+                                        <div class="form-group"><br><br>
+                                            <h6><div id="permonth" style="color: red;"></div></h6>
+                                            <input type="hidden" name="permonthvalue" id="permonthvalue">
+                                            <input type="hidden" name="financ_year" id="financ_year">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="card-action">
+                                    <button class="btn btn-success" type="submit">Submit</button>
+                                    <a href="{{ route('admin.sale.index') }}" class="btn btn-danger">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                        <form method="POST" action="{{ route('admin.sale.store') }}" id="saleForm">
+                            @csrf
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div>
+                                                <label for="">Customer<span style="color: red">*</span></label>
+                                                <select class="form-select customer"  name="customer_id" aria-label="Default select example">
+                                                    <option selected value=""> Select Customer</option>
+                                                    @foreach($customers as $item)
+                                                        <option value="{{$item->id}}">{{$item->name}}</option>
+                                                    @endforeach
+                                                    @error('customer_id') <p style="color: red;">{{ $message }}</p> @enderror
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div>
+                                                <label for="">Invoice No<span style="color: red">*</span></label>
+                                                <input type="text" class="form-control" name="invoice_no" id="invoice_no"
+                                                    value="{{ $invoiceNo }}" readonly required />
+                                                @error('invoice_no')
+                                                    <p style="color: red;">{{ $message }}</p>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div>
+                                                <label for="">Invoice Date<span style="color: red">*</span></label>
+                                                <input id="datepicker" name="invoice_date" class="form-control datepicker" placeholder="select Date" onchange="GetOrderNo()"/>
+                                                @error('invoice_date') <p style="color: red;">{{ $message }}</p> @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <table class="display table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">sr no</th>
+                                                    <th scope="col">Brand</th>
+                                                    <th scope="col">Product</th>
+                                                    <th scope="col">IMI No</th>
+                                                    <th scope="col">Price</th>
+                                                    <th scope="col">Discount</th>
+                                                    <th scope="col">Discount Amount</th>
+                                                    <th scope="col">Price Sub Total</th>
+                                                    <th scope="col">Tax</th>
+                                                    <th scope="col">Tax Amount</th>
+                                                    <th scope="col">Total</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="table-group-divider" id="add-table-row">
+                                                <tr>
+                                                    <th scope="row" class="row-index">1</th>
+                                                    <td>
+                                                        <select
+                                                            class="form-control form-select
+                                                    brand-name brand-select"
+                                                            name="products[0][brand_id]" aria-label="Default select example"
+                                                            required>
+                                                            <option value="">Select Brand</option>
+                                                            @foreach ($brands as $brand)
+                                                                <option value="{{ $brand->id }}"
+                                                                    {{ request('brand_id') == $brand->id ? 'selected' : '' }}>
+                                                                    {{ $brand->name }}
+                                                                </option>
+                                                            @endforeach
+                                                            @error('brand_id')
+                                                                <p style="color: red;">{{ $message }}</p>
+                                                            @enderror
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select id="product"
+                                                            class="form-control form-select product-name product-select product"
+                                                            name="products[0][product_id]">
+                                                            <option value=""> Select Product</option>
+                                                        </select>
+                                                        @error('product_id')
+                                                            <p style="color: red;">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+
+                                                    <td>
+                                                        <select class="form-control form-select imei_id " name="products[0][imei_id]"
+                                                            aria-label="Default select example" required>
+                                                            <option selected> Select Imi No</option>
+                                                        </select>
+                                                        {{--                                                    @error('imiNo') <p style="color: red;">{{ $message }}</p> @enderror --}}
+                                                    </td>
+
+                                                    <td>
+                                                        <input type="text" class="form-control price-select price"
+                                                            name="products[0][price]" id="price" readonly required />
+                                                        @error('price')
+                                                            <p style="color: red;">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+
+                                                    <td>
+                                                        <input type="text" class="form-control discount"
+                                                            name="products[0][discount]" id="discount" required />
+                                                        @error('discount')
+                                                            <p style="color: red;">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+
+                                                    <td>
+                                                        <input type="text"
+                                                            class="form-control discountAmount discount_amount"
+                                                            name="products[0][discount_amount]" id="discountAmount"
+                                                            readonly required />
+                                                        @error('discount_amount')
+                                                            <p style="color: red;">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+
+                                                    <td>
+                                                        <input type="text" class="form-control priceSubTotal"
+                                                            id="priceSubTotal" name="products[0][price_subtotal]" readonly
+                                                            required />
+                                                        @error('price_subtotal')
+                                                            <p style="color: red;">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+
+                                                    <td>
+                                                        <input type="text" class="form-control tax" id="tax"
+                                                            name="products[0][tax]" required />
+                                                        @error('tax')
+                                                            <p style="color: red;">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+
+                                                    <td>
+                                                        <input type="text" class="form-control taxAmount tax-amount"
+                                                            name="products[0][tax_amount]"id="tax_amount" readonly
+                                                            required />
+                                                        @error('tax_amount')
+                                                            <p style="color: red;">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+
+                                                    <td>
+                                                        <input type="text"
+                                                            class="form-control total total-amount totalAmount"
+                                                            id="totalAmount" name="products[0][price_total]" readonly
+                                                            required />
+                                                        @error('total')
+                                                            <p style="color: red;">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+
+                                                    <td class="d-inline-flex gap-1">
+                                                        <button type="button" class="btn btn-success add-row">+</button>
+                                                        <button type="button"
+                                                            class="btn btn-danger remove-row">-</button>
+                                                        <button type="button" class="btn btn-secondary duplicate-row">
+                                                            <i class="fas fa-copy"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+
+
+                                        </table>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div>
+                                                <label for="">Sub Total<span style="color: red"
+                                                        id="grandTotal">*</span></label>
+                                                <input type="text" class="form-control subTotal" name="sub_total"
+                                                    placeholder="sub total" readonly required />
+                                                @error('sub_total')
+                                                    <p style="color: red;">{{ $message }}</p>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div>
+                                                <label for="">Tax Type<span style="color: red">*</span></label>
+                                                <select class="form-control form-select taxType" name="tax_type"
+                                                    aria-label="Default select example" required>
+                                                    <option selected> Select Tax Type</option>
+                                                    <option value="1"> CGST/SGST</option>
+                                                    <option value="2"> IGST</option>
+                                                </select>
+
+                                                @error('tax_type')
+                                                    <p style="color: red;">{{ $message }}</p>
+                                                @enderror
+                                            </div>
                                         </div>
                                     </div>
 
@@ -665,15 +993,27 @@ ${imiOptionsHTML}
         });
 
 
-        $('#datepicker').datepicker({
-            uiLibrary: 'bootstrap5',
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-            todayHighlight: true,
-            orientation: 'bottom',
-            startDate: new Date()
+        function PriceAmount(){
+            var DownPayment = $("#DownPayment").val();
+            var FinanceAmount = $("#FinanceAmount").val();
+            var MonthDuration = $("#MonthDuration").val();
+            $("#DownPayment").val("");
+            $("#FinanceAmount").val("");
+            $("#MonthDuration").val("");
+        }
 
-        });
+        function SetMonthDuration(){
+            var FinanceAmount = $("#FinanceAmount").val();
+            var MonthDuration = $("#MonthDuration").val();
+            var EMICharge = $("#EMICharge").val();
+            var Price = $("#total_amount").val();
+            var Processing = $("#Processing").val();
+            var DownPayment = $("#DownPayment").val();
+            if(EMICharge==""){EMICharge='0';}
+            else{EMICharge=EMICharge;}
+            var ChargeTotal = parseInt(EMICharge) * parseInt(MonthDuration);
+            Financetotal =  (parseInt(Price)+parseInt(Processing)) - DownPayment ;
+            AmountTotal = parseInt(Financetotal) + parseInt(ChargeTotal);
 
         $(document).on('change', '.product-select', function() {
             var productId = $(this).val();
@@ -721,7 +1061,8 @@ ${imiOptionsHTML}
                 let brandId = $(this).val();
                 let $productSelect = $(this).closest('tr').find('.product-select');
 
-                $productSelect.html('<option value="">Loading...</option>');
+             // Initially hide the finance detail section
+        $('#finance_detail').hide();
 
                 if (brandId) {
                     $.ajax({
@@ -792,40 +1133,40 @@ ${imiOptionsHTML}
                         required: true
                     },
 
-                    sub_total: {
-                        required: true
-                    },
-                    tax_type: {
-                        required: true
-                    },
-                    tax: {
-                        required: true
-                    },
-                    tax_amount: {
-                        required: true
-                    },
-                    total_amount: {
-                        required: true
-                    },
-                    payment_method: {
-                        required: true
-                    },
-                    discount: {
-                        required: true
-                    },
-                    discount_amount: {
-                        required: true
-                    },
-                    price: {
-                        required: true
-                    },
+                            sub_total: {
+                                required: true
+                            },
+                            tax_type: {
+                                required: true
+                            },
+                            tax: {
+                                required: true
+                            },
+                            tax_amount: {
+                                required: true
+                            },
+                            total_amount: {
+                                required: true
+                            },
+                            payment_method: {
+                                required: true
+                            },
+                            discount: {
+                                required: true
+                            },
+                            discount_amount: {
+                                required: true
+                            },
+                            price: {
+                                required: true
+                            },
 
-                    brand_name: {
-                        required: true
-                    },
-                    product_name: {
-                        required: true
-                    }
+                            brand_name: {
+                                required: true
+                            },
+                            product_name: {
+                                required: true
+                            }
 
                 },
                 messages: {
@@ -876,6 +1217,13 @@ ${imiOptionsHTML}
                 errorClass: 'text-danger',
                 highlight: function(element, errorClass) {
                     $(element).addClass("is-invalid");
+
+
+                },
+                unhighlight: function(element, errorClass) {
+                    $(element).removeClass("is-invalid");
+                }
+            });
 
 
                 },

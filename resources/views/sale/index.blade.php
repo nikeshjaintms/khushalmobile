@@ -87,7 +87,6 @@
                                                     <i class="fa fa-file-pdf"></i>
                                                 </i>
                                                     </a>
-
                                                 <a href="{{ route('admin.sale.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">
                                                     <i class="fa fa-edit"></i>
                                                 </a>

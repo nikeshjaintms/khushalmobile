@@ -52,7 +52,6 @@ class SaleController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $validatedData = $request->validate([
             'customer_id' => 'required',
             'invoice_no' => 'required',
