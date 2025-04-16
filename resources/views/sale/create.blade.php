@@ -53,12 +53,15 @@
                                         <div class="form-group">
                                             <div>
                                                 <label for="">Customer<span style="color: red">*</span></label>
-                                                <select class="form-select customer"  name="customer_id" aria-label="Default select example">
+                                                <select class="form-select customer" name="customer_id"
+                                                    aria-label="Default select example">
                                                     <option selected value=""> Select Customer</option>
-                                                    @foreach($customers as $item)
-                                                        <option value="{{$item->id}}">{{$item->name}}</option>
+                                                    @foreach ($customers as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
                                                     @endforeach
-                                                    @error('customer_id') <p style="color: red;">{{ $message }}</p> @enderror
+                                                    @error('customer_id')
+                                                        <p style="color: red;">{{ $message }}</p>
+                                                    @enderror
                                                 </select>
                                             </div>
                                         </div>
@@ -80,8 +83,11 @@
                                         <div class="form-group">
                                             <div>
                                                 <label for="">Invoice Date<span style="color: red">*</span></label>
-                                                <input id="datepicker" name="invoice_date" class="form-control datepicker" placeholder="select Date" onchange="GetOrderNo()"/>
-                                                @error('invoice_date') <p style="color: red;">{{ $message }}</p> @enderror
+                                                <input id="datepicker" name="invoice_date" class="form-control datepicker"
+                                                    placeholder="select Date" onchange="GetOrderNo()" />
+                                                @error('invoice_date')
+                                                    <p style="color: red;">{{ $message }}</p>
+                                                @enderror
                                             </div>
                                         </div>
                                     </div>
@@ -137,8 +143,9 @@
                                                     </td>
 
                                                     <td>
-                                                        <select class="form-control form-select imei_id " name="products[0][imei_id]"
-                                                            aria-label="Default select example" required>
+                                                        <select class="form-control form-select imei_id "
+                                                            name="products[0][imei_id]" aria-label="Default select example"
+                                                            required>
                                                             <option selected> Select Imi No</option>
                                                         </select>
                                                         {{--                                                    @error('imiNo') <p style="color: red;">{{ $message }}</p> @enderror --}}
@@ -310,65 +317,79 @@
                                         <div class="form-group">
                                             <div>
                                                 <label> Select Finance </label>
-                                                <select class="select2 form-control required" name="Finance" id="Finance">
+                                                <select class="select2 form-control required" name="Finance"
+                                                    id="Finance">
                                                     <option value=""> --Select Finance-- </option>
                                                     <option value="Bajaj Finance"> Bajaj Finance </option>
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
-                                    <div  class="col-md-4">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label> Processing Fee </label>
-                                            <input type="text" name="Processing" id="Processing" class="form-control required" placeholder="--Processing Fee--" onkeyup="SetFinanceAmount()";>
+                                            <input type="text" name="Processing" id="Processing"
+                                                class="form-control required" placeholder="--Processing Fee--"
+                                                onkeyup="SetFinanceAmount()";>
                                         </div>
                                     </div>
-                                    <div  class="col-md-4">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label> Per Month EMI Charge </label>
-                                            <input type="text" name="EMICharge" id="EMICharge" class="form-control required" placeholder="--Per Month EMI Charge--" value='0' onkeyup="SetMonthDuration()";>
+                                            <input type="text" name="EMICharge" id="EMICharge"
+                                                class="form-control required" placeholder="--Per Month EMI Charge--"
+                                                value='0' onkeyup="SetMonthDuration()";>
                                         </div>
                                     </div>
-                                    <div  class="col-md-4">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label> Down Payment </label>
-                                            <input type="text" name="DownPayment" id="DownPayment" class="form-control required" placeholder="--Down Payment--" onkeyup="SetFinanceAmount()";>
+                                            <input type="text" name="DownPayment" id="DownPayment"
+                                                class="form-control required" placeholder="--Down Payment--"
+                                                onkeyup="SetFinanceAmount()";>
                                         </div>
                                     </div>
-                                    <div  class="col-md-4">
+                                    <div class="col-md-4">
 
-                                    <div class="form-group">
-                                        <label> Payable Amount </label>
-                                        <input type="text" name="FinanceAmount" id="FinanceAmount" class="form-control required" placeholder="--Payable Amount--" readonly>
+                                        <div class="form-group">
+                                            <label> Payable Amount </label>
+                                            <input type="text" name="FinanceAmount" id="FinanceAmount"
+                                                class="form-control required" placeholder="--Payable Amount--" readonly>
+                                        </div>
                                     </div>
-                                    </div>
-                                    <div  class="col-md-4">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label> Month Duration </label>
-                                            <input type="text" name="MonthDuration" id="MonthDuration" class="form-control required" placeholder="--Month Duration--" onkeyup="SetMonthDuration()";>
+                                            <input type="text" name="MonthDuration" id="MonthDuration"
+                                                class="form-control required" placeholder="--Month Duration--"
+                                                onkeyup="SetMonthDuration()";>
                                         </div>
                                     </div>
-                                    <div  class="col-md-4">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label> Deduction Date </label>
-                                            <select class="form-control required" name="DeductionDate" id="DeductionDate">
+                                            <select class="form-control required" name="DeductionDate"
+                                                id="DeductionDate">
                                                 <?php
-                                                for($i=1;$i<=28;$i++){
-                                                    echo'<option value="'.$i.'">'.$i.'</option>';
+                                                for ($i = 1; $i <= 28; $i++) {
+                                                    echo '<option value="' . $i . '">' . $i . '</option>';
                                                 }
                                                 ?>
                                             </select>
                                         </div>
                                     </div>
-                                    <div  class="col-md-4">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label> Penalty Charges </label>
-                                            <input type="text" name="Penalty" id="Penalty" class="form-control required" placeholder="--Penalty Charges--">
+                                            <input type="text" name="Penalty" id="Penalty"
+                                                class="form-control required" placeholder="--Penalty Charges--">
                                         </div>
                                     </div>
-                                    <div  class="col-md-4">
+                                    <div class="col-md-4">
                                         <div class="form-group"><br><br>
-                                            <h6><div id="permonth" style="color: red;"></div></h6>
+                                            <h6>
+                                                <div id="permonth" style="color: red;"></div>
+                                            </h6>
                                             <input type="hidden" name="permonthvalue" id="permonthvalue">
                                             <input type="hidden" name="financ_year" id="financ_year">
                                         </div>
@@ -538,16 +559,16 @@ ${imiOptionsHTML}
             updateButtons();
         });
 
-        function GetOrderNo(){
+        function GetOrderNo() {
             var selectDate = $("#invoice_date").val();
             $.ajax({
-                url:'get_order_no',
-                type:'POST',
-                data:{
-                    selectDate : selectDate,
-                    Flag : "Find Finance No"
+                url: 'get_order_no',
+                type: 'POST',
+                data: {
+                    selectDate: selectDate,
+                    Flag: "Find Finance No"
                 },
-                success:function(data){
+                success: function(data) {
                     data = data.split(',');
                     $("#bill_no").val(data[0]);
                     $("#financ_year").val(data[1]);
@@ -611,13 +632,13 @@ ${imiOptionsHTML}
             }
         }
 
-        function SetFinanceAmount(){
+        function SetFinanceAmount() {
             var DownPayment = $("#DownPayment").val();
             var Processing = $("#Processing").val();
             var EMICharge = $("#EMICharge").val();
             var Price = $("#total_amount").val();
             var MonthDuration = $("#MonthDuration").val();
-            total =  (parseInt(Price)+parseInt(Processing)) - DownPayment ;
+            total = (parseInt(Price) + parseInt(Processing)) - DownPayment;
 
             $("#FinanceAmount").val(total);
             $("#MonthDuration").val("");
@@ -625,7 +646,7 @@ ${imiOptionsHTML}
         }
 
 
-        function PriceAmount(){
+        function PriceAmount() {
             var DownPayment = $("#DownPayment").val();
             var FinanceAmount = $("#FinanceAmount").val();
             var MonthDuration = $("#MonthDuration").val();
@@ -634,23 +655,26 @@ ${imiOptionsHTML}
             $("#MonthDuration").val("");
         }
 
-        function SetMonthDuration(){
+        function SetMonthDuration() {
             var FinanceAmount = $("#FinanceAmount").val();
             var MonthDuration = $("#MonthDuration").val();
             var EMICharge = $("#EMICharge").val();
             var Price = $("#total_amount").val();
             var Processing = $("#Processing").val();
             var DownPayment = $("#DownPayment").val();
-            if(EMICharge==""){EMICharge='0';}
-            else{EMICharge=EMICharge;}
+            if (EMICharge == "") {
+                EMICharge = '0';
+            } else {
+                EMICharge = EMICharge;
+            }
             var ChargeTotal = parseInt(EMICharge) * parseInt(MonthDuration);
-            Financetotal =  (parseInt(Price)+parseInt(Processing)) - DownPayment ;
+            Financetotal = (parseInt(Price) + parseInt(Processing)) - DownPayment;
             AmountTotal = parseInt(Financetotal) + parseInt(ChargeTotal);
 
             $("#FinanceAmount").val(Math.round(AmountTotal));
-            var total = AmountTotal/MonthDuration ;
+            var total = AmountTotal / MonthDuration;
             $("#permonthvalue").val(Math.round(total));
-            $("#permonth").html("EMI Per Month : " +Math.round(total));
+            $("#permonth").html("EMI Per Month : " + Math.round(total));
         }
 
         // Attach event listeners
@@ -693,31 +717,31 @@ ${imiOptionsHTML}
             }
         });
 
-        $(document).ready(function () {
+        $(document).ready(function() {
 
-             // Initially hide the finance detail section
-        $('#finance_detail').hide();
+            // Initially hide the finance detail section
+            $('#finance_detail').hide();
 
-        // Listen to changes on the payment method dropdown
-        $('.paymentMethod').change(function () {
-            var selected = $(this).val();
+            // Listen to changes on the payment method dropdown
+            $('.paymentMethod').change(function() {
+                var selected = $(this).val();
 
-            if (selected == '3') { // 3 = Finance
-                $('#finance_detail').show();
-            } else {
-                $('#finance_detail').hide();
-                // Optional: clear all inputs in the finance detail section when hidden
-                $('#finance_detail').find('input, select').val('');
-                $('#permonth').text('');
-                $('#permonthvalue').val('');
-            }
-        });
-
-
+                if (selected == '3') { // 3 = Finance
+                    $('#finance_detail').show();
+                } else {
+                    $('#finance_detail').hide();
+                    // Optional: clear all inputs in the finance detail section when hidden
+                    $('#finance_detail').find('input, select').val('');
+                    $('#permonth').text('');
+                    $('#permonthvalue').val('');
+                }
+            });
 
 
 
-            $(document).on('change', '.brand-select', function () {
+
+
+            $(document).on('change', '.brand-select', function() {
                 let brandId = $(this).val();
                 let $productSelect = $(this).closest('tr').find('.product-select');
 
@@ -753,7 +777,8 @@ ${imiOptionsHTML}
                 let $row = $(this).closest('tr'); // get current row
                 let productId = $(this).val();
                 let imeiDropdown = $row.find('.imei_id');
-                let urK = "{{ route('admin.sale.get-imeis', ':productId') }}".replace(':productId', productId);
+                let urK = "{{ route('admin.sale.get-imeis', ':productId') }}".replace(':productId',
+                    productId);
 
                 if (productId) {
                     $.ajax({

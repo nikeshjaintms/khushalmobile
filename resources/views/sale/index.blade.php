@@ -61,7 +61,7 @@
                                         <th>Id</th>
                                         <th>Customer</th>
                                         <th>Invoice no</th>
-                                        <th>Product</th>
+                                        {{-- <th>Product</th> --}}
                                         <th>Final Total amount</th>
 
                                         <th>Action</th>
@@ -73,11 +73,6 @@
                                             <td>{{$item->id }}</td>
                                             <td>{{$item->customer->name}}</td>
                                             <td>{{$item->invoice_no }}</td>
-
-
-                                            @foreach($item->products as $product)
-                                            <td>{{$product->product->product_name}}</td>
-                                            @endforeach
                                             <td>{{ $item->total_amount }}</td>
 
                                             <td>
