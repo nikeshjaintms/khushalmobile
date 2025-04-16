@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class SaleProduct extends Model
 {
     use HasFactory, softDeletes;
+
     protected $table = "sales_products";
 
     protected $fillable = [
@@ -35,7 +36,12 @@ class SaleProduct extends Model
 
     public function sale()
     {
-        return $this->belongsTo(Sale::class,'sales_id');
+        return $this->belongsTo(Sale::class, 'sales_id');
     }
 
+    public function purchaseProduct()
+    {
+        return $this->belongsTo(PurchaseProduct::class,'imei_id');
+
+    }
 }

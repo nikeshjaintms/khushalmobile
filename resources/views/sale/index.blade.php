@@ -75,7 +75,7 @@
                                             <td>{{$item->invoice_no }}</td>
 
 
-                                            @foreach($item->products as $product)
+                                            @foreach($item->saleProducts as $product)
                                             <td>{{$product->product->product_name}}</td>
                                             @endforeach
                                             <td>{{ $item->total_amount }}</td>

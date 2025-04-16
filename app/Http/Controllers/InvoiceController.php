@@ -11,8 +11,7 @@ class InvoiceController extends Controller
 {
     public function generatePDF($id)
     {
-
-       $sale = Sale::with('products','products.brand' ,'products.product','products')->findOrFail($id);
+        $sale = Sale::with(['customer','saleProducts', 'saleProducts.product.brand', 'saleProducts.product', 'saleProducts.purchaseProduct'])->where('id', $id)->first();
         $pdf = Pdf::loadView('sale.invoice', compact('sale'));
         return $pdf->stream("invoice_{$sale->id}.pdf");
 

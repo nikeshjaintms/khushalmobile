@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\PurchaseProduct;
 use App\Models\Sale;
 use App\Models\SaleProduct;
+use App\Models\SaleTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -19,7 +20,7 @@ class SaleController extends Controller
      */
     public function index()
     {
-        $sales = Sale::with(['customer', 'products.brand', 'products.product', 'products'])->get();
+        $sales = Sale::with(['customer', 'saleProducts.brand', 'saleProducts.product','saleProducts'])->get();
         return view('sale.index', compact('sales'));
     }
 
@@ -72,69 +73,77 @@ class SaleController extends Controller
             'products.*.price_total' => 'numeric|min:0',
 
 
-             ]);
-
-          DB::beginTransaction();
-
-          try {
-        $sale = Sale::create([
-            'customer_id' => $request->customer_id,
-            'invoice_no' => $request->invoice_no,
-            'invoice_date' => $request->invoice_date,
-            'sub_total' => $request->sub_total,
-            'tax_type' => $request->tax_type,
-            'total_tax_amount' => $request->total_tax_amount,
-            'total_amount' => $request->total_amount,
-            'payment_method' => $request->payment_method,
         ]);
 
-        // dd($request->all());
-        if($request->payment_method == '3' )
-        {
+        DB::beginTransaction();
 
-        $finance = Finance::create([
-            'invoice_no' => $request->invoice_no,
-            'product_id' => $request->products[0]['product_id'],
-            'customer_id' => $request->customer_id,
-            'customer_id' => $request->customer_id,
-            'price' => $request->sub_total,
-            'downpayment' => $request->DownPayment,
-            'processing_fee' => $request->Processing,
-            'emi_charger' => $request->EMICharge,
-            'finance_amount' => is_numeric($request->FinanceAmount) ? $request->FinanceAmount : 0,
-            'month_duration' => is_numeric($request->MonthDuration) ? $request->MonthDuration : 0,
-            'emi_value' => $request->permonthvalue,
-            'penalty' => $request->Penalty,
-            'dedication_date' => $request->DeductionDate,
-            'finance_year' => $request->financ_year ?? date('Y')
-        ]);
-    }
-        // Insert related products
-        foreach ($request->products as $product) {
-
-            $sale->products()->create([
-                'product_id' => $product['product_id'],
-                'brand_id' => $product['brand_id'],
-                'imei_id' => $product['imei_id'],
-                'price' => $product['price'],
-                'discount' => $product['discount'] ?? 0,
-                'discount_amount' => $product['discount_amount'] ?? 0,
-                'price_subtotal' => $product['price_subtotal'] ?? 0,
-                'tax' => $product['tax'] ?? 0,
-                'tax_amount' => $product['tax_amount'] ?? 0,
-                'price_total' => $product['price_total'] ?? 0,
+        try {
+            $sale = Sale::create([
+                'customer_id' => $request->customer_id,
+                'invoice_no' => $request->invoice_no,
+                'invoice_date' => $request->invoice_date,
+                'sub_total' => $request->sub_total,
+                'tax_type' => $request->tax_type,
+                'total_tax_amount' => $request->total_tax_amount,
+                'total_amount' => $request->total_amount,
+                'payment_method' => $request->payment_method,
             ]);
-        }
-        DB::commit();
 
-        return redirect()->route('admin.sale.index')->with('success', 'Sale created successfully.');
-    } catch (\Exception $e) {
-        DB::rollBack();
-        dd($e->getMessage());
-        return redirect()->route('admin.sale.index')->with('error', 'Something went wrong. Please try again.');
-    }
+
+            if ($request->payment_method == '1') {
+
+                SaleTransaction::create([
+                    'invoice_id' => $sale->id,
+                    'amount' => $sale->total_amount,
+                    'payment_mode' => $sale->payment_method,
+                    'reference_no' => $request->reference_no,
+                ]);
+
+
+            } elseif ($request->payment_method == '3') {
+
+                $finance = Finance::create([
+                    'invoice_no' => $request->invoice_no,
+                    'product_id' => $request->products[0]['product_id'],
+                    'customer_id' => $request->customer_id,
+                    'price' => $request->sub_total,
+                    'downpayment' => $request->DownPayment,
+                    'processing_fee' => $request->Processing,
+                    'emi_charger' => $request->EMICharge,
+                    'finance_amount' => is_numeric($request->FinanceAmount) ? $request->FinanceAmount : 0,
+                    'month_duration' => is_numeric($request->MonthDuration) ? $request->MonthDuration : 0,
+                    'emi_value' => $request->permonthvalue,
+                    'penalty' => $request->Penalty,
+                    'dedication_date' => $request->DeductionDate,
+                    'finance_year' => $request->financ_year ?? date('Y')
+                ]);
+            }
+            // Insert related products
+            foreach ($request->products as $product) {
+
+                $sale->saleProducts()->create([
+                    'product_id' => $product['product_id'],
+                    'brand_id' => $product['brand_id'],
+                    'imei_id' => $product['imei_id'],
+                    'price' => $product['price'],
+                    'discount' => $product['discount'] ?? 0,
+                    'discount_amount' => $product['discount_amount'] ?? 0,
+                    'price_subtotal' => $product['price_subtotal'] ?? 0,
+                    'tax' => $product['tax'] ?? 0,
+                    'tax_amount' => $product['tax_amount'] ?? 0,
+                    'price_total' => $product['price_total'] ?? 0,
+                ]);
+            }
+            DB::commit();
+
+            return redirect()->route('admin.sale.index')->with('success', 'Sale created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e->getMessage());
+            return redirect()->route('admin.sale.index')->with('error', 'Something went wrong. Please try again.');
+        }
         // Sale::create();
-       // dd($request->all());
+        // dd($request->all());
     }
 
     /**
@@ -148,17 +157,34 @@ class SaleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+
     public function edit(Sale $sales, $id)
     {
 
         $data = Sale::find($id);
-        $data1 = saleproduct::find($id);
+        $data1 = SaleProduct::with('product')->where('sales_id',$id)->first();
+
         $customers = Customer::all();
         $selectedCustomer = $data->customer->pluck('id');
+
         $products = Product::all();
         $selectedProductId = $data1->product_id;
+        //dd($selectedProductId);
 
-        return view('sale.edit', compact('data', 'data1', 'customers', 'selectedCustomer', 'selectedProductId', 'products'));
+        $brands = Brand::all();
+        $selectedBrand  = $data1->product->brand_id;
+
+        $imiNumbers= PurchaseProduct::all();
+        $selectedImi = $data1->imei;
+        dd($selectedImi);
+
+        //dd($selectedBrand);
+
+        //$sales_transactions = SaleTransaction::all();
+        ////$reference_no = $sales_transactions->reference_no;
+        //dd($sales_transactions);
+
+        return view('sale.edit', compact('data', 'data1', 'customers', 'selectedCustomer', 'products','brands','selectedProductId','selectedBrand'));
     }
 
     /**

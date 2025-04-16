@@ -13,4 +13,9 @@ class PurchaseProduct extends Model
     protected $fillable = ['purchase_id','product_id','invoice_id','color','imei','price','discount','discount_amount','price_subtotal','tax','tax_amount','product_total','status'];
     use HasFactory, SoftDeletes;
 
+    public function saleProduct()
+    {
+        return $this->belongsTo(SaleProduct::class);
+    }
+
 }
