@@ -42,6 +42,7 @@
                 $('#productCount').text(response.product_count);
                 $('#customerCount').text(response.customer_count);
                 $('#transaction').text('₹'+response.transaction);
+                $('#sales').text(response.sales);
             },
             error: function () {
                 console.error("Failed to fetch dashboard data.");

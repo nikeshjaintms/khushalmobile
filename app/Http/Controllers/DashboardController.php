@@ -6,19 +6,34 @@ use App\Models\Customer;
 use App\Models\DailyNote;
 use App\Models\Product;
 use App\Models\Transction;
+use App\Models\Sale;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $productCount = Product::count();
-        $customerCount = Customer::count();
-        $transaction = Transction::where('type','in')->sum('amount');
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
+
+        $productCount = Product::whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->count();
+
+        $customerCount = Customer::whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->count();
+
+        $sales = Sale::whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->count();
+        $transaction = Transction::where('type', 'in')->whereDate('created_at', Carbon::today())->sum('amount');
 
         return response()->json([
             'product_count' => $productCount,
             'customer_count' => $customerCount,
+            'sales' => $sales,
             'transaction' => $transaction,
         ]);
     }
@@ -50,19 +65,20 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
         $note = DailyNote::find($id);
-        if($note){
+        if ($note) {
             $note->delete();
             return response()->json([
                 'success' => true,
                 'message' => 'Note deleted successfully',
             ]);
-        }else{
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => 'Note not found',
             ]);
+        }
     }
-}
 }

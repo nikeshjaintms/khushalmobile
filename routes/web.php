@@ -6,6 +6,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\TransctionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DailyNoteController;
 use App\Http\Controllers\SaleController;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
@@ -115,6 +116,15 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     });
     Route::get('invoice-pdf/{id}', [InvoiceController::class, 'generatePDF'])->name('admin.invoice.index');
+
+    Route::prefix('daily-notes')->controller(DailyNoteController::class)->group(function () {
+        Route::get('/', 'index')->name('admin.daily-notes.index');
+        Route::get('create', 'create')->name('admin.daily-notes.create');
+        Route::post('store', 'store')->name('admin.daily-notes.store');
+        Route::get('edit/{id}', 'edit')->name('admin.daily-notes.edit');
+        Route::put('update/{id}', 'update')->name('admin.daily-notes.update');
+        Route::delete('delete/{id}', 'destroy')->name('admin.daily-notes.delete');
+    });
 
 });
 
