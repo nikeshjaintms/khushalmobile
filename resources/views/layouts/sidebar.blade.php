@@ -7,10 +7,10 @@
           <div class="logo-header" data-background-color="dark">
             <a href="index.html" class="logo">
               <img
-                src="{{ asset('backend/assets/img/kaiadmin/logo_light.svg')}}"
+                src="{{ asset('logo/Kushal_mobile.png')}}"
                 alt="navbar brand"
                 class="navbar-brand"
-                height="20"
+                height="50"
               />
             </a>
             <div class="nav-toggle">
