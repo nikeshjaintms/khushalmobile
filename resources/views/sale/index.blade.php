@@ -63,6 +63,7 @@
                                             <th>Customer</th>
                                             <th>Invoice no</th>
                                             <th>Product</th>
+                                            <th>IMEI</th>
                                             <th>Final Total amount</th>
 
                                             <th>Action</th>
@@ -77,6 +78,7 @@
                                                 @foreach ($item->saleProducts as $product)
                                                     <td>{{ $product->product->product_name ?? '-' }}</td>
                                                 @endforeach
+                                                <td>{{ $product->purchaseProduct->imei ?? '-' }}</td>
                                                 <td>{{ $item->total_amount }}</td>
                                                 <td>
                                                     <a href="{{ route('admin.invoice.index', $item->id) }}">
