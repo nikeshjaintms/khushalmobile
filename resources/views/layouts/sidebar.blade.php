@@ -5,7 +5,7 @@
         <div class="sidebar-logo">
           <!-- Logo Header -->
           <div class="logo-header" data-background-color="dark">
-            <a href="index.html" class="logo">
+            <a href="{{  route('dashboard') }}" class="logo">
               <img
                 src="{{ asset('logo/Kushal_mobile.png')}}"
                 alt="navbar brand"
