@@ -441,7 +441,9 @@
                         required: true
                     },
                     "imei[]": {
-                        required: true
+                        required: true,
+                        minlength: 15,
+                        maxlength: 15
                     },
                     "discount[]": {
                         required: true,
@@ -511,7 +513,14 @@
                         required: "Color is required"
                     },
                     "imei[]": {
-                        required: "IMEI is required"
+                        required: "IMEI is required",
+                        minlength: "IMEI must be 15 digits",
+                        maxlength: "IMEI must be 15 digits",
+                    },
+                    "quantity[]": {
+                        required: "Quantity is required",
+                        number: "Please enter a valid number",
+                        min: "Quantity must be greater than 0"
                     },
                     "discount[]": {
                         required: "Discount is required",

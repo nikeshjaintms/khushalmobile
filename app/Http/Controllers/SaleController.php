@@ -41,11 +41,33 @@ class SaleController extends Controller
     {
 
         $customers = Customer::all();
-        $date = now()->format('Ymd');
-        $random = mt_rand(1000, 9999);
-        $invoiceNo = 'INV-' . $date . '-' . $random;
-        $products = Product::all();
         $brands = Brand::all();
+        $products = Product::all();
+
+        // Determine the current fiscal year
+        $currentYear = date('Y');
+        $nextYear = $currentYear + 1;
+        $previousYear = $currentYear - 1;
+
+         // Determine if the fiscal year should be previous year - current year or current year - next year
+         if (date('m') < 4) {
+            // Before April 1st, use the previous fiscal year
+            $fiscalYear = ($previousYear % 100) . '-' . ($currentYear % 100);
+        } else {
+            // From April 1st onwards, use the current fiscal year
+            $fiscalYear = ($currentYear % 100) . '-' . ($nextYear % 100);
+        }
+        $latestInvoice = Sale::where('invoice_no', 'LIKE', "%/$fiscalYear/%")->latest()->first();
+
+          // Extract and increment the last number, reset if new fiscal year
+          if ($latestInvoice) {
+            $lastNumber = intval(explode('/', $latestInvoice->invoice_no)[2]);
+            $nextNumber = $lastNumber + 1;
+        } else {
+            $nextNumber = 1; // Reset if no invoice exists for this fiscal year
+        }
+
+        $invoiceNo = 'INV/' . $fiscalYear . '/' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);;
         return view('sale.create', compact('customers', 'invoiceNo', 'brands', 'products'));
     }
 
