@@ -1,6 +1,6 @@
 @extends('layouts.app')
-{{-- @if(Auth::guard('admin')->check()) --}}
-@section('title','Admin Panel')
+{{-- @if (Auth::guard('admin')->check()) --}}
+@section('title', 'Admin Panel')
 
 {{-- @endif --}}
 
@@ -19,7 +19,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.dealer.index')}}">Dealer</a>
+                        <a href="{{ route('admin.dealer.index') }}">Dealer</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
@@ -35,39 +35,51 @@
                         <div class="card-header">
                             <div class="card-title">Edit Dealer</div>
                         </div>
-                        <form method="POST" action="{{ route('admin.dealer.update', $data->id ) }}" id="dealerForm">
+                        <form method="POST" action="{{ route('admin.dealer.update', $data->id) }}" id="dealerForm">
                             @csrf
                             @method('PUT')
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <div>
-                                                <label for="name">Name<span style="color: red">*</span></label>
-                                                <input type="text" class="form-control" name="name" value="{{ $data->name}}" id="name" placeholder="Enter Customer Name" required/>
-                                            </div>
+
+                                            <label for="name">Name<span style="color: red">*</span></label>
+                                            <input type="text" class="form-control" name="name"
+                                                value="{{ $data->name }}" id="name" placeholder="Enter Customer Name"
+                                                required />
+                                        </div>
+                                    </div>
 
 
-                                            <div>
-                                                <label for="">Phone<span style="color: red">*</span></label>
-                                                <input type="text" class="form-control" name="phone" value="{{$data->phone}}" id="phone" placeholder="Enter Phone Number" required/>
-                                            </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">Phone<span style="color: red">*</span></label>
+                                            <input type="text" class="form-control" name="phone"
+                                                value="{{ $data->phone }}" id="phone" placeholder="Enter Phone Number"
+                                                required />
+                                        </div>
+                                    </div>
 
-                                            <div>
-                                                <label for="">Address<span style="color: red">*</span></label>
-                                                <textarea type="text" class="form-control" name="address"  id="address" placeholder="Enter your address" required>{{$data->address}}</textarea>
-
-                                            </div>
-
-                                            <div>
-                                                <label for="">City<span style="color: red">*</span></label>
-                                                <input type="text" class="form-control" name="city" value="{{$data->city}}" id="city" placeholder="Enter your city" required/>
-                                            </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">Address<span style="color: red">*</span></label>
+                                            <textarea type="text" class="form-control" name="address" id="address" placeholder="Enter your address" required>{{ $data->address }}</textarea>
 
                                         </div>
                                     </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">City<span style="color: red">*</span></label>
+                                            <input type="text" class="form-control" name="city"
+                                                value="{{ $data->city }}" id="city" placeholder="Enter your city"
+                                                required />
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
+
                             <div class="card-action">
                                 <button class="btn btn-success" type="submit">Submit</button>
                                 <a href="{{ route('admin.dealer.index') }}" class="btn btn-danger">Cancel</a>
@@ -87,7 +99,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             $('input[name="phone"]').mask('0000000000');
 
@@ -96,7 +108,7 @@
                 placeholder: ''
             });
             $("#dealerForm").validate({
-                onfocusout: function (element) {
+                onfocusout: function(element) {
                     this.element(element); // Validate the field on blur
                 },
                 onkeyup: false, // Optional: Disable validation on keyup for performance
@@ -106,15 +118,15 @@
                         minlength: 3,
                         maxlength: 50,
                     },
-                    phone:{
-                        required:true
+                    phone: {
+                        required: true
                     },
 
-                    address:{
-                        required:true
+                    address: {
+                        required: true
                     },
-                    city:{
-                        required:true
+                    city: {
+                        required: true
                     }
 
                 },
@@ -125,25 +137,25 @@
                         maxlength: "Please Enter Maximum 50 Characters",
 
                     },
-                    phone:{
-                        required:"Please enter phone number"
+                    phone: {
+                        required: "Please enter phone number"
                     },
-                    address:{
-                        required:"Please enter address"
+                    address: {
+                        required: "Please enter address"
                     },
-                    city:{
-                        required:"please enter city"
+                    city: {
+                        required: "please enter city"
                     }
                 },
                 errorClass: "text-danger",
                 errorElement: "span",
-                highlight: function (element) {
+                highlight: function(element) {
                     $(element).addClass("is-invalid");
                 },
-                unhighlight: function (element) {
+                unhighlight: function(element) {
                     $(element).removeClass("is-invalid");
                 },
-                submitHandler: function (form) {
+                submitHandler: function(form) {
                     // Handle successful validation here
                     form.submit();
                 }

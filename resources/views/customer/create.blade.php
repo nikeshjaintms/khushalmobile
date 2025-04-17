@@ -1,6 +1,6 @@
 @extends('layouts.app')
-{{-- @if(Auth::guard('admin')->check()) --}}
-@section('title','Admin Panel')
+{{-- @if (Auth::guard('admin')->check()) --}}
+@section('title', 'Admin Panel')
 
 {{-- @endif --}}
 
@@ -19,7 +19,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.customer.index')}}">Customer</a>
+                        <a href="{{ route('admin.customer.index') }}">Customer</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
@@ -41,26 +41,34 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <div>
-                                                <label for="">Name<span style="color: red">*</span></label>
-                                                <input type="text" class="form-control" name="name" id="name" placeholder="Enter Customer Name" required/>
-                                            </div>
-                                            <div>
-                                                <label for="">Phone<span style="color: red">*</span></label>
-                                                <input type="text" class="form-control" name="phone" id="phone" placeholder="Enter Phone Number" required/>
-                                            </div>
-                                            <div>
-                                                <label for="">Address<span style="color: red">*</span></label>
-                                                <textarea type="text" class="form-control" name="address" id="address" placeholder="Enter your address" required></textarea>
-                                            </div>
-                                            <div>
-                                                <label for="">City<span style="color: red">*</span></label>
-                                                <input type="text" class="form-control" name="city" id="city" placeholder="Enter your city" required/>
-                                            </div>
+                                            <label for="">Name<span style="color: red">*</span></label>
+                                            <input type="text" class="form-control" name="name" id="name"
+                                                placeholder="Enter Customer Name" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">Phone<span style="color: red">*</span></label>
+                                            <input type="text" class="form-control" name="phone" id="phone"
+                                                placeholder="Enter Phone Number" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">Address<span style="color: red">*</span></label>
+                                            <textarea type="text" class="form-control" name="address" id="address" placeholder="Enter your address" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">City<span style="color: red">*</span></label>
+                                            <input type="text" class="form-control" name="city" id="city"
+                                                placeholder="Enter your city" required />
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                             <div class="card-action">
                                 <button class="btn btn-success" type="submit">Submit</button>
                                 <a href="{{ route('admin.customer.index') }}" class="btn btn-danger">Cancel</a>
@@ -80,7 +88,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             $('input[name="phone"]').mask('0000000000');
 
@@ -95,15 +103,15 @@
                         required: true,
                         minlength: 2
                     },
-                    phone:{
-                        required:true
+                    phone: {
+                        required: true
                     },
 
-                    address:{
-                        required:true
+                    address: {
+                        required: true
                     },
-                    city:{
-                        required:true
+                    city: {
+                        required: true
                     }
 
                 },
@@ -112,24 +120,24 @@
                         required: "Please enter a customer name",
                         minlength: "customer name must be at least 2 characters long"
                     },
-                    phone:{
-                        required:"Please enter phone number"
+                    phone: {
+                        required: "Please enter phone number"
                     },
-                    address:{
-                        required:"Please enter address"
+                    address: {
+                        required: "Please enter address"
                     },
-                    city:{
-                        required:"please enter city"
+                    city: {
+                        required: "please enter city"
                     }
                 },
                 errorElement: 'span',
                 errorClass: 'text-danger',
-                highlight: function (element, errorClass) {
+                highlight: function(element, errorClass) {
                     $(element).addClass("is-invalid");
 
 
                 },
-                unhighlight: function (element, errorClass) {
+                unhighlight: function(element, errorClass) {
                     $(element).removeClass("is-invalid");
                 }
             });
