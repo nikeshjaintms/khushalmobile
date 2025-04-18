@@ -77,6 +77,7 @@ class SaleController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $validatedData = $request->validate([
             'customer_id' => 'required',
             'invoice_no' => 'required',
@@ -155,6 +156,16 @@ class SaleController extends Controller
                 'invoice_id' => $sale->id,
             ]);
 
+            }
+
+            foreach($request->payment as $pay){
+
+                SaleTransaction::create([
+                    'invoice_id' => $sale->id,
+                    'payment_mode' => $pay['payment_mode'],
+                    'amount' => $pay['amount'],
+                    'reference_no' => $pay['reference_no'] ?? NULL,
+                ]);
             }
 
 
