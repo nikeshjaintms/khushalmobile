@@ -54,6 +54,9 @@
                                                     <option value="{{ $dealer->id }}">{{ $dealer->name }}</option>
                                                 @endforeach
                                             </select>
+                                            @error('dealer_id')
+                                                <div class="text-red-500">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -61,6 +64,9 @@
                                             <label for="po_no">Purchase No<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="po_no" id="po_no"
                                                 placeholder="Enter purchase no" required />
+                                            @error('po_no')
+                                                <div class="text-red-500">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -69,6 +75,9 @@
                                                     style="color: red">*</span></label>
                                             <input type="date" class="form-control" name="po_date" id="po_date"
                                                 placeholder=" " required />
+                                            @error('po_date')
+                                                <div class="text-red-500">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-12">
@@ -91,38 +100,74 @@
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td><select name="brand_id" class="form-control brand-select"
-                                                            id="brand_id[]" required>
+                                                    <td><select name="brand_id[]" class="form-control brand-select"
+                                                            id="brand_id" required>
                                                             <option value="">Select Brand</option>
                                                             @foreach ($brands as $brand)
                                                                 <option value="{{ $brand->id }}">{{ $brand->name }}
                                                                 </option>
                                                             @endforeach
-                                                        </select></td>
+                                                        </select>
+                                                        @error('brand_id[]')
+                                                            <div class="text-red-500">{{ $message }}</div>
+                                                        @enderror
+
+                                                    </td>
                                                     <td><select name="product_id[]" class="form-control product-select"
-                                                            id="product_id[]" required>
+                                                            id="product_id" required>
                                                             <option value="">Select Product</option>
-                                                        </select></td>
+                                                        </select>
+                                                        @error('product_id[]')
+                                                            <div class="text-red-500">{{ $message }}</div>
+                                                        @enderror
+                                                    </td>
                                                     <td style="width: fit-content;">
                                                         <input type="text" class="form-control imei-input" name="imei[]"
                                                             id="imei" required>
+                                                        @error('imei[]')
+                                                            <div class="text-red-500">{{ $message }}</div>
+                                                        @enderror
                                                     </td>
                                                     <td><input type="text" class="form-control" name="color[]"
-                                                            id="color" required></td>
+                                                            id="color" required>
+                                                        @error('color[]')
+                                                            <div class="text-red-500">{{ $message }}</div>
+                                                        @enderror
+                                                    </td>
                                                     <td><input type="text" class="form-control" name="price[]"
-                                                            id="price" required></td>
+                                                            id="price" required>
+                                                        @error('price[]')
+                                                            <div class="text-red-500">{{ $message }}</div>
+                                                        @enderror
+                                                    </td>
                                                     <td><input type="text" class="form-control" name="discount[]"
-                                                            id="discount" required></td>
+                                                            id="discount" required>
+                                                        @error('discount[]')
+                                                            <div class="text-red-500">{{ $message }}</div>
+                                                        @enderror
+                                                    </td>
                                                     <input type="hidden" class="form-control" readonly
                                                         name="discount_amount[]" id="discount_amount">
                                                     <td><input type="text" class="form-control" readonly
-                                                            name="price_subtotal[]" id="price_subtotal" required></td>
+                                                            name="price_subtotal[]" id="price_subtotal" required>
+                                                        @error('price_subtotal[]')
+                                                            <div class="text-red-500">{{ $message }}</div>
+                                                        @enderror
+                                                    </td>
                                                     <td><input type="text" class="form-control" name="tax[]"
-                                                            id="tax" required></td>
-                                                    <input type="hidden" class="form-control" readonly name="tax_amount[]"
-                                                        id="tax_amount" required>
+                                                            id="tax" required value="18">
+                                                        @error('tax[]')
+                                                            <div class="text-red-500">{{ $message }}</div>
+                                                        @enderror
+                                                    </td>
+                                                    <input type="hidden" class="form-control" readonly
+                                                        name="tax_amount[]" id="tax_amount" required>
                                                     <td><input type="text" class="form-control" readonly
-                                                            name="product_total[]" id="product_total" required></td>
+                                                            name="product_total[]" id="product_total" required>
+                                                        @error('product_total[]')
+                                                            <div class="text-red-500">{{ $message }}</div>
+                                                        @enderror
+                                                    </td>
                                                     <td class="gap-1    ">
                                                         <button type="button"
                                                             class="btn btn-success btn-sm add-row mb-1">+</button>
@@ -142,6 +187,9 @@
                                                     class="text-danger">*</span></label>
                                             <input type="number" readonly name="sub_total" id=""
                                                 class="form-control" required>
+                                                @error('sub_total')
+                                                <div class="text-red-500">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -152,6 +200,9 @@
                                                 <option value="cgst/sgst">CGST/SGST</option>
                                                 <option value="cgst/sgst">IGST</option>
                                             </select>
+                                            @error('tax_type')
+                                                <div class="text-red-500">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -160,6 +211,9 @@
                                                     class="text-danger">*</span></label>
                                             <input type="number" readonly name="total_tax_amount" id=""
                                                 class="form-control" required>
+                                                @error('total_tax_amount')
+                                                <div class="text-red-500">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -167,6 +221,9 @@
                                             <label for="">Total Amount<span class="text-danger">*</span></label>
                                             <input type="number" readonly name="total" id=""
                                                 class="form-control" required>
+                                                @error('total')
+                                                <div class="text-red-500">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
