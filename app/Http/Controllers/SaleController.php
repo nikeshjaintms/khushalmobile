@@ -28,7 +28,8 @@ class SaleController extends Controller
     public function getImeis($product_id)
     {
         $imeis = PurchaseProduct::where('product_id', $product_id)
-            ->where('status', null) // Optional: filter only available
+            ->where('status', null)
+            ->where('invoice_id', null) // Optional: filter only available
             ->pluck('imei', 'id'); // Assuming 'imei' is the column for IMEI number
 
         return response()->json($imeis);
@@ -112,6 +113,8 @@ class SaleController extends Controller
                 'payment_method' => $request->payment_method,
             ]);
 
+
+
             // dd($request->all());
             if ($request->payment_method == '3') {
 
@@ -145,7 +148,16 @@ class SaleController extends Controller
                     'tax_amount' => $product['tax_amount'] ?? 0,
                     'price_total' => $product['price_total'] ?? 0,
                 ]);
+
+            PurchaseProduct::where('product_id',$product['product_id'])->where('id',$product['imei_id'])
+            ->update([
+                'status' => 'sold',
+                'invoice_id' => $sale->id,
+            ]);
+
             }
+
+
             DB::commit();
 
             return redirect()->route('admin.sale.index')->with('success', 'Sale created successfully.');

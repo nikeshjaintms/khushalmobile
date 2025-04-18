@@ -81,10 +81,10 @@
                                                     <th>Color</th>
                                                     <th>Price</th>
                                                     <th>Discount</th>
-                                                    <th>Discount Amount</th>
+                                                    {{-- <th>Discount Amount</th> --}}
                                                     <th>Price SubTotal</th>
                                                     <th>Tax</th>
-                                                    <th>Tax Amount</th>
+                                                    {{-- <th>Tax Amount</th> --}}
                                                     <th>total</th>
                                                     <th>Action</th>
                                                 </tr>
@@ -104,7 +104,7 @@
                                                             <option value="">Select Product</option>
                                                         </select></td>
                                                     <td style="width: fit-content;">
-                                                        <input type="text" class="form-control" name="imei[]"
+                                                        <input type="text" class="form-control imei-input" name="imei[]"
                                                             id="imei" required>
                                                     </td>
                                                     <td><input type="text" class="form-control" name="color[]"
@@ -113,16 +113,16 @@
                                                             id="price" required></td>
                                                     <td><input type="text" class="form-control" name="discount[]"
                                                             id="discount" required></td>
-                                                    <td><input type="text" class="form-control" readonly name="discount_amount[]"
-                                                            id="discount_amount" required></td>
-                                                    <td><input type="text" class="form-control" readonly name="price_subtotal[]"
-                                                            id="price_subtotal" required></td>
+                                                    <input type="hidden" class="form-control" readonly
+                                                        name="discount_amount[]" id="discount_amount">
+                                                    <td><input type="text" class="form-control" readonly
+                                                            name="price_subtotal[]" id="price_subtotal" required></td>
                                                     <td><input type="text" class="form-control" name="tax[]"
                                                             id="tax" required></td>
-                                                    <td><input type="text" class="form-control" readonly name="tax_amount[]"
-                                                            id="tax_amount" required></td>
-                                                    <td><input type="text" class="form-control" readonly name="product_total[]"
-                                                            id="product_total" required></td>
+                                                    <input type="hidden" class="form-control" readonly name="tax_amount[]"
+                                                        id="tax_amount" required>
+                                                    <td><input type="text" class="form-control" readonly
+                                                            name="product_total[]" id="product_total" required></td>
                                                     <td class="gap-1    ">
                                                         <button type="button"
                                                             class="btn btn-success btn-sm add-row mb-1">+</button>
@@ -283,9 +283,8 @@
                 let $dupRow = $row.clone();
 
                 // Preserve values
-                $dupRow.find('input').each(function() {
-                    $(this).val($(this).val());
-                });
+
+                $dupRow.find('input').val('');
 
                 let selectedBrand = $row.find('.brand-select').val();
                 let selectedProduct = $row.find('.product-select').val();
@@ -397,6 +396,29 @@
                     $productSelect.html('<option value="">Select Product</option>');
                 }
             });
+            $.validator.addMethod("uniqueIMEI", function(value, element) {
+                // Get all IMEI inputs
+                var allIMEIs = $("input[name='imei[]']");
+                var currentValue = $(element).val();
+                var firstIndex = -1;
+                var currentIndex = -1;
+
+                allIMEIs.each(function(index) {
+                    if ($(this).val() === currentValue) {
+                        if (firstIndex === -1) {
+                            firstIndex = index;
+                        }
+                        if (this === element) {
+                            currentIndex = index;
+                        }
+                    }
+                });
+
+                // If this field is the first one with this value → valid
+                // If this is a duplicate (appears after the first) → invalid
+                return currentIndex === firstIndex;
+            }, "IMEI must be unique.");
+
 
             // Form validation
             $("#purchaseForm").validate({
@@ -443,7 +465,8 @@
                     "imei[]": {
                         required: true,
                         minlength: 15,
-                        maxlength: 15
+                        maxlength: 15,
+                        uniqueIMEI: true
                     },
                     "discount[]": {
                         required: true,

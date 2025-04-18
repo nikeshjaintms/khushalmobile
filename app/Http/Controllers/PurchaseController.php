@@ -8,6 +8,7 @@ use App\Models\PurchaseProduct;
 use App\Models\Product;
 use App\Models\Brand;
 use Illuminate\Http\Request;
+use DB;
 use Illuminate\Support\Facades\Session;
 
 class PurchaseController extends Controller
@@ -40,67 +41,79 @@ class PurchaseController extends Controller
      */
     public function store(Request $request)
     {
-        $add = new Purchase();
-        $add->dealer_id = $request->post('dealer_id');
-        $add->po_no = $request->post('po_no');
-        $add->po_date = $request->post('po_date');
-        $add->sub_total = $request->post('sub_total');
-        $add->tax_type = $request->post('tax_type');
-        $add->total_tax_amount = $request->post('total_tax_amount');
-        $add->total = $request->post('total');
-        $add->save();
+        DB::beginTransaction();
 
-        $prices = $request->post('price');
-        $colors = $request->post('color'); // <-- Add this line
-        $imeis = $request->post('imei');
-        $discounts = $request->post('discount');
-        $discountAmounts = $request->post('discount_amount');
-        $subtotals = $request->post('price_subtotal');
-        $taxes = $request->post('tax');
-        $taxAmounts = $request->post('tax_amount');
-        $totals = $request->post('product_total');
+        try {
 
-        // Optional: If you also get product_id or name
-        $product_ids = $request->post('product_id'); // if available
+            $add = new Purchase();
+            $add->dealer_id = $request->post('dealer_id');
+            $add->po_no = $request->post('po_no');
+            $add->po_date = $request->post('po_date');
+            $add->sub_total = $request->post('sub_total');
+            $add->tax_type = $request->post('tax_type');
+            $add->total_tax_amount = $request->post('total_tax_amount');
+            $add->total = $request->post('total');
+            $add->save();
 
-        if ($prices && is_array($prices)) {
-            foreach ($prices as $index => $price) {
-                $product = new PurchaseProduct();
-                $product->purchase_id = $add->id;
-                $product->product_id = $product_ids[$index] ?? null;
-                $product->color = $colors[$index] ?? null;
-                $product->imei = $imeis[$index] ?? null;
-                $product->price = $price;
-                $product->discount = $discounts[$index] ?? 0;
-                $product->discount_amount = $discountAmounts[$index] ?? 0;
-                $product->price_subtotal = $subtotals[$index] ?? 0;
-                $product->tax = $taxes[$index] ?? 0;
-                $product->tax_amount = $taxAmounts[$index] ?? 0;
-                $product->product_total = $totals[$index] ?? 0;
-                $product->save();
+            $prices = $request->post('price');
+            $colors = $request->post('color'); // <-- Add this line
+            $imeis = $request->post('imei');
+            $discounts = $request->post('discount');
+            $discountAmounts = $request->post('discount_amount');
+            $subtotals = $request->post('price_subtotal');
+            $taxes = $request->post('tax');
+            $taxAmounts = $request->post('tax_amount');
+            $totals = $request->post('product_total');
+
+            // Optional: If you also get product_id or name
+            $product_ids = $request->post('product_id'); // if available
+
+            if ($prices && is_array($prices)) {
+                foreach ($prices as $index => $price) {
+                    $product = new PurchaseProduct();
+                    $product->purchase_id = $add->id;
+                    $product->product_id = $product_ids[$index] ?? null;
+                    $product->color = $colors[$index] ?? null;
+                    $product->imei = $imeis[$index] ?? null;
+                    $product->price = $price;
+                    $product->discount = $discounts[$index] ?? 0;
+                    $product->discount_amount = $discountAmounts[$index] ?? 0;
+                    $product->price_subtotal = $subtotals[$index] ?? 0;
+                    $product->tax = $taxes[$index] ?? 0;
+                    $product->tax_amount = $taxAmounts[$index] ?? 0;
+                    $product->product_total = $totals[$index] ?? 0;
+                    $product->save();
+                }
             }
+            DB::commit();
+            Session::flash('success', "Purchase Order saved! ");
+
+            return redirect()->route('admin.purchase.index');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Optionally log the error for debugging
+            dd("Error saving purchase: " . $e->getMessage());
+
+            Session::flash('error', "Something went wrong while saving the purchase order.");
+            return redirect()->back()->withInput();
         }
-
-        Session::flash('success', "Purchase Order saved! ");
-
-        return redirect()->route('admin.purchase.index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Purchase $purchase,$id)
+    public function show(Purchase $purchase, $id)
     {
         $purchases = Purchase::leftjoin('dealers', 'purchases.dealer_id', '=', 'dealers.id')
-        ->select("purchases.*", 'dealers.name')
-        ->find($id);
+            ->select("purchases.*", 'dealers.name')
+            ->find($id);
 
         $purchase_products = PurchaseProduct::join('products', 'purchase_product.product_id', '=', 'products.id')
-        ->join('brands', 'products.brand_id', '=', 'brands.id')
-        ->select('purchase_product.*', 'products.product_name', 'brands.name as brand')
-        ->where('purchase_id', $id)->get();
+            ->join('brands', 'products.brand_id', '=', 'brands.id')
+            ->select('purchase_product.*', 'products.product_name', 'brands.name as brand')
+            ->where('purchase_id', $id)->get();
 
-        
+
         return view('purchase_products.show', compact('purchases', 'purchase_products'));
     }
 
@@ -118,7 +131,7 @@ class PurchaseController extends Controller
         $dealers = Dealer::get();
         $brands = Brand::get();
         $products = Product::get();
-        return view('purchase_products.edit', compact('products','purchase', 'purchase_products', 'dealers', 'brands'));
+        return view('purchase_products.edit', compact('products', 'purchase', 'purchase_products', 'dealers', 'brands'));
 
         //
     }

@@ -75,9 +75,11 @@
                                                 <td>{{ $item->id }}</td>
                                                 <td>{{ $item->customer->name }}</td>
                                                 <td>{{ $item->invoice_no }}</td>
-                                                @foreach ($item->saleProducts as $product)
-                                                    <td>{{ $product->product->product_name ?? '-' }}</td>
+                                                <td>
+                                                @foreach ($item->saleProducts as $index =>  $product)
+                                                   {{ $product->product->product_name ?? '-' }}@if (!$loop->last), @else.@endif
                                                 @endforeach
+                                            </td>
                                                 <td>{{ $product->purchaseProduct->imei ?? '-' }}</td>
                                                 <td>{{ $item->total_amount }}</td>
                                                 <td>
