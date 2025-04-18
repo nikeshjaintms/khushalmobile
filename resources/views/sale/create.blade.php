@@ -305,6 +305,7 @@
                                     </div>
 
                                     <div class="col-md-12">
+                                        <h4>Payment</h4>
                                         <table class="display table table-striped table-hover">
                                             <thead>
                                                 <tr>
@@ -816,14 +817,9 @@
                 var selected = $(this).val();
 
 
-                if (selected == '1') { // 1 = online
-                    $('#online_detail').show();
-                } else {
-                    $('#online_detail').hide();
-                    $('#online_detail').find('input, select').val('');
-                }
 
-                if (selected == '3') { // 3 = Finance
+
+                if (selected == '2') { // 3 = Finance
                     $('#finance_detail').show();
                 } else {
                     $('#finance_detail').hide();
