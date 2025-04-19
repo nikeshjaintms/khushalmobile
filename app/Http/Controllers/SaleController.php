@@ -161,13 +161,12 @@ class SaleController extends Controller
 
             foreach($request->payment as $pay){
 
-                Transction::create([
+                SaleTransaction::create([
                     'invoice_id' => $sale->id,
                     'payment_mode' => $pay['payment_mode'],
                     'type' => 'in',
                     'amount' => $pay['amount'],
                     'reference_no' => $pay['reference_no'] ?? NULL,
-                    'remark' => $pay['remark'] ?? NULL,
                 ]);
             }
 
