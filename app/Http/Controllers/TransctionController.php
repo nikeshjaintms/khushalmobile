@@ -30,12 +30,19 @@ class TransctionController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'amount' => 'required',
-            'type' => 'required',
-            'remark' => 'string',
+        // dd($request->all());
+        // $request->validate([
+        //     'payement_mode' => 'required',
+        //     'amount' => 'required',
+        //     'type' => 'required',
+        // ]);
+        Transction::create([
+            'payement_mode' => $request->payement_mode,
+            'amount' => $request->amount,
+            'type' => $request->type,
+            'remark' => $request->remark ?? NULL,
+            'reference_no' => $request->reference_no ?? NULL,
         ]);
-        Transction::create($request->all());
         Session::flash('success','Transaction created successfully');
         return redirect()->route('admin.transaction.index')->with('success','Transaction created successfully');
     }

@@ -100,9 +100,9 @@
                                                     <th scope="col">Brand</th>
                                                     <th scope="col">Product</th>
                                                     <th scope="col">IMI No</th>
-                                                    <th scope="col">Price</th>
+                                                    {{-- <th scope="col">Price</th> --}}
                                                     <th scope="col">Discount</th>
-                                                    <th scope="col">Discount Amount</th>
+                                                    {{-- <th scope="col">Discount Amount</th> --}}
                                                     <th scope="col">Price Sub Total</th>
                                                     <th scope="col">Tax</th>
                                                     <th scope="col">Tax Amount</th>
@@ -158,34 +158,34 @@
                                                         {{-- @error('imiNo') <p style="color: red;">{{ $message }}</p> @enderror --}}
                                                     </td>
 
-                                                    <td>
-                                                        <input type="text" class="form-control price-select price"
-                                                            name="products[0][price]" id="price" readonly required />
-                                                        @error('price')
-                                                            <p style="color: red;">{{ $message }}</p>
-                                                        @enderror
-                                                    </td>
+
+                                                    <input type="hidden" class="form-control price-select price"
+                                                        name="products[0][price]" id="price" required />
+                                                    @error('price')
+                                                        <p style="color: red;">{{ $message }}</p>
+                                                    @enderror
 
                                                     <td>
                                                         <input type="text" class="form-control discount"
-                                                            name="products[0][discount]" id="discount" required />
+                                                            name="products[0][discount]" value="0" id="discount"
+                                                            required />
                                                         @error('discount')
                                                             <p style="color: red;">{{ $message }}</p>
                                                         @enderror
                                                     </td>
 
-                                                    <td>
-                                                        <input type="text"
-                                                            class="form-control discountAmount discount_amount"
-                                                            name="products[0][discount_amount]" id="discountAmount"
-                                                            readonly required />
-                                                        @error('discount_amount')
-                                                            <p style="color: red;">{{ $message }}</p>
-                                                        @enderror
-                                                    </td>
+
+                                                    <input type="hidden"
+                                                        class="form-control discountAmount discount_amount"
+                                                        name="products[0][discount_amount]" id="discountAmount" readonly
+                                                        required />
+                                                    @error('discount_amount')
+                                                        <p style="color: red;">{{ $message }}</p>
+                                                    @enderror
+
 
                                                     <td>
-                                                        <input type="text" class="form-control priceSubTotal"
+                                                        <input type="text" class="form-control priceSubTotal" readonly
                                                             id="priceSubTotal" name="products[0][price_subtotal]"
                                                             required />
                                                         @error('price_subtotal')
@@ -195,7 +195,7 @@
 
                                                     <td>
                                                         <input type="text" class="form-control tax" id="tax"
-                                                            name="products[0][tax]" required />
+                                                            name="products[0][tax]" value="18" required />
                                                         @error('tax')
                                                             <p style="color: red;">{{ $message }}</p>
                                                         @enderror
@@ -253,8 +253,7 @@
                                             <label for="">Tax Type<span style="color: red">*</span></label>
                                             <select class="form-control form-select taxType" name="tax_type"
                                                 aria-label="Default select example" required>
-                                                <option selected> Select Tax Type</option>
-                                                <option value="1"> CGST/SGST</option>
+                                                <option selected value="1"> CGST/SGST</option>
                                                 <option value="2"> IGST</option>
                                             </select>
 
@@ -312,6 +311,7 @@
                                                     <th>Mode</th>
                                                     <th>Amount</th>
                                                     <th>Reference</th>
+                                                    <th>Remark</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -329,6 +329,8 @@
                                                             class="form-control"></td>
                                                     <td><input type="text" name="payment[0][reference_no]"
                                                             id="reference_no" class="form-control"></td>
+                                                    <td><input type="text" name="payment[0][remark]"
+                                                            id="remark" class="form-control"></td>
                                                     <td>
                                                         <button type="button"
                                                             class="btn btn-success add-payment-row">+</button>
@@ -527,26 +529,31 @@
                 document.querySelector('#add-table-row').appendChild(row);
 
 
-
                 function handleInput() {
-                    const price = parseFloat(priceInput.value) || 0;
-                    const discount = parseFloat(discountInput.value) || 0;
-                    const tax = parseFloat(taxInput.value) || 0;
+                    const totalAmount = parseFloat(totalAmountInput.value) || 0; // Get the total amount
+                    const discount = parseFloat(discountInput.value) || 0; // Get the discount
+                    const tax = parseFloat(taxInput.value) || 0; // Get the tax percentage
 
-                    const discountAmount = (price * discount) / 100;
-                    const priceSubTotal = price - discountAmount;
-                    const taxAmount = (price * tax) / 100;
-                    const totalAmount = priceSubTotal + taxAmount;
+                    // Step 1: Calculate the price before tax (subtotal)
+                    const priceSubTotal = totalAmount / (1 + (tax / 100));
 
+                    // Step 2: Calculate the tax amount
+                    const taxAmount = totalAmount - priceSubTotal;
+
+                    // Step 3: Calculate the discount amount based on the price before tax
+                    const discountAmount = (priceSubTotal * discount) / 100;
+
+                    // Step 4: Update the fields with the new calculated values
                     row.querySelector('.discountAmount').value = discountAmount.toFixed(2);
                     row.querySelector('.taxAmount').value = taxAmount.toFixed(2);
-                    row.querySelector('.totalAmount').value = totalAmount.toFixed(2);
                     row.querySelector('.priceSubTotal').value = priceSubTotal.toFixed(2);
+                    row.querySelector('.totalAmount').value = totalAmount.toFixed(
+                        2); // Total amount remains the same
 
+                    // Update grand totals
                     updateGrandTotal();
                     updateTotalTaxAmount();
                     updateTotalAmount();
-
                 }
 
                 priceInput.addEventListener('input', handleInput);
@@ -634,19 +641,32 @@
         }
 
         function updateRowCalculations(row) {
-            const price = parseFloat(row.querySelector('.price').value) || 0;
+            const totalAmount = parseFloat(row.querySelector('.totalAmount').value) || 0;
             const discount = parseFloat(row.querySelector('.discount').value) || 0;
             const tax = parseFloat(row.querySelector('.tax').value) || 0;
 
-            const discountAmount = (price * discount) / 100;
-            const taxAmount = (price * tax) / 100;
-            const priceSubTotal = price - discountAmount;
-            const totalAmount = priceSubTotal + taxAmount;
+            if (totalAmount <= 0) {
+                return;
+            }
 
+
+            // Step 1: Calculate the price before tax (subtotal)
+            const priceSubTotal = totalAmount / (1 + (tax / 100));
+
+            // Step 2: Calculate the tax amount
+            const taxAmount = totalAmount - priceSubTotal;
+
+            // Step 3: Calculate the discount amount based on the price before tax
+            const discountAmount = (priceSubTotal * discount) / 100;
+
+            // Step 4: Recalculate total amount to verify if it matches the given total
+            const recalculatedTotalAmount = priceSubTotal - discountAmount + taxAmount;
+
+            // Update the row with calculated values
             row.querySelector('.discountAmount').value = discountAmount.toFixed(2);
             row.querySelector('.taxAmount').value = taxAmount.toFixed(2);
             row.querySelector('.priceSubTotal').value = priceSubTotal.toFixed(2);
-            row.querySelector('.totalAmount').value = totalAmount.toFixed(2);
+            row.querySelector('.totalAmount').value = recalculatedTotalAmount.toFixed(2);
         }
 
         function updateGrandTotal() {
@@ -687,6 +707,8 @@
                 FinalTotalAmountInput.value = FinalTotalAmount.toFixed(2);
             }
         }
+
+
 
         function SetFinanceAmount() {
             var DownPayment = $("#DownPayment").val();
@@ -734,8 +756,8 @@
         }
 
         // Attach event listeners
-        document.querySelectorAll('.price, .discount, .tax').forEach(input => {
-            input.addEventListener('input', function() {
+        document.querySelectorAll('.totalAmount, .discount, .tax').forEach(input => {
+            input.addEventListener('change', function() {
                 const row = this.closest('tr');
                 updateRowCalculations(row);
                 updateGrandTotal();
@@ -765,6 +787,8 @@
                     type: 'GET',
                     success: function(data) {
                         $row.find('.price').val(data.mrp);
+                        $row.find('.priceSubTotal').val(data.mrp);
+                        $row.find('.totalAmount').val(data.mrp);
                         console.log(data.mrp);
                     }
                 });

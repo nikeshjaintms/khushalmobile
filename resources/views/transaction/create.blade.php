@@ -41,9 +41,27 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
+                                            <label for="type">Payment Mode <span style="color: red">*</span></label>
+                                            <select name="payment_mode" id="payment_mode" class="form-control" required>
+                                                <option value=""> Select Mode</option>
+                                                <option value="1">Cash</option>
+                                                <option value="2">Online</option>
+                                                <option value="3">Finance</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
                                             <label for="amount">Amount<span style="color: red">*</span></label>
                                             <input type="number" class="form-control" name="amount" id="amount"
                                                 placeholder="Enter Amount Name" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="remark">Reference no <span style="color: red">*</span></label>
+                                            <input type="text" class="form-control" name="reference_no" id="reference_no"
+                                                placeholder="Enter Reference no" />
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -89,6 +107,13 @@
                 },
                 onkeyup: false,
                 rules: {
+                    payment_mode:{
+                        required: true,
+                    },
+                    reference_no:{
+                        minlength: 5,
+
+                    },
                     amount: {
                         required: true,
                         number: true,
@@ -102,6 +127,12 @@
                     }
                 },
                 messages: {
+                    payment_mode:{
+                        required: "Please select a Payment Mode",
+                    },
+                    reference_no:{
+                        minlength: "Please enter at least 5 characters",
+                    },
                     amount: {
                         required: "Please enter a Amount",
                         number: "Please enter a valid number",

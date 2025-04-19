@@ -10,6 +10,6 @@ class Transction extends Model
 {
     protected $table = 'transactions';
     protected $primaryKey = 'id';
-    protected $fillable = ['amount','type','remark'];
+    protected $fillable = ['invoice_id','payment_mode','reference_no','amount','type','remark'];
     use HasFactory, SoftDeletes;
 }

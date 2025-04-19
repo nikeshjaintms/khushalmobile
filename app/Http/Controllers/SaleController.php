@@ -10,6 +10,7 @@ use App\Models\PurchaseProduct;
 use App\Models\Sale;
 use App\Models\SaleProduct;
 use App\Models\SaleTransaction;
+use App\Models\Transction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -160,11 +161,13 @@ class SaleController extends Controller
 
             foreach($request->payment as $pay){
 
-                SaleTransaction::create([
+                Transction::create([
                     'invoice_id' => $sale->id,
                     'payment_mode' => $pay['payment_mode'],
+                    'type' => 'in',
                     'amount' => $pay['amount'],
                     'reference_no' => $pay['reference_no'] ?? NULL,
+                    'remark' => $pay['remark'] ?? NULL,
                 ]);
             }
 
