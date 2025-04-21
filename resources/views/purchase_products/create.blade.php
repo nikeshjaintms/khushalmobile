@@ -91,7 +91,7 @@
                                                     <th>Price</th>
                                                     <th>Discount</th>
                                                     {{-- <th>Discount Amount</th> --}}
-                                                    <th>Price SubTotal</th>
+                                                    <th> SubTotal</th>
                                                     <th>Tax</th>
                                                     {{-- <th>Tax Amount</th> --}}
                                                     <th>total</th>

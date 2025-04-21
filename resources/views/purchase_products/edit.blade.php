@@ -78,24 +78,28 @@
                                         <table id="product-table" class="display table table-striped table-hover">
                                             <thead>
                                                 <tr>
+                                                    <th>Sr No </th>
                                                     <th>Brand</th>
                                                     <th>Product</th>
                                                     <th>IMEI</th>
                                                     <th>Color</th>
                                                     <th>Price</th>
                                                     <th>Discount</th>
-                                                    <th>Discount Amount</th>
-                                                    <th>Price SubTotal</th>
+                                                    {{-- <th>Discount Amount</th> --}}
+                                                    <th>SubTotal</th>
                                                     <th>Tax</th>
-                                                    <th>Tax Amount</th>
+                                                    {{-- <th>Tax Amount</th> --}}
                                                     <th>total</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                @php
+                                                $i = 1;
+                                                @endphp
                                                 @foreach($purchase_products as $pp)
                                                 <tr>
-                                                    <input type="hidden" name="ids" value="{{ $pp->id }}">
+                                                    <td><input type="hidden" name="purchase_product_id[]" value="{{ $pp->id }}"> <center>{{ $i++ }}</center></td>
                                                     <td><select name="brand_id" class="form-control brand-select"
                                                             id="brand_id[]" required>
                                                             <option value="">Select Brand</option>
@@ -124,14 +128,14 @@
                                                             id="price" value="{{  $pp->price }}" required></td>
                                                     <td><input type="text" value="{{  $pp->discount }}" class="form-control" name="discount[]"
                                                             id="discount" required></td>
-                                                    <td><input type="text"  value="{{  $pp->discount_amount }}"  readonly class="form-control" name="discount_amount[]"
-                                                            id="discount_amount" required></td>
+                                                   <input type="hidden"  value="{{  $pp->discount_amount }}"   class="form-control" name="discount_amount[]"
+                                                            id="discount_amount" >
                                                     <td><input type="text" class="form-control" readonly name="price_subtotal[]"
                                                             id="price_subtotal" value="{{  $pp->price_subtotal }}" required></td>
                                                     <td><input type="text" class="form-control" name="tax[]"
                                                             id="tax" value="{{  $pp->tax }}" required></td>
-                                                    <td><input type="text" class="form-control" name="tax_amount[]"
-                                                            id="tax_amount" value="{{  $pp->tax_amount }}" readonly required></td>
+                                                    <input type="hidden" class="form-control" name="tax_amount[]"
+                                                            id="tax_amount" value="{{  $pp->tax_amount }}" >
                                                     <td><input type="text" value="{{  $pp->product_total }}" readonly class="form-control" name="product_total[]"
                                                             id="product_total" required></td>
                                                     <td class="gap-1    ">
