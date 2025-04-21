@@ -118,10 +118,10 @@ class SaleController extends Controller
 
 
             // dd($request->all());
-            if ($request->payment_method == '3') {
+            if ($request->payment_method == '2') {
 
                 $finance = Finance::create([
-                    'invoice_no' => $request->invoice_no,
+                    'invoice_id' => $sale->id,
                     'product_id' => $request->products[0]['product_id'],
                     'customer_id' => $request->customer_id,
                     'price' => $request->sub_total,

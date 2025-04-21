@@ -11,7 +11,7 @@ class Finance extends Model
     use HasFactory, softDeletes;
 
     protected $fillable = [
-        'invoice_no',
+        'invoice_id',
         'product_id',
         'customer_id',
         'price',
@@ -27,6 +27,17 @@ class Finance extends Model
         'finance_year',
         'status'
     ];
+
+
+    public function customers(){
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
+    public function invoices(){
+        return $this->belongsTo(Sale::class, 'invoice_id');
+    }
+
+
 
 
 }

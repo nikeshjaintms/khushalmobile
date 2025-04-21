@@ -7,6 +7,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\TransctionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DailyNoteController;
+use App\Http\Controllers\DeductionController;
 use App\Http\Controllers\SaleController;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
@@ -125,6 +126,17 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('edit/{id}', 'edit')->name('admin.daily-notes.edit');
         Route::put('update/{id}', 'update')->name('admin.daily-notes.update');
         Route::delete('delete/{id}', 'destroy')->name('admin.daily-notes.delete');
+    });
+
+    Route::prefix('deduction')->controller(DeductionController::class)->group(function (){
+        Route::get('/', 'index')->name('admin.deduction.index');
+        Route::get('create', 'create')->name('admin.deduction.create');
+        Route::post('store', 'store')->name('admin.deduction.store');
+        Route::get('edit/{id}', 'edit')->name('admin.deduction.edit');
+        Route::put('update/{id}', 'update')->name('admin.deduction.update');
+        Route::delete('delete/{id}', 'destroy')->name('admin.deduction.delete');
+        Route::post('finance-details','getFinanceDetails')->name('admin.customer.finance.details');
+
     });
 
 });
