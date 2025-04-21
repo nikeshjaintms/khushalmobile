@@ -17,6 +17,7 @@ class Finance extends Model
         'price',
         'downpayment',
         'processing_fee',
+        'mobile_security_charges',
         'emi_charger',
         'finance_amount',
         'month_duration',

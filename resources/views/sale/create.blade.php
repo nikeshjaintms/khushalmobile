@@ -294,7 +294,7 @@
                                             <select class="form-select paymentMethod" aria-label="Default select example"
                                                 name="payment_method">
                                                 <option selected> Select Payment Method</option>
-                                                <option value="1">Online</option>
+                                                <option value="1">Online/Cash</option>
                                                 <option value="2">Finance</option>
                                             </select>
                                             @error('payment_method')
@@ -366,6 +366,14 @@
                                                 <label> Processing Fee </label>
                                                 <input type="text" name="Processing" id="Processing"
                                                     class="form-control required" placeholder="--Processing Fee--"
+                                                    onkeyup="SetFinanceAmount()" ;>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label> Security / Insurance Charge </label>
+                                                <input type="text" name="mobile_security_charges" id="mobile_security_charges"
+                                                    class="form-control required" placeholder="--Security/Insurance Charge--"
                                                     onkeyup="SetFinanceAmount()" ;>
                                             </div>
                                         </div>
@@ -716,7 +724,8 @@
             var EMICharge = $("#EMICharge").val();
             var Price = $("#total_amount").val();
             var MonthDuration = $("#MonthDuration").val();
-            total = (parseInt(Price) + parseInt(Processing)) - DownPayment;
+            var SecurityDeposit = $("#mobile_security_charges").val();
+            total = (parseInt(Price) + parseInt(Processing) + parseInt(SecurityDeposit)) - DownPayment;
 
             $("#FinanceAmount").val(total);
             $("#MonthDuration").val("");
@@ -740,13 +749,15 @@
             var Price = $("#total_amount").val();
             var Processing = $("#Processing").val();
             var DownPayment = $("#DownPayment").val();
+            var SecurityDeposit = $("#mobile_security_charges").val();
+
             if (EMICharge == "") {
                 EMICharge = '0';
             } else {
                 EMICharge = EMICharge;
             }
             var ChargeTotal = parseInt(EMICharge) * parseInt(MonthDuration);
-            Financetotal = (parseInt(Price) + parseInt(Processing)) - DownPayment;
+            Financetotal = (parseInt(Price) + parseInt(Processing) + parseInt(SecurityDeposit)) - DownPayment;
             AmountTotal = parseInt(Financetotal) + parseInt(ChargeTotal);
 
             $("#FinanceAmount").val(Math.round(AmountTotal));

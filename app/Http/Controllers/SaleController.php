@@ -127,6 +127,7 @@ class SaleController extends Controller
                     'price' => $request->sub_total,
                     'downpayment' => $request->DownPayment,
                     'processing_fee' => $request->Processing,
+                    'mobile_security_charges' =>$request->mobile_security_charges,
                     'emi_charger' => $request->EMICharge,
                     'finance_amount' => is_numeric($request->FinanceAmount) ? $request->FinanceAmount : 0,
                     'month_duration' => is_numeric($request->MonthDuration) ? $request->MonthDuration : 0,

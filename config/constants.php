@@ -5,15 +5,13 @@ return [
         'sales' => [
             'payment_method' => [
                 'name' => [
-                    '1' => 'Online',
-                    '2' => 'Cash',
-                    '3' => 'Finance',
+                    '1' => 'Online/Cash',
+                    '2' => 'Finance',
 
                 ],
                 'code' => [
-                    'Online' => '1',
-                    'Cash' => '2',
-                    'Finance' => '3',
+                    'Online/Cash' => '1',
+                    'Finance' => '2',
 
                 ]
                 ],
