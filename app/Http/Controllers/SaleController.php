@@ -186,11 +186,15 @@ class SaleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Sale $sales)
+    public function show(Sale $sales, $id)
     {
-        //
-    }
+        $sale = Sale::with(['customer','saleProducts', 'saleProducts.product.brand', 'saleProducts.product', 'saleProducts.purchaseProduct'])->where('id', $id)->first();
+        $refernce = SaleTransaction::where('invoice_id', $id)->first();
+        $selectedRefer = $refernce->reference_no ?? null;
+        $finance= Finance::where('customer_id', $sale->customer_id)->first();
 
+        return view('sale.show', compact('sale','selectedRefer','refernce','finance'));
+    }
     /**
      * Show the form for editing the specified resource.
      */

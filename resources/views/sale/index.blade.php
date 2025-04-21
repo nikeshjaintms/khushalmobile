@@ -88,10 +88,10 @@
                                                             <i class="fa fa-file-pdf"></i>
                                                         </i>
                                                     </a>
-                                                    {{-- <a href="{{ route('admin.sale.edit', $item->id) }}"
+                                                    <a href="{{ route('admin.sale.show', $item->id) }}"
                                                         class="btn btn-lg btn-link btn-primary">
-                                                        <i class="fa fa-edit"></i>
-                                                    </a> --}}
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
                                                     <button onclick="deletesale_info({{ $item->id }})"
                                                         class="btn btn-link btn-danger">
                                                         <i class="fa fa-trash"></i>
