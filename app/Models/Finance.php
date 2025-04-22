@@ -14,6 +14,7 @@ class Finance extends Model
         'invoice_id',
         'product_id',
         'customer_id',
+        'finances_master_id',
         'price',
         'downpayment',
         'processing_fee',
@@ -27,7 +28,10 @@ class Finance extends Model
         'finance_year',
         'status'
     ];
-
+    public function FinanceMaster()
+    {
+        return $this->hasMany(financeMaster::class, 'finances_master_id');
+    }
 
     public function customers(){
         return $this->belongsTo(Customer::class, 'customer_id');

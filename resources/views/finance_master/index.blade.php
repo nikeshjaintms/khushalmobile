@@ -25,7 +25,7 @@
     <div class="container">
         <div class="page-inner">
             <div class="page-header">
-                <h3 class="fw-bold mb-3">Customer</h3>
+                <h3 class="fw-bold mb-3">Finance Master</h3>
                 <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
                         <a href="{{ route('dashboard') }}">
@@ -36,13 +36,13 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.customer.index')}}">Customer</a>
+                        <a href="{{ route('admin.financeMaster.index')}}">Finance Master</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="#">Customers</a>
+                        <a href="#">Finance Masters</a>
                     </li>
                 </ul>
             </div>
@@ -50,8 +50,8 @@
                 <div class="col-md-12">
                   <div class="card">
                     <div class="card-header">
-                        <a href="{{ route('admin.customer.create') }}" class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i> Customer</a>
-                        <h4 class="card-title">Customer</h4>
+                        <a href="{{ route('admin.financeMaster.create') }}" class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i> Finance Master</a>
+                        <h4 class="card-title">Finance Master</h4>
                     </div>
                     <div class="card-body">
                       <div class="table-responsive">
@@ -60,23 +60,18 @@
                             <tr>
                               <th>Id</th>
                               <th>Name</th>
-                                <th>Phone</th>
-                                <th>Alternate Phone</th>
-                                <th>City</th>
                                <th>Action</th>
 
                             </tr>
                           </thead>
                           <tbody>
-                            @forelse($customers as $item)
+                            @forelse($financeMasters as $item)
                             <tr>
                               <td>{{$item->id }}</td>
                               <td>{{$item->name }}</td>
-                                <td>{{$item->phone }}</td>
-                                <td>{{$item->alternate_phone }}</td>
-                                <td>{{$item->city }}</td>
+
                               <td>
-                                <a href="{{ route('admin.customer.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">
+                                <a href="{{ route('admin.financeMaster.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">
                                   <i class="fa fa-edit">
                                 </i></a>
                                 <button  onclick="deletecustomer_info({{ $item->id }})" class="btn btn-link btn-danger">
@@ -103,7 +98,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     function deletecustomer_info(id) {
-        var url = '{{ route("admin.customer.delete", "id") }}'.replace("id", id);
+        var url = '{{ route("admin.financeMaster.delete", "id") }}'.replace("id", id);
 
         Swal.fire({
             title: 'Are you sure?',
@@ -131,7 +126,7 @@
                         if (response.status == 'success') {
                             Swal.fire(
                                 'Deleted!',
-                                'Customer has been deleted.',
+                                'Finance Master has been deleted.',
                                 'success'
                             ).then(() => {
                                 window.location.reload();
@@ -139,7 +134,7 @@
                         } else {
                             Swal.fire(
                                 'Failed!',
-                                'Failed to delete Customer.',
+                                'Failed to delete Finance Master.',
                                 'error'
                             );
                         }

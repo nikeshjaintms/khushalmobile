@@ -8,7 +8,7 @@
     <div class="container">
         <div class="page-inner">
             <div class="page-header">
-                <h3 class="fw-bold mb-3">Customer</h3>
+                <h3 class="fw-bold mb-3">Finance Master</h3>
                 <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
                         <a href="{{ route('dashboard') }}">
@@ -19,13 +19,13 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.customer.index') }}">Customer</a>
+                        <a href="{{ route('admin.financeMaster.index') }}">Finance Master</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="#">Add Customer</a>
+                        <a href="#">Add Finance Master</a>
                     </li>
                 </ul>
             </div>
@@ -33,9 +33,9 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">Add Customer</div>
+                            <div class="card-title">Add Finance Master</div>
                         </div>
-                        <form method="POST" action="{{ route('admin.customer.store') }}" id="customerForm">
+                        <form method="POST" action="{{ route('admin.financeMaster.store') }}" id="customerForm">
                             @csrf
                             <div class="card-body">
                                 <div class="row">
@@ -43,28 +43,7 @@
                                         <div class="form-group">
                                             <label for="">Name<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="name" id="name"
-                                                placeholder="Enter Customer Name" required />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="">Phone<span style="color: red">*</span></label>
-                                            <input type="text" class="form-control" name="phone" id="phone"
-                                                placeholder="Enter Phone Number" required />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="">Alternate Phone</label>
-                                            <input type="text" class="form-control" name="alternate_phone" id="alternate_phone"
-                                                   placeholder="Enter Alternate Phone Number"  />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="">City<span style="color: red">*</span></label>
-                                            <input type="text" class="form-control" name="city" id="city"
-                                                placeholder="Enter your city" required />
+                                                placeholder="Enter  Name" required />
                                         </div>
                                     </div>
                                 </div>
@@ -72,7 +51,7 @@
 
                             <div class="card-action">
                                 <button class="btn btn-success" type="submit">Submit</button>
-                                <a href="{{ route('admin.customer.index') }}" class="btn btn-danger">Cancel</a>
+                                <a href="{{ route('admin.financeMaster.index') }}" class="btn btn-danger">Cancel</a>
                             </div>
                         </form>
                     </div>
@@ -104,25 +83,14 @@
                         required: true,
                         minlength: 2
                     },
-                    phone: {
-                        required: true
-                    },
-                    city: {
-                        required: true
-                    }
 
                 },
                 messages: {
                     name: {
-                        required: "Please enter a customer name",
+                        required: "Please enter a Finance Master name",
                         minlength: "customer name must be at least 2 characters long"
                     },
-                    phone: {
-                        required: "Please enter phone number"
-                    },
-                    city: {
-                        required: "please enter city"
-                    }
+
                 },
                 errorElement: 'span',
                 errorClass: 'text-danger',

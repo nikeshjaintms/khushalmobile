@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DealerController;
+use App\Http\Controllers\financeMasterController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\TransctionController;
@@ -137,8 +138,15 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::delete('delete/{id}', 'destroy')->name('admin.deduction.delete');
         Route::post('finance-details','getFinanceDetails')->name('admin.customer.finance.details');
         Route::post('/admin/finance/deductions', 'getDeductions')->name('admin.finance.deductions');
+    });
 
-
+    Route::prefix('financeMaster')->controller(financeMasterController::class)->group(function () {
+        Route::get('/', 'index')->name('admin.financeMaster.index');
+        Route::get('create', 'create')->name('admin.financeMaster.create');
+        Route::post('store', 'store')->name('admin.financeMaster.store');
+        Route::get('edit/{id}', 'edit')->name('admin.financeMaster.edit');
+        Route::put('update/{id}', 'update')->name('admin.financeMaster.update');
+        Route::delete('delete/{id}', 'destroy')->name('admin.financeMaster.delete');
     });
 
 });

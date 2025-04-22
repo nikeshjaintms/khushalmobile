@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use App\Models\Customer;
 use App\Models\Finance;
+use App\Models\financeMaster;
 use App\Models\Product;
 use App\Models\PurchaseProduct;
 use App\Models\Sale;
@@ -45,14 +46,14 @@ class SaleController extends Controller
         $customers = Customer::all();
         $brands = Brand::all();
         $products = Product::all();
-
+        $financeMasters = FinanceMaster::all();
         // Determine the current fiscal year
         $currentYear = date('Y');
         $nextYear = $currentYear + 1;
         $previousYear = $currentYear - 1;
 
-         // Determine if the fiscal year should be previous year - current year or current year - next year
-         if (date('m') < 4) {
+        // Determine if the fiscal year should be previous year - current year or current year - next year
+        if (date('m') < 4) {
             // Before April 1st, use the previous fiscal year
             $fiscalYear = ($previousYear % 100) . '-' . ($currentYear % 100);
         } else {
@@ -61,8 +62,8 @@ class SaleController extends Controller
         }
         $latestInvoice = Sale::where('invoice_no', 'LIKE', "%/$fiscalYear/%")->latest()->first();
 
-          // Extract and increment the last number, reset if new fiscal year
-          if ($latestInvoice) {
+        // Extract and increment the last number, reset if new fiscal year
+        if ($latestInvoice) {
             $lastNumber = intval(explode('/', $latestInvoice->invoice_no)[2]);
             $nextNumber = $lastNumber + 1;
         } else {
@@ -70,7 +71,7 @@ class SaleController extends Controller
         }
 
         $invoiceNo = 'INV/' . $fiscalYear . '/' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);;
-        return view('sale.create', compact('customers', 'invoiceNo', 'brands', 'products'));
+        return view('sale.create', compact('customers', 'invoiceNo', 'brands', 'products','financeMasters'));
     }
 
     /**
@@ -78,7 +79,7 @@ class SaleController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+        //dd($request->all());
         $validatedData = $request->validate([
             'customer_id' => 'required',
             'invoice_no' => 'required',
@@ -115,15 +116,13 @@ class SaleController extends Controller
                 'payment_method' => $request->payment_method,
             ]);
 
-
-
-            // dd($request->all());
             if ($request->payment_method == '2') {
-
                 $finance = Finance::create([
                     'invoice_id' => $sale->id,
                     'product_id' => $request->products[0]['product_id'],
                     'customer_id' => $request->customer_id,
+                    'mobile_security_charges'=>$request->mobile_security_charges,
+                    'finances_master_id' => $request->finances_master_id,
                     'price' => $request->sub_total,
                     'downpayment' => $request->DownPayment,
                     'processing_fee' => $request->Processing,
@@ -152,22 +151,22 @@ class SaleController extends Controller
                     'price_total' => $product['price_total'] ?? 0,
                 ]);
 
-            PurchaseProduct::where('product_id',$product['product_id'])->where('id',$product['imei_id'])
-            ->update([
-                'status' => 'sold',
-                'invoice_id' => $sale->id,
-            ]);
+                PurchaseProduct::where('product_id', $product['product_id'])->where('id', $product['imei_id'])
+                    ->update([
+                        'status' => 'sold',
+                        'invoice_id' => $sale->id,
+                    ]);
 
             }
 
-            foreach($request->payment as $pay){
+            foreach ($request->payment as $pay) {
 
                 SaleTransaction::create([
                     'invoice_id' => $sale->id,
                     'payment_mode' => $pay['payment_mode'],
-                    'type' => 'in',
+                    //'type' => 'in',
                     'amount' => $pay['amount'],
-                    'reference_no' => $pay['reference_no'] ?? NULL,
+                    'reference_no' => $pay['reference_no'] ?? null,
                 ]);
             }
 
@@ -199,34 +198,44 @@ class SaleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-
     public function edit(Sale $sales, $id)
     {
-
+        
         $data = Sale::find($id);
-        $data1 = SaleProduct::with('product')->where('sales_id',$id)->first();
+        $data1 = SaleProduct::with('product')->where('sales_id', $id)->first();
 
         $customers = Customer::all();
         $selectedCustomer = $data->customer->pluck('id');
 
         $products = Product::all();
-        $selectedProductId = $data1->product_id;
-        //dd($selectedProductId);
+        $selectedProductId = $data1->product->id;
 
         $brands = Brand::all();
-        $selectedBrand  = $data1->product->brand_id;
+        $selectedBrandId = $data1->product->brand_id;
 
-        $imiNumbers= PurchaseProduct::all();
-        $selectedImi = $data1->imei;
-        dd($selectedImi);
+        $imiNumbers = PurchaseProduct::all();
+        $selectedImi = $data1->imei_id ?? null;
 
-        //dd($selectedBrand);
+        $refernce = SaleTransaction::where('invoice_id', $id)->first();
+        $selectedRefer = $refernce->reference_no ?? null;
+        $selectedAmount = $refernce->amount ?? null;
 
-        //$sales_transactions = SaleTransaction::all();
-        ////$reference_no = $sales_transactions->reference_no;
-        //dd($sales_transactions);
+        $sale = Sale::with(['customer', 'saleProducts', 'saleProducts.product.brand', 'saleProducts.product', 'saleProducts.purchaseProduct'])->where('id', $id)->first();
 
-        return view('sale.edit', compact('data', 'data1', 'customers', 'selectedCustomer', 'products','brands','selectedProductId','selectedBrand'));
+
+
+        $financeMaster= financeMaster::all();
+        $selectedFinance = $financeMaster->pluck('id');
+
+
+
+            $selectfinance = Finance::where('customer_id', $sale->customer_id)->where('invoice_id', $id)->first() ;
+
+
+
+
+            return view('sale.edit', compact('data', 'data1', 'customers', 'selectedCustomer', 'products',  'brands', 'selectedProductId', 'selectedBrandId', 'imiNumbers', 'selectfinance', 'selectedImi', 'refernce', 'selectedRefer', 'selectedAmount','financeMaster','selectedFinance'));
+
     }
 
     /**
@@ -234,22 +243,55 @@ class SaleController extends Controller
      */
     public function update(Request $request, Sale $sales, $id)
     {
-        $validatedData = $request->validate([
-            'invoice_no' => 'required',
-            'invoice_date' => 'required',
-            'sub_total' => 'required',
-            'tax_type' => 'required',
-            'tax' => 'required',
-            'tax_amount' => 'required',
-            'total_amount' => 'required',
-            'payment_method' => 'required',
-            'discount' => 'required',
-        ]);
+        //dd($request->all());
+        DB::beginTransaction();
+        try {
 
-        $data = Sale::findOrFail($id);
-        $data->update($validatedData);
+            $data = Sale::all()->find($id);
+            $data->update([
+                'customer_id' => $request->customer_id,
+                'invoice_no' => $request->invoice_no,
+                'invoice_date' => $request->invoice_date,
+                'sub_total' => $request->sub_total,
+                'tax_type' => $request->tax_type,
+                'total_tax_amount' => $request->total_tax_amount,
+                'total_amount' => $request->total_amount,
+                'payment_method' => $request->payment_method,
+            ]);
 
-        return redirect()->route('admin.sale.index')->with('success', 'Sale updated successfully.');
+            foreach ($request->products as $product) {
+                $data->saleProducts()->update([
+                    'product_id' => $product['product_id'],
+                    //'brand_id' => $product['brand_id'],
+                    'imei_id' => $product['imei_id'],
+                    'price' => $product['price'],
+                    'discount' => $product['discount'] ?? 0,
+                    'discount_amount' => $product['discount_amount'] ?? 0,
+                    'price_subtotal' => $product['price_subtotal'] ?? 0,
+                    'tax' => $product['tax'] ?? 0,
+                    'tax_amount' => $product['tax_amount'] ?? 0,
+                    'price_total' => $product['price_total'] ?? 0,
+                ]);
+
+            }
+
+            foreach ($request->payment as $pay) {
+                SaleTransaction::create([
+                    'invoice_id' => $data->id,
+                    'payment_mode' => $pay['payment_mode'],
+                    //'type' => 'in',
+                    'amount' => $pay['amount'],
+                    'reference_no' => $pay['reference_no'] ?? null,
+                ]);
+            }
+
+
+            DB::commit();
+            return redirect()->route('admin.sale.index')->with('success', 'Sale updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Update failed: ' . $e->getMessage());
+        }
     }
 
     /**

@@ -96,6 +96,13 @@
                   <span class="caret"></span>
                 </a>
               </li>
+                <li class="nav-item">
+                    <a  href="{{ route('admin.financeMaster.index') }}">
+                        <i class="fas fa-layer-group"></i>
+                        <p>Finance Master</p>
+                        <span class="caret"></span>
+                    </a>
+                </li>
               <li class="nav-item">
                 <a  href="{{ route('admin.daily-notes.index') }}">
                   <i class="fas fa-layer-group"></i>

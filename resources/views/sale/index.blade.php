@@ -76,10 +76,12 @@
                                                 <td>{{ $item->customer->name }}</td>
                                                 <td>{{ $item->invoice_no }}</td>
                                                 <td>
-                                                @foreach ($item->saleProducts as $index =>  $product)
-                                                   {{ $product->product->product_name ?? '-' }}@if (!$loop->last), @else.@endif
-                                                @endforeach
-                                            </td>
+                                                    @foreach ($item->saleProducts as $index => $product)
+                                                        {{ $product->product->product_name ?? '-' }}@if (!$loop->last)
+                                                        , @else.
+                                                        @endif
+                                                    @endforeach
+                                                </td>
                                                 <td>{{ $product->purchaseProduct->imei ?? '-' }}</td>
                                                 <td>{{ $item->total_amount }}</td>
                                                 <td>
@@ -92,82 +94,86 @@
                                                         class="btn btn-lg btn-link btn-primary">
                                                         <i class="fa fa-eye"></i>
                                                     </a>
+                                                    <a href="{{ route('admin.sale.edit', $item->id) }}"
+                                                        class="btn btn-lg btn-link btn-primary">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
                                                     <button onclick="deletesale_info({{ $item->id }})"
-                                                        class="btn btn-link btn-danger">
+                                                        class="btn btn-link btn-danger delete-sale-row">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
                                                 </td>
                                             </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="6" class="text-center">No data available</td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="6" class="text-center">No data available</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function deletesale_info(id) {
-            var url = '{{ route('admin.sale.delete', 'id') }}'.replace("id", id);
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            function deletesale_info(id) {
+                var url = '{{ route('admin.sale.delete', 'id') }}'.replace("id", id);
 
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'You won\'t be able to revert this!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: url,
-                        type: 'DELETE',
-                        data: {
-                            "_token": "{{ csrf_token() }}",
-                            id: id
-                        },
-                        dataType: 'json',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        success: function(response) {
-                            if (response.status == 'success') {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You won\'t be able to revert this!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: url,
+                            type: 'DELETE',
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                id: id
+                            },
+                            dataType: 'json',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function(response) {
+                                if (response.status == 'success') {
+                                    Swal.fire(
+                                        'Deleted!',
+                                        'Sale has been deleted.',
+                                        'success'
+                                    ).then(() => {
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    Swal.fire(
+                                        'Failed!',
+                                        'Failed to delete Sale.',
+                                        'error'
+                                    );
+                                }
+                            },
+                            error: function(xhr) {
                                 Swal.fire(
-                                    'Deleted!',
-                                    'Sale has been deleted.',
-                                    'success'
-                                ).then(() => {
-                                    window.location.reload();
-                                });
-                            } else {
-                                Swal.fire(
-                                    'Failed!',
-                                    'Failed to delete Sale.',
+                                    'Error!',
+                                    'An error occurred: ' + xhr.responseText,
                                     'error'
                                 );
                             }
-                        },
-                        error: function(xhr) {
-                            Swal.fire(
-                                'Error!',
-                                'An error occurred: ' + xhr.responseText,
-                                'error'
-                            );
-                        }
-                    });
-                }
-            });
-        }
-    </script>
+                        });
+                    }
+                });
+            }
+        </script>
 
-@endsection
+    @endsection
