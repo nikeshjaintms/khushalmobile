@@ -54,8 +54,9 @@
                                     <thead>
                                         <tr>
                                             <th>Id</th>
-                                            <th>Invoice</th>
                                             <th>Customer</th>
+                                            <th>Phone</th>
+                                            <th>City</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -276,8 +277,9 @@
                         html += `
                         <tr>
                             <td>${index + 1}</td>
-                            <td>${item.invoice_no ?? 'N/A'}</td>
                             <td>${item.customer_name ?? 'N/A'}</td>
+                            <td>${item.phone ?? 'N/A'}</td>
+                            <td>${item.city ?? 'N/A'}</td>
                             <td>
                                  <button class="btn btn-sm btn-success btn-pay" data-id="${item.id}" data-customer-id="${item.customer_id}" data-invoice="${item.invoice_no ?? ''}" data-emiValue="${item?.emi_value ?? ''}" data-deduction-date="${item?.dedication_date ?? ''}" data-penalty="${item.penalty ?? ''}" data-down-payment="${item?.downpayment ?? ''}" data-customer="${item?.customer_name ?? ''}" data-month-duration="${item?.month_duration ?? ''}" >Pay</button>
                             </td>
