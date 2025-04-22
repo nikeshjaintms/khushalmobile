@@ -15,7 +15,9 @@ class DeductionController extends Controller
      */
     public function index()
     {
-        $deductions = Deduction::get();
+        $deductions = Deduction::leftjoin('customers', 'deductions.customer_id', '=', 'customers.id')
+        ->select('deductions.*', 'customers.name as customer_name')
+        ->get();
         return view('deduction.index', compact('deductions'));
     }
 
@@ -30,7 +32,7 @@ class DeductionController extends Controller
     {
         $finance = Finance::leftjoin('customers', 'finances.customer_id', '=', 'customers.id')
             ->leftjoin('sales', 'finances.invoice_id', '=', 'sales.id')
-            ->select('finances.*', 'customers.name as customer_name', 'sales.invoice_no')
+            ->select('finances.*', 'customers.name as customer_name','customers.phone','customers.city', 'sales.invoice_no')
             ->where('finances.customer_id', $request->customer_id)
             ->where('status', 'pending')->get();
 
