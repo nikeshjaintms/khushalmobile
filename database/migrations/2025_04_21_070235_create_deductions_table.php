@@ -16,14 +16,14 @@ return new class extends Migration
 
             $table->foreignId('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreignId('finance_id')->references('id')->on('finances')->onDelete('cascade');
-            $table->decimal('emi_value', 10, 2);
-            $table->decimal('emi_value_paid', 10, 2);
-            $table->decimal('penalty',10,2);
-            $table->decimal('remaining',10,2);
-            $table->decimal('total',10,2);
-            $table->decimal('payment_mode');
-            $table->string('refernce_no');
-            $table->string('status');
+            $table->decimal('emi_value', 10, 2)->nullable();
+            $table->decimal('emi_value_paid', 10, 2)->nullable();
+            $table->decimal('penalty',10,2)->nullable();
+            $table->decimal('remaining',10,2)->nullable();
+            $table->decimal('total',10,2)->nullable();
+            $table->decimal('payment_mode')->nullable();
+            $table->string('refernce_no')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

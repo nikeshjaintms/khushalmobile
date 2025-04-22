@@ -136,6 +136,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::put('update/{id}', 'update')->name('admin.deduction.update');
         Route::delete('delete/{id}', 'destroy')->name('admin.deduction.delete');
         Route::post('finance-details','getFinanceDetails')->name('admin.customer.finance.details');
+        Route::post('/admin/finance/deductions', 'getDeductions')->name('admin.finance.deductions');
+
 
     });
 
