@@ -71,7 +71,7 @@ class SaleController extends Controller
         }
 
         $invoiceNo = 'INV/' . $fiscalYear . '/' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);;
-        return view('sale.create', compact('customers', 'invoiceNo', 'brands', 'products','financeMasters'));
+        return view('sale.create', compact('customers', 'invoiceNo', 'brands', 'products', 'financeMasters'));
     }
 
     /**
@@ -121,12 +121,11 @@ class SaleController extends Controller
                     'invoice_id' => $sale->id,
                     'product_id' => $request->products[0]['product_id'],
                     'customer_id' => $request->customer_id,
-                    'mobile_security_charges'=>$request->mobile_security_charges,
+                    'mobile_security_charges' => $request->mobile_security_charges,
                     'finances_master_id' => $request->finances_master_id,
                     'price' => $request->sub_total,
                     'downpayment' => $request->DownPayment,
                     'processing_fee' => $request->Processing,
-                    'mobile_security_charges' =>$request->mobile_security_charges,
                     'emi_charger' => $request->EMICharge,
                     'finance_amount' => is_numeric($request->FinanceAmount) ? $request->FinanceAmount : 0,
                     'month_duration' => is_numeric($request->MonthDuration) ? $request->MonthDuration : 0,
@@ -188,33 +187,39 @@ class SaleController extends Controller
      */
     public function show(Sale $sales, $id)
     {
-        $sale = Sale::with(['customer','saleProducts', 'saleProducts.product.brand', 'saleProducts.product', 'saleProducts.purchaseProduct'])->where('id', $id)->first();
+        $sale = Sale::with(['customer', 'saleProducts', 'saleProducts.product.brand', 'saleProducts.product', 'saleProducts.purchaseProduct'])->where('id', $id)->first();
         $refernce = SaleTransaction::where('invoice_id', $id)->first();
         $selectedRefer = $refernce->reference_no ?? null;
-        $finance= Finance::where('customer_id', $sale->customer_id)->first();
+        $finance = Finance::where('customer_id', $sale->customer_id)->first();
 
-        return view('sale.show', compact('sale','selectedRefer','refernce','finance'));
+        return view('sale.show', compact('sale', 'selectedRefer', 'refernce', 'finance'));
     }
+
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Sale $sales, $id)
+    public function edit( Sale $sales, $id)
     {
-        
+
         $data = Sale::find($id);
-        $data1 = SaleProduct::with('product')->where('sales_id', $id)->first();
+        $data1 = SaleProduct::with('product')->where('sales_id', $id)->get();
 
         $customers = Customer::all();
         $selectedCustomer = $data->customer->pluck('id');
 
         $products = Product::all();
-        $selectedProductId = $data1->product->id;
+        //$selectedProductId = $data1->product->id;
+        foreach ($data1 as $saleProduct) {
+            $selectedProductId = $saleProduct->product->id;
+            $selectedBrandId = $saleProduct->product->brand_id;
+            $selectedImi = $saleProduct->imei_id ?? null;
+        }
 
         $brands = Brand::all();
-        $selectedBrandId = $data1->product->brand_id;
+        //$selectedBrandId = $data1->product->brand_id;
 
         $imiNumbers = PurchaseProduct::all();
-        $selectedImi = $data1->imei_id ?? null;
+        //$selectedImi = $data1->imei_id ?? null;
 
         $refernce = SaleTransaction::where('invoice_id', $id)->first();
         $selectedRefer = $refernce->reference_no ?? null;
@@ -222,19 +227,12 @@ class SaleController extends Controller
 
         $sale = Sale::with(['customer', 'saleProducts', 'saleProducts.product.brand', 'saleProducts.product', 'saleProducts.purchaseProduct'])->where('id', $id)->first();
 
-
-
-        $financeMaster= financeMaster::all();
+        $financeMaster = financeMaster::all();
         $selectedFinance = $financeMaster->pluck('id');
 
+        $selectfinance = Finance::where('customer_id', $sale->customer_id)->where('invoice_id', $id)->first();
 
-
-            $selectfinance = Finance::where('customer_id', $sale->customer_id)->where('invoice_id', $id)->first() ;
-
-
-
-
-            return view('sale.edit', compact('data', 'data1', 'customers', 'selectedCustomer', 'products',  'brands', 'selectedProductId', 'selectedBrandId', 'imiNumbers', 'selectfinance', 'selectedImi', 'refernce', 'selectedRefer', 'selectedAmount','financeMaster','selectedFinance'));
+        return view('sale.edit', compact('data', 'data1', 'customers', 'selectedCustomer', 'products', 'brands', 'selectedProductId', 'selectedBrandId', 'imiNumbers', 'selectfinance', 'selectedImi', 'refernce', 'selectedRefer', 'selectedAmount', 'financeMaster', 'selectedFinance'));
 
     }
 

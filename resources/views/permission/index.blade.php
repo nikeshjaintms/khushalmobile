@@ -25,7 +25,7 @@
     <div class="container">
         <div class="page-inner">
             <div class="page-header">
-                <h3 class="fw-bold mb-3">Dealer</h3>
+                <h3 class="fw-bold mb-3">Permission</h3>
                 <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
                         <a href="{{ route('dashboard') }}">
@@ -36,13 +36,13 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.dealer.index')}}">Dealer</a>
+                        <a href="{{ route('admin.permission.index')}}">Permission</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="#">Dealers</a>
+                        <a href="#">Permissions</a>
                     </li>
                 </ul>
             </div>
@@ -50,10 +50,10 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            @can('create-dealer')
-                                <a href="{{ route('admin.dealer.create') }}" class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i> Dealer</a>
+                            @can('create-permission')
+                            <a href="{{ route('admin.permission.create') }}" class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i> Permission</a>
                             @endcan
-                            <h4 class="card-title">Dealer</h4>
+                            <h4 class="card-title">Permission</h4>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -61,31 +61,24 @@
                                     <thead>
                                     <tr>
                                         <th>Id</th>
-                                        <th>Name</th>
-                                        <th>Phone</th>
-                                        <th>Address</th>
-                                        <th>City</th>
+                                        <th>Permission</th>
                                         <th>Action</th>
 
                                     </tr>
                                     </thead>
                                     <tbody>
-
-                                    @forelse($dealers as $item)
+                                    @forelse($permissions as $item)
                                         <tr>
                                             <td>{{$item->id }}</td>
                                             <td>{{$item->name }}</td>
-                                            <td>{{$item->phone }}</td>
-                                            <td>{{$item->address }}</td>
-                                            <td>{{$item->city }}</td>
                                             <td>
-                                                @can('edit-dealer')
-                                                    <a href="{{ route('admin.dealer.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">
+                                                @can('edit-permission')
+                                                    <a href="{{ route('admin.permission.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">
                                                         <i class="fa fa-edit">
                                                         </i></a>
                                                 @endcan
-                                                @can('delete-dealer')
-                                                    <button onclick="deletedealer_info({{ $item->id }})" class="btn btn-link btn-danger">
+                                                @can('delete-permission')
+                                                    <button onclick="deletevehicle_info({{ $item->id }})" class="btn btn-link btn-danger">
                                                         <i class="fa fa-trash">
                                                         </i>
                                                     </button>
@@ -94,7 +87,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="6" class="text-center">No data available</td>
+                                            <td colspan="3" class="text-center">No data available</td>
                                         </tr>
                                     @endforelse
                                     </tbody>
@@ -106,11 +99,12 @@
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
     <script>
-        function deletedealer_info(id) {
-            var url = '{{ route("admin.dealer.delete", "id") }}'.replace("id", id);
+        function deletevehicle_info(id) {
+            var url = '{{ route("admin.permission.delete", "id") }}'.replace("id", id);
 
             Swal.fire({
                 title: 'Are you sure?',
@@ -138,7 +132,7 @@
                             if (response.status == 'success') {
                                 Swal.fire(
                                     'Deleted!',
-                                    'Dealer has been deleted.',
+                                    'Permission has been deleted.',
                                     'success'
                                 ).then(() => {
                                     window.location.reload();
@@ -146,7 +140,7 @@
                             } else {
                                 Swal.fire(
                                     'Failed!',
-                                    'Failed to delete Dealer.',
+                                    'Failed to delete Permission.',
                                     'error'
                                 );
                             }

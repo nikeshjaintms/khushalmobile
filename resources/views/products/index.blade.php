@@ -50,9 +50,11 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
+                            @can('create-product')
                             <a href="{{ route('admin.product.create') }}"
                                 class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i>
                                 Product</a>
+                            @endcan
                             <h4 class="card-title">Products</h4>
                         </div>
                         <div class="card-body">
@@ -74,15 +76,19 @@
                                                 <td>{{ $item->product_name }}</td>
                                                 <td>{{ $item->mrp }}</td>
                                                 <td>
+                                                    @can('edit-product')
                                                     <a href="{{ route('admin.product.edit', $item->id) }}"
                                                         class="btn btn-lg btn-link btn-primary">
                                                         <i class="fa fa-edit">
                                                         </i></a>
+                                                    @endcan
+                                                        @can('delete-product')
                                                     <button onclick="deletevehicle_info({{ $item->id }})"
                                                         class="btn btn-link btn-danger">
                                                         <i class="fa fa-trash">
                                                         </i>
                                                     </button>
+                                                        @endcan
                                                 </td>
                                             </tr>
                                         @empty

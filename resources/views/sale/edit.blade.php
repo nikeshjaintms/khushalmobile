@@ -90,7 +90,8 @@
                                     <div class="col-md-12">
                                         <table class="display table table-striped table-hover">
                                             <thead>
-                                                <tr>
+
+                                                <tr >
                                                     <th scope="col">sr no</th>
                                                     <th scope="col">Brand</th>
                                                     <th scope="col">Product</th>
@@ -105,12 +106,12 @@
                                                     <th scope="col">Action</th>
                                                 </tr>
                                             </thead>
+                                            @foreach($data1 as $index => $item)
                                             <tbody class="table-group-divider" id="add-table-row">
-
-                                                <tr>
+                                                <tr class="product-row">
                                                     <th scope="row" class="row-index text-center">1</th>
                                                     <td>
-                                                        <select name="products[0][brand_id]"
+                                                        <select name="products[{{$index}}][brand_id]"
                                                             class="form-control brand-name">
                                                             <option value="">Select Brand</option>
                                                             @foreach ($brands as $brand)
@@ -122,7 +123,7 @@
                                                         </select>
                                                     </td>
                                                     <td>
-                                                        <select name="products[0][product_id]"
+                                                        <select name="products[{{$index}}][product_id]"
                                                             class="form-control product-name">
                                                             <option value="">Select Product</option>
 
@@ -139,7 +140,7 @@
                                                     </td>
 
                                                     <td>
-                                                        <select name="products[0][imei_id]" class="form-control imei_id">
+                                                        <select name="products[{{$index}}][imei_id]" class="form-control imei_id">
                                                             <option value="">Select IMEI</option>
                                                             @foreach ($imiNumbers as $imi)
                                                                 <option value="{{ $imi->id }}"
@@ -155,8 +156,8 @@
 
 
                                                     <input type="hidden" class="form-control price-select price"
-                                                        name="products[0][price]" id="price"
-                                                        value="{{ $data1->price }}" readonly required />
+                                                        name="products[{{$index}}][price]" id="price"
+                                                        value="{{ $item->price }}" readonly required />
                                                     @error('price')
                                                         <p style="color: red;">{{ $message }}</p>
                                                     @enderror
@@ -164,8 +165,8 @@
 
                                                     <td>
                                                         <input type="text" class="form-control discount"
-                                                            name="products[0][discount]" id="discount"
-                                                            value="{{ $data1->discount }}" required />
+                                                            name="products[{{$index}}][discount]" id="discount"
+                                                            value="{{ $item->discount }}" required />
                                                         @error('discount')
                                                             <p style="color: red;">{{ $message }}</p>
                                                         @enderror
@@ -174,8 +175,8 @@
 
                                                     <input type="hidden"
                                                         class="form-control discountAmount discount_amount"
-                                                        name="products[0][discount_amount]"
-                                                        value="{{ $data1->discount_amount }}" id="discountAmount"
+                                                        name="products[{{$index}}][discount_amount]"
+                                                        value="{{ $item->discount_amount }}" id="discountAmount"
                                                         readonly required />
                                                     @error('discount_amount')
                                                         <p style="color: red;">{{ $message }}</p>
@@ -184,8 +185,8 @@
 
                                                     <td>
                                                         <input type="text" class="form-control priceSubTotal"
-                                                            id="priceSubTotal" name="products[0][price_subtotal]"
-                                                            value="{{ $data1->price_subtotal }}" readonly required />
+                                                            id="priceSubTotal" name="products[{{$index}}][price_subtotal]"
+                                                            value="{{ $item->price_subtotal }}" readonly required />
                                                         @error('price_subtotal')
                                                             <p style="color: red;">{{ $message }}</p>
                                                         @enderror
@@ -193,7 +194,7 @@
 
                                                     <td>
                                                         <input type="text" class="form-control tax" id="tax"
-                                                            name="products[0][tax]" value="{{ $data1->tax }}"
+                                                            name="products[{{$index}}][tax]" value="{{ $item->tax }}"
                                                             required />
                                                         @error('tax')
                                                             <p style="color: red;">{{ $message }}</p>
@@ -202,8 +203,8 @@
 
                                                     <td>
                                                         <input type="text" class="form-control taxAmount tax-amount"
-                                                            name="products[0][tax_amount]" id="tax_amount"
-                                                            value="{{ $data1->tax_amount }}" readonly required />
+                                                            name="products[{{$index}}][tax_amount]" id="tax_amount"
+                                                            value="{{ $item->tax_amount }}" readonly required />
                                                         @error('tax_amount')
                                                             <p style="color: red;">{{ $message }}</p>
                                                         @enderror
@@ -212,8 +213,8 @@
                                                     <td>
                                                         <input type="text"
                                                             class="form-control total total-amount totalAmount"
-                                                            id="totalAmount" name="products[0][price_total]"
-                                                            value="{{ $data1->price_total }}" required />
+                                                            id="totalAmount" name="products[{{$index}}][price_total]"
+                                                            value="{{ $item->price_total }}" required />
                                                         @error('total')
                                                             <p style="color: red;">{{ $message }}</p>
                                                         @enderror
@@ -231,6 +232,7 @@
 
 
                                             </tbody>
+                                            @endforeach
                                         </table>
                                     </div>
 
@@ -505,6 +507,7 @@
             let usedIMEIs = new Set();
 
             function createRow(data = {}) {
+
                 const row = document.createElement('tr');
                 row.innerHTML = ` <th scope="row" class="text-center">1</th>
            <td>
@@ -977,9 +980,10 @@
                 updateIMEIDropdowns();
             });
 
-
-            $('.tax, .discount, .total,.amount,.reference_no , .Processingfee,.emicharge , .DownPayment,.FinanceAmount,.MonthDuration,.DeductionDate , .Penalty')
-                .mask('0000000000');
+            $('.tax, .discount, .total,.amount,.reference_no , .Processingfee,.emicharge , .DownPayment,.FinanceAmount,.MonthDuration,.DeductionDate , .Penalty').inputmask({
+                regex: "^[0-9.]*$",
+                placeholder: ''
+            });
 
             $('#name, #city').inputmask({
                 regex: "^[a-zA-Z ]*$",

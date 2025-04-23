@@ -50,9 +50,11 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
+                            @can('create-purchase')
                             <a href="{{ route('admin.purchase.create') }}"
                                 class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i>
                                 Purchase</a>
+                            @endcan
                             <h4 class="card-title">Purchases</h4>
                         </div>
                         <div class="card-body">
@@ -74,19 +76,25 @@
                                                 <td>{{ $item->po_no }}</td>
                                                 <td>{{ $item->name }}</td>
                                                 <td>
+                                                    @can('show-purchase')
                                                     <a href="{{ route('admin.purchase.show', $item->id) }}"
                                                         class="btn btn-lg btn-link btn-primary">
                                                         <i class="fa fa-eye">
                                                         </i></a>
+                                                    @endcan
+                                                        @can('edit-purchase')
                                                     <a href="{{ route('admin.purchase.edit', $item->id) }}"
                                                         class="btn btn-lg btn-link btn-primary">
                                                         <i class="fa fa-edit">
                                                         </i></a>
+                                                        @endcan
+                                                        @can('delete-purchase')
                                                     <button onclick="deletevehicle_info({{ $item->id }})"
                                                         class="btn btn-link btn-danger">
                                                         <i class="fa fa-trash">
                                                         </i>
                                                     </button>
+                                                        @endcan
                                                 </td>
                                             </tr>
                                         @empty

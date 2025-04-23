@@ -936,8 +936,10 @@
                 updateIMEIDropdowns();
             });
 
-
-            $('.tax, .discount, .total,.amount,.reference_no , .Processingfee,.emicharge , .DownPayment,.FinanceAmount,.MonthDuration,.DeductionDate , .Penalty').mask('0000000000');
+            $('.tax, .discount, .total,.amount,.reference_no , .Processingfee,.emicharge , .DownPayment,.FinanceAmount,.MonthDuration,.DeductionDate , .Penalty').inputmask({
+                regex: "^[0-9.]*$",
+                placeholder: ''
+            });
 
             $('#name, #city').inputmask({
                 regex: "^[a-zA-Z ]*$",
