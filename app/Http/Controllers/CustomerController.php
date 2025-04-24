@@ -32,7 +32,7 @@ class CustomerController extends Controller
         $validatedData=   $request->validate([
             'name' => 'required',
             'phone' => 'required',
-            'address' => 'required',
+            'alternate_phone' => 'nullable',
             'city' => 'required',
         ]);
         Customer::create($validatedData);
@@ -64,7 +64,6 @@ class CustomerController extends Controller
         $validatedData=   $request->validate([
             'name' => 'required',
             'phone' => 'required',
-            'address' => 'required',
             'city' => 'required',
         ]);
 

@@ -8,7 +8,7 @@
     <div class="container">
         <div class="page-inner">
             <div class="page-header">
-                <h3 class="fw-bold mb-3">Customer</h3>
+                <h3 class="fw-bold mb-3">User</h3>
                 <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
                         <a href="{{ route('dashboard') }}">
@@ -19,13 +19,13 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.customer.index') }}">Customer</a>
+                        <a href="{{ route('admin.customer.index') }}">User</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="#">Add Customer</a>
+                        <a href="#">Add User</a>
                     </li>
                 </ul>
             </div>
@@ -33,9 +33,9 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">Add Customer</div>
+                            <div class="card-title">Add User</div>
                         </div>
-                        <form method="POST" action="{{ route('admin.customer.store') }}" id="customerForm">
+                        <form method="POST" action="{{ route('admin.user.store') }}" id="userForm">
                             @csrf
                             <div class="card-body">
                                 <div class="row">
@@ -46,33 +46,36 @@
                                                 placeholder="Enter Customer Name" required />
                                         </div>
                                     </div>
+
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="">Phone<span style="color: red">*</span></label>
-                                            <input type="text" class="form-control" name="phone" id="phone"
-                                                placeholder="Enter Phone Number" required />
+                                            <label for="">Email</label>
+                                            <input type="email" class="form-control" name="email" id="email"
+                                                   placeholder="Enter your Email"  />
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="">Alternate Phone</label>
-                                            <input type="text" class="form-control" name="alternate_phone" id="alternate_phone"
-                                                   placeholder="Enter Alternate Phone Number"  />
+                                            <label for="">Password<span style="color: red">*</span></label>
+                                            <input type="text" class="form-control" name="password" id="password"
+                                                   placeholder="Enter your Password" required />
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="">City<span style="color: red">*</span></label>
-                                            <input type="text" class="form-control" name="city" id="city"
-                                                placeholder="Enter your city" required />
-                                        </div>
+                                    <div class="input-group mb-3">
+                                        <label for="userRole" class="col-3 col-form-label">Roles</label>
+                                        <select name="role" class="form-select" id="role">
+                                            <option value="" id="role">Select</option>
+                                            @foreach($roles as $role)
+                                                <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="card-action">
                                 <button class="btn btn-success" type="submit">Submit</button>
-                                <a href="{{ route('admin.customer.index') }}" class="btn btn-danger">Cancel</a>
+                                <a href="{{ route('admin.user.index') }}" class="btn btn-danger">Cancel</a>
                             </div>
                         </form>
                     </div>
@@ -98,31 +101,21 @@
                 placeholder: ''
             });
 
-            $('#customerForm').validate({
+            $('#userForm').validate({
                 rules: {
                     name: {
                         required: true,
                         minlength: 2
                     },
-                    phone: {
-                        required: true
-                    },
-                    city: {
-                        required: true
-                    }
+
 
                 },
                 messages: {
                     name: {
-                        required: "Please enter a customer name",
+                        required: "Please enter a User name",
                         minlength: "customer name must be at least 2 characters long"
                     },
-                    phone: {
-                        required: "Please enter phone number"
-                    },
-                    city: {
-                        required: "please enter city"
-                    }
+
                 },
                 errorElement: 'span',
                 errorClass: 'text-danger',

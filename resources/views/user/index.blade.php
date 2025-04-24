@@ -1,31 +1,11 @@
 @extends('layouts.app')
-{{-- @if(Auth::guard('admin')->check()) --}}
 @section('title','Admin Panel')
 
-{{-- @endif --}}
-
 @section('content-page')
-
-    {{-- @if (!empty($alerts))
-        <script>
-            window.onload = function() {
-                let alerts = @json($alerts);
-                console.log(alerts);
-                alerts.forEach(function(alert) {
-                    Swal.fire({
-                        title: 'Reminder',
-                        text: alert,
-                        icon: 'info',
-                        confirmButtonText: 'Okay'
-                    });
-                });
-            };
-        </script>
-    @endif --}}
     <div class="container">
         <div class="page-inner">
             <div class="page-header">
-                <h3 class="fw-bold mb-3">Dealer</h3>
+                <h3 class="fw-bold mb-3">User</h3>
                 <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
                         <a href="{{ route('dashboard') }}">
@@ -36,13 +16,13 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.dealer.index')}}">Dealer</a>
+                        <a href="{{ route('admin.customer.index')}}">User</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="#">Dealers</a>
+                        <a href="#">Users</a>
                     </li>
                 </ul>
             </div>
@@ -50,10 +30,10 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            @can('create-dealer')
-                                <a href="{{ route('admin.dealer.create') }}" class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i> Dealer</a>
+                            @can('create-user')
+                                <a href="{{ route('admin.user.create') }}" class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i> User</a>
                             @endcan
-                            <h4 class="card-title">Dealer</h4>
+                            <h4 class="card-title">User</h4>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -62,30 +42,26 @@
                                     <tr>
                                         <th>Id</th>
                                         <th>Name</th>
-                                        <th>Phone</th>
-                                        <th>Address</th>
-                                        <th>City</th>
-                                        <th>Action</th>
+                                        <th>Email</th>
 
+                                        <th>Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-
-                                    @forelse($dealers as $item)
+                                    @forelse($user as $item)
                                         <tr>
                                             <td>{{$item->id }}</td>
                                             <td>{{$item->name }}</td>
-                                            <td>{{$item->phone }}</td>
-                                            <td>{{$item->address }}</td>
-                                            <td>{{$item->city }}</td>
+                                            <td>{{$item->email }}</td>
+
                                             <td>
-                                                @can('edit-dealer')
-                                                    <a href="{{ route('admin.dealer.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">
+                                                @can('edit-user')
+                                                    <a href="{{ route('admin.user.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">
                                                         <i class="fa fa-edit">
                                                         </i></a>
                                                 @endcan
-                                                @can('delete-dealer')
-                                                    <button onclick="deletedealer_info({{ $item->id }})" class="btn btn-link btn-danger">
+                                                @can('delete-user')
+                                                    <button onclick="deleteuser_info({{ $item->id }})" class="btn btn-link btn-danger">
                                                         <i class="fa fa-trash">
                                                         </i>
                                                     </button>
@@ -109,8 +85,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        function deletedealer_info(id) {
-            var url = '{{ route("admin.dealer.delete", "id") }}'.replace("id", id);
+        function deleteuser_info(id) {
+            var url = '{{ route("admin.user.delete", "id") }}'.replace("id", id);
 
             Swal.fire({
                 title: 'Are you sure?',
@@ -138,7 +114,7 @@
                             if (response.status == 'success') {
                                 Swal.fire(
                                     'Deleted!',
-                                    'Dealer has been deleted.',
+                                    'User has been deleted.',
                                     'success'
                                 ).then(() => {
                                     window.location.reload();
@@ -146,7 +122,7 @@
                             } else {
                                 Swal.fire(
                                     'Failed!',
-                                    'Failed to delete Dealer.',
+                                    'Failed to delete User.',
                                     'error'
                                 );
                             }

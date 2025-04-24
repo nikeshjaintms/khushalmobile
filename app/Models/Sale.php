@@ -32,4 +32,9 @@ class Sale extends Model
         return $this->hasMany(SaleProduct::class, 'sales_id');
     }
 
+    public function finance()
+    {
+        return $this->hasOne(Finance::class);
+    }
+
 }

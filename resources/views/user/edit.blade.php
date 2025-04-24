@@ -8,7 +8,7 @@
     <div class="container">
         <div class="page-inner">
             <div class="page-header">
-                <h3 class="fw-bold mb-3">Customer</h3>
+                <h3 class="fw-bold mb-3">User</h3>
                 <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
                         <a href="{{ route('dashboard') }}">
@@ -19,13 +19,13 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.customer.index') }}">Customer</a>
+                        <a href="{{ route('admin.user.index') }}">User</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="#">Edit Customer</a>
+                        <a href="#">Edit User</a>
                     </li>
                 </ul>
             </div>
@@ -33,9 +33,9 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">Edit Customer</div>
+                            <div class="card-title">Edit User</div>
                         </div>
-                        <form method="POST" action="{{ route('admin.customer.update', $data->id) }}" id="customerForm">
+                        <form method="POST" action="{{ route('admin.user.update', $data->id) }}" id="userForm">
                             @csrf
                             @method('PUT')
                             <div class="card-body">
@@ -50,33 +50,31 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="">Phone<span style="color: red">*</span></label>
-                                            <input type="text" class="form-control" name="phone"
-                                                value="{{ $data->phone }}" id="phone" placeholder="Enter Phone Number"
+                                            <label for="">Email<span style="color: red">*</span></label>
+                                            <input type="email" class="form-control" name="email"
+                                                value="{{ $data->email }}" id="email" placeholder="Enter email"
                                                 required />
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="">Alternate Phone</label>
-                                            <input type="text" class="form-control" name="alternate_phone"
-                                                   value="{{ $data->alternate_phone }}" id="alternate_phone" placeholder="Enter alternate Phone Number"
-                                                   required />
-                                        </div>
+
+                                    <div class="input-group mb-3">
+                                        <label for="userRole" class="col-3 col-form-label">Roles</label>
+                                        <select name="role" class="form-select" id="role">
+                                            <option value="">Select</option>
+                                            @foreach($roles as $role)
+                                                <option value="{{ $role->name }}" {{ $role->name == $roleName ? 'selected' : '' }}>
+                                                    {{ $role->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="">City<span style="color: red">*</span></label>
-                                            <input type="text" class="form-control" name="city"
-                                                value="{{ $data->city }}" id="city" placeholder="Enter your city"
-                                                required />
-                                        </div>
-                                    </div>
+
                                 </div>
                             </div>
                             <div class="card-action">
                                 <button class="btn btn-success" type="submit">Submit</button>
-                                <a href="{{ route('admin.customer.index') }}" class="btn btn-danger">Cancel</a>
+                                <a href="{{ route('admin.user.index') }}" class="btn btn-danger">Cancel</a>
                             </div>
                         </form>
                     </div>
@@ -102,7 +100,7 @@
                 placeholder: ''
             });
 
-            $("#customerForm").validate({
+            $("#userForm").validate({
                 onfocusout: function(element) {
                     this.element(element); // Validate the field on blur
                 },
@@ -113,33 +111,16 @@
                         minlength: 3,
                         maxlength: 50,
                     },
-                    phone: {
-                        required: true
-                    },
 
-                    address: {
-                        required: true
-                    },
-                    city: {
-                        required: true
-                    }
 
                 },
                 messages: {
                     name: {
-                        required: "Please Enter Customer Name",
+                        required: "Please Enter User Name",
                         minleght: "Please Enter Minimum 3 Characters",
                         maxlength: "Please Enter Maximum 50 Characters",
                     },
-                    phone: {
-                        required: "Please enter phone number"
-                    },
-                    address: {
-                        required: "Please enter address"
-                    },
-                    city: {
-                        required: "please enter city"
-                    }
+
                 },
                 errorClass: "text-danger",
                 errorElement: "span",

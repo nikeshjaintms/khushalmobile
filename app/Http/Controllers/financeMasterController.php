@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dealer;
+use App\Models\Customer;
+use App\Models\financeMaster;
 use Illuminate\Http\Request;
 
-class DealerController extends Controller
+class financeMasterController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $dealers = Dealer::all();
-        return view('dealer.index', compact('dealers'));
+        $financeMasters = financeMaster::all();
+        return view('finance_master.index', compact('financeMasters'));
     }
 
     /**
@@ -21,7 +22,7 @@ class DealerController extends Controller
      */
     public function create()
     {
-        return view('dealer.create');
+        return view('finance_master.create');
     }
 
     /**
@@ -31,18 +32,16 @@ class DealerController extends Controller
     {
         $validatedData=   $request->validate([
             'name' => 'required',
-            'address' => 'required',
-            'phone' => 'required',
-            'city' => 'required',
+
         ]);
-        Dealer::create($validatedData);
-        return redirect()->route('admin.dealer.index')->with('success', 'Dealer created successfully.');
+        financeMaster::create($validatedData);
+        return redirect()->route('admin.financeMaster.index')->with('success', 'finance name created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Dealer $dealer)
+    public function show(financeMaster $financeMaster)
     {
         //
     }
@@ -50,42 +49,40 @@ class DealerController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Dealer $dealer,$id)
+    public function edit(financeMaster $financeMaster, $id)
     {
-        $data = Dealer::find($id);
-        return view('dealer.edit', compact('data'));
+        $data = financeMaster::find($id);
+        return view('finance_master.edit', compact('data'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Dealer $dealer, $id)
+    public function update(Request $request, financeMaster $financeMaster, $id)
     {
         $validatedData=   $request->validate([
             'name' => 'required',
-            '`address`' => 'required',
-            'phone' => 'required',
-            'city' => 'required',
+
         ]);
 
-        $data = Dealer::findOrFail($id);
+        $data = financeMaster::findOrFail($id);
         $data->update($validatedData);
 
-        return redirect()->route('admin.dealer.index')->with('success', 'Dealer updated successfully.');
+        return redirect()->route('admin.financeMaster.index')->with('success', 'finance name updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Dealer $dealer, $id)
+    public function destroy(financeMaster $financeMaster, $id)
     {
-        $data = Dealer::findOrFail($id);
+        $data = financeMaster::findOrFail($id);
         $data->delete();
 
         return response()->json(
             [
                 'status' => 'success',
-                'message' => 'Dealer deleted successfully.',
+                'message' => 'Finance name deleted successfully.',
             ]
         );
     }

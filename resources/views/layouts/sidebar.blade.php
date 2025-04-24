@@ -47,6 +47,28 @@
                 </span>
                 <h4 class="text-section">Modules</h4>
               </li>
+                <li class="nav-item">
+                    <a  href="{{ route('admin.user.index') }}">
+                        <i class="fas fa-layer-group"></i>
+                        <p>User</p>
+                        <span class="caret"></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a  href="{{ route('admin.role.index') }}">
+                        <i class="fas fa-layer-group"></i>
+                        <p>Role</p>
+                        <span class="caret"></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a  href="{{ route('admin.permission.index') }}">
+                        <i class="fas fa-layer-group"></i>
+                        <p>Permission</p>
+                        <span class="caret"></span>
+                    </a>
+                </li>
+
               <li class="nav-item">
                 <a  href="{{ route('admin.brand.index') }}">
                   <i class="fas fa-layer-group"></i>
@@ -96,6 +118,13 @@
                   <span class="caret"></span>
                 </a>
               </li>
+                <li class="nav-item">
+                    <a  href="{{ route('admin.financeMaster.index') }}">
+                        <i class="fas fa-layer-group"></i>
+                        <p>Finance Master</p>
+                        <span class="caret"></span>
+                    </a>
+                </li>
               <li class="nav-item">
                 <a  href="{{ route('admin.daily-notes.index') }}">
                   <i class="fas fa-layer-group"></i>

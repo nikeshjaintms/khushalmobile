@@ -25,7 +25,7 @@
     <div class="container">
         <div class="page-inner">
             <div class="page-header">
-                <h3 class="fw-bold mb-3">Brand</h3>
+                <h3 class="fw-bold mb-3">Role</h3>
                 <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
                         <a href="{{ route('dashboard') }}">
@@ -36,13 +36,13 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.brand.index')}}">Brand</a>
+                        <a href="{{ route('admin.role.index')}}">Role</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="#">Brands</a>
+                        <a href="#">Roles</a>
                     </li>
                 </ul>
             </div>
@@ -50,10 +50,10 @@
                 <div class="col-md-12">
                   <div class="card">
                     <div class="card-header">
-                        @can('create-brand')
-                        <a href="{{ route('admin.brand.create') }}" class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i> Brand</a>
+                        @can('create-role')
+                        <a href="{{ route('admin.role.create') }}" class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i> Role</a>
                         @endcan
-                        <h4 class="card-title">Brand</h4>
+                        <h4 class="card-title">Role</h4>
                     </div>
                     <div class="card-body">
                       <div class="table-responsive">
@@ -61,23 +61,23 @@
                           <thead>
                             <tr>
                               <th>Id</th>
-                              <th>Brand</th>
+                              <th>Role</th>
                             <th>Action</th>
 
                             </tr>
                           </thead>
                           <tbody>
-                            @forelse($brands as $item)
+                            @forelse($roles as $item)
                             <tr>
                               <td>{{$item->id }}</td>
                               <td>{{$item->name }}</td>
                               <td>
-                                  @can('edit-brand')
-                                <a href="{{ route('admin.brand.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">
+                                  @can('edit-role')
+                                <a href="{{ route('admin.role.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">
                                   <i class="fa fa-edit">
                                 </i></a>
                                   @endcan
-                                      @can('delete-brand')
+                                      @can('delete-role')
                                 <button  onclick="deletevehicle_info({{ $item->id }})" class="btn btn-link btn-danger">
                                   <i class="fa fa-trash">
                                 </i>
@@ -104,7 +104,7 @@
 
 <script>
     function deletevehicle_info(id) {
-        var url = '{{ route("admin.brand.delete", "id") }}'.replace("id", id);
+        var url = '{{ route("admin.role.delete", "id") }}'.replace("id", id);
 
         Swal.fire({
             title: 'Are you sure?',
@@ -132,7 +132,7 @@
                         if (response.status == 'success') {
                             Swal.fire(
                                 'Deleted!',
-                                'Brand has been deleted.',
+                                'Role has been deleted.',
                                 'success'
                             ).then(() => {
                                 window.location.reload();
@@ -140,7 +140,7 @@
                         } else {
                             Swal.fire(
                                 'Failed!',
-                                'Failed to delete Brand.',
+                                'Failed to delete Role.',
                                 'error'
                             );
                         }

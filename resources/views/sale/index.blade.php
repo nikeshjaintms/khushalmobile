@@ -50,59 +50,78 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <a href="{{ route('admin.sale.create') }}"
-                                class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i>Sale</a>
-                            <h4 class="card-title">Sale</h4>
+                            @can('create-sale')
+                                <a href="{{ route('admin.sale.create') }}"
+                                   class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i>Sale</a>
+                                <h4 class="card-title">Sale</h4>
+                            @endcan
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="basic-datatables" class="display table table-striped table-hover">
                                     <thead>
-                                        <tr>
-                                            <th>Id</th>
-                                            <th>Customer</th>
-                                            <th>Invoice no</th>
-                                            <th>Product</th>
-                                            <th>IMEI</th>
-                                            <th>Final Total amount</th>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Customer</th>
+                                        <th>Invoice no</th>
+                                        <th>Product</th>
+                                        <th>IMEI</th>
+                                        <th>Final Total amount</th>
 
-                                            <th>Action</th>
-                                        </tr>
+                                        <th>Action</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse($sales as $item)
-                                            <tr>
-                                                <td>{{ $item->id }}</td>
-                                                <td>{{ $item->customer->name }}</td>
-                                                <td>{{ $item->invoice_no }}</td>
-                                                <td>
-                                                @foreach ($item->saleProducts as $index =>  $product)
-                                                   {{ $product->product->product_name ?? '-' }}@if (!$loop->last), @else.@endif
+                                    @forelse($sales as $item)
+                                        <tr>
+                                            <td>{{ $item->id }}</td>
+                                            <td>{{ $item->customer->name }}</td>
+                                            <td>{{ $item->invoice_no }}</td>
+                                            <td>
+                                                @foreach ($item->saleProducts as $index => $product)
+                                                    {{ $product->product->product_name ?? '-' }}@if (!$loop->last)
+                                                        ,
+                                                    @else
+                                                        .
+                                                    @endif
                                                 @endforeach
                                             </td>
-                                                <td>{{ $product->purchaseProduct->imei ?? '-' }}</td>
-                                                <td>{{ $item->total_amount }}</td>
-                                                <td>
+                                            <td>{{ $product->purchaseProduct->imei ?? '-' }}</td>
+                                            <td>{{ $item->total_amount }}</td>
+                                            <td>
+                                                @can('show-invoice')
                                                     <a href="{{ route('admin.invoice.index', $item->id) }}">
                                                         <i class="btn btn-link btn-danger">
                                                             <i class="fa fa-file-pdf"></i>
                                                         </i>
                                                     </a>
+                                                @endcan
+                                                @can('show-sale')
                                                     <a href="{{ route('admin.sale.show', $item->id) }}"
-                                                        class="btn btn-lg btn-link btn-primary">
+                                                       class="btn btn-lg btn-link btn-primary">
                                                         <i class="fa fa-eye"></i>
                                                     </a>
+                                                @endcan
+
+                                                @can('edit-sale')
+                                                    <a href="{{ route('admin.sale.edit', $item->id) }}"
+                                                       class="btn btn-lg btn-link btn-primary">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                @endcan
+                                                @can('delete-sale')
                                                     <button onclick="deletesale_info({{ $item->id }})"
-                                                        class="btn btn-link btn-danger">
+                                                            class="btn btn-link btn-danger delete-sale-row">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="6" class="text-center">No data available</td>
-                                            </tr>
-                                        @endforelse
+                                                @endcan
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="text-center">No data available</td>
+                                        </tr>
+                                    @endforelse
                                     </tbody>
                                 </table>
                             </div>
@@ -140,7 +159,7 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        success: function(response) {
+                        success: function (response) {
                             if (response.status == 'success') {
                                 Swal.fire(
                                     'Deleted!',
@@ -157,7 +176,7 @@
                                 );
                             }
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             Swal.fire(
                                 'Error!',
                                 'An error occurred: ' + xhr.responseText,
