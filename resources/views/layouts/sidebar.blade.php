@@ -112,6 +112,13 @@
                 </a>
               </li>
               <li class="nav-item">
+                <a  href="{{ route('admin.deduction.index') }}">
+                  <i class="fas fa-layer-group"></i>
+                  <p>Deduction</p>
+                  <span class="caret"></span>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a  href="{{ route('admin.transaction.index') }}">
                   <i class="fas fa-layer-group"></i>
                   <p>Transacation</p>
