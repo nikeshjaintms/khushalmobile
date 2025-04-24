@@ -89,13 +89,11 @@
                                             <td>{{ $product->purchaseProduct->imei ?? '-' }}</td>
                                             <td>{{ $item->total_amount }}</td>
                                             <td>
-                                                @can('show-invoice')
                                                     <a href="{{ route('admin.invoice.index', $item->id) }}">
                                                         <i class="btn btn-link btn-danger">
                                                             <i class="fa fa-file-pdf"></i>
                                                         </i>
                                                     </a>
-                                                @endcan
                                                 @can('show-sale')
                                                     <a href="{{ route('admin.sale.show', $item->id) }}"
                                                        class="btn btn-lg btn-link btn-primary">
