@@ -44,6 +44,9 @@
                                         <div class="form-group">
                                             <label for="name">Brand<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="name" value="{{ $data->name}}" id="name" placeholder="Enter Brand Name" required />
+                                            @error('name')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -76,6 +79,7 @@
                     required: true,
                     minlength: 3,
                     maxlength: 50,
+                    unique:true
                 },
 
             },
@@ -84,6 +88,7 @@
                     required: "Please Enter Brand Name",
                     minleght: "Please Enter Minimum 3 Characters",
                     maxlength: "Please Enter Maximum 50 Characters",
+                    unique: "<span class='text-danger'>The name is already has been taken</span>"
 
                 },
             },

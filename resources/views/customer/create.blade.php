@@ -45,26 +45,40 @@
                                             <input type="text" class="form-control" name="name" id="name"
                                                 placeholder="Enter Customer Name" required />
                                         </div>
+                                        @error('name')
+                                        <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Phone<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="phone" id="phone"
                                                 placeholder="Enter Phone Number" required />
+                                            @error('phone')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
+
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Alternate Phone</label>
                                             <input type="text" class="form-control" name="alternate_phone" id="alternate_phone"
                                                    placeholder="Enter Alternate Phone Number"  />
+                                            @error('alternate_phone')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
+
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">City<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="city" id="city"
                                                 placeholder="Enter your city" required />
+                                            @error('city')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -92,11 +106,18 @@
         $(document).ready(function() {
 
             $('input[name="phone"]').mask('0000000000');
+            $('input[name="alternate_phone"]').mask('0000000000');
 
             $('#name, #city').inputmask({
                 regex: "^[a-zA-Z ]*$",
                 placeholder: ''
             });
+            $('#alternate_phone,#phone').on('keydown', function (e) {
+                if (e.which === 32) {
+                    e.preventDefault();
+                }
+            });
+
 
             $('#customerForm').validate({
                 rules: {

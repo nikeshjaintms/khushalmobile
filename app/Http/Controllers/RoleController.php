@@ -31,6 +31,9 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string|min:2|unique:roles,name',
+        ]);
         $role = Role::create([
             'name' => $request->post('name'),
             'guard_name' => 'web',
@@ -59,6 +62,7 @@ class RoleController extends Controller
         $data = Role::find($id);
         $permissions = Permission::all();
         $selectPermission = $data->permissions()->pluck('name')->toArray();
+
         return view('role.edit', compact('data', 'permissions', 'selectPermission'));
     }
 
@@ -68,7 +72,7 @@ class RoleController extends Controller
     public function update(Request $request, Role $role, $id)
     {
         $validatedData = $request->validate([
-            'name' => 'required',
+            'name' => 'required|unique:roles,name,' . $id,
         ]);
 
         $data = Role::findOrFail($id);

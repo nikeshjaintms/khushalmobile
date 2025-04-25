@@ -6,7 +6,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
@@ -53,13 +56,16 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
-        $validatedData=   $request->validate([
+        $validatedData =  $request->validate([
             'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => [
+                'required',
+                Password::min(6)->letters()->mixedCase()->numbers()->symbols(),
 
+            ],
         ]);
+
         $validatedData['password'] = Hash::make($validatedData['password']);
         $user= User::create($validatedData);
         $user->syncRoles($request->input('role'));
@@ -69,9 +75,13 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, $id)
     {
         //
+        $user = User::where('id', $id)->first();
+        $role = Role::where('id', $user->roles[0]->id)->first();
+        $permissionNames = $role->getPermissionNames()->implode( ', ');
+        return view('user.show', compact('user','role','permissionNames'));
     }
 
     /**
@@ -88,11 +98,14 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update( User $user,Request $request, string $id)
+    public function update( User $user,Request $request, $id)
     {
-        $validatedData=   $request->validate([
+        $validatedData =  $request->validate([
             'name' => 'required',
-            'email' => 'required|email',
+            'email' => [
+                'required',
+                Rule::unique('users', 'email')->ignore($id, 'id'),
+            ],
 
         ]);
 

@@ -44,6 +44,9 @@
                                             <label for="">Name<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="name" id="name"
                                                 placeholder="Enter  Name" required />
+                                            @error('name')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>

@@ -106,10 +106,13 @@
                                                     <th scope="col">Action</th>
                                                 </tr>
                                             </thead>
-                                            @foreach($data1 as $index => $item)
                                             <tbody class="table-group-divider" id="add-table-row">
+                                            @php
+                                                $i = 0;
+                                            @endphp
+                                            @foreach($data1 as $index => $item)
                                                 <tr class="product-row">
-                                                    <th scope="row" class="row-index text-center">1</th>
+                                                    <th scope="row" class="row-index text-center index">{{ $i++ }}</th>
                                                     <td>
                                                         <select name="products[{{$index}}][brand_id]"
                                                             class="form-control brand-name">
@@ -184,7 +187,7 @@
 
 
                                                     <td>
-                                                        <input type="text" class="form-control priceSubTotal"
+                                                        <input type="number" class="form-control priceSubTotal"
                                                             id="priceSubTotal" name="products[{{$index}}][price_subtotal]"
                                                             value="{{ $item->price_subtotal }}" readonly required />
                                                         @error('price_subtotal')
@@ -193,7 +196,7 @@
                                                     </td>
 
                                                     <td>
-                                                        <input type="text" class="form-control tax" id="tax"
+                                                        <input type="number" class="form-control tax" id="tax"
                                                             name="products[{{$index}}][tax]" value="{{ $item->tax }}"
                                                             required />
                                                         @error('tax')
@@ -202,7 +205,7 @@
                                                     </td>
 
                                                     <td>
-                                                        <input type="text" class="form-control taxAmount tax-amount"
+                                                        <input type="number" class="form-control taxAmount tax-amount"
                                                             name="products[{{$index}}][tax_amount]" id="tax_amount"
                                                             value="{{ $item->tax_amount }}" readonly required />
                                                         @error('tax_amount')
@@ -211,7 +214,7 @@
                                                     </td>
 
                                                     <td>
-                                                        <input type="text"
+                                                        <input type="number"
                                                             class="form-control total total-amount totalAmount"
                                                             id="totalAmount" name="products[{{$index}}][price_total]"
                                                             value="{{ $item->price_total }}" required />
@@ -229,10 +232,8 @@
                                                         </button>
                                                     </td>
                                                 </tr>
-
-
-                                            </tbody>
                                             @endforeach
+                                            </tbody>
                                         </table>
                                     </div>
 
@@ -241,7 +242,7 @@
                                             <div>
                                                 <label for="">Sub Total<span style="color: red"
                                                         id="grandTotal">*</span></label>
-                                                <input type="text" class="form-control subTotal"
+                                                <input type="number" class="form-control subTotal"
                                                     name="products[0][sub_total]" placeholder="sub total"
                                                     value="{{ $data->sub_total }}" readonly required />
                                                 @error('sub_total')
@@ -276,7 +277,7 @@
                                             <div>
                                                 <label for=""> Total Tax Amount<span
                                                         style="color: red">*</span></label>
-                                                <input type="text" class="form-control totalTaxAmount"
+                                                <input type="number" class="form-control totalTaxAmount"
                                                     name="total_tax_amount" id="total_tax_amount"
                                                     placeholder="Enter Total Tax Amount"
                                                     value="{{ $data->total_tax_amount }}" readonly required />
@@ -292,7 +293,7 @@
                                             <div>
                                                 <label for="">Total Amount<span
                                                         style="color: red">*</span></label>
-                                                <input type="text" class="form-control finalTotalAmount"
+                                                <input type="number" class="form-control finalTotalAmount"
                                                     name="total_amount" id="total_amount"
                                                     placeholder="Enter Total  Amount" value="{{ $data->total_amount }}"
                                                     readonly required />
@@ -504,6 +505,9 @@
             }
 
             let productIndex = 1;
+
+
+
             let usedIMEIs = new Set();
 
             function createRow(data = {}) {
@@ -526,24 +530,23 @@
              </select>
           </td>
 
-         <input type="hidden" class="form-control price"  id="price" name="products[${productIndex}][price]"  value="${data1.price || ''}" readonly required />
+         <input type="hidden" class="form-control price"  id="price" name="products[${productIndex}][price]"  readonly required />
 
-          <td><input type="text" class="form-control discount" name="products[${productIndex}][discount]" value="${data1.discount || ''}"   required /></td>
+          <td><input type="number" class="form-control discount" name="products[${productIndex}][discount]"   required /></td>
 
-          <input type="hidden" class="form-control discount_amount discountAmount" name="products[${productIndex}][discount_amount]" value="${data1.discount_amount ||
-                ''}" id="discountAmount" readonly required />
+          <input type="hidden" class="form-control discount_amount discountAmount" name="products[${productIndex}][discount_amount]"  id="discountAmount" readonly required />
 
-            <td><input type="text" class="form-control priceSubTotal" value="${data1.priceSubTotal || ''}" name="products[${productIndex}][price_subtotal]" readonly
+            <td><input type="number" class="form-control priceSubTotal"  name="products[${productIndex}][price_subtotal]" readonly
              required/>
            </td>
 
-           <td><input type="text" class="form-control tax"   value="18" name="products[${productIndex}][tax]"  required /></td>
+           <td><input type="number" class="form-control tax"   value="18" name="products[${productIndex}][tax]"  required /></td>
 
-           <td><input type="text" class="form-control tax-amount taxAmount" value="${data1.tax_amount || ''}" name="products[${productIndex}][tax_amount]" readonly
+           <td><input type="number" class="form-control tax-amount taxAmount" name="products[${productIndex}][tax_amount]" readonly
             required/>
           </td>
 
-          <td><input type="text" class="form-control total total-amount totalAmount"  value="${data1.total || ''}" name="products[${productIndex}][price_total]"
+          <td><input type="number" class="form-control total total-amount totalAmount"  name="products[${productIndex}][price_total]"
            required /></td>
 
           <td class="d-inline-flex gap-1">
@@ -577,14 +580,14 @@
 
 
                 function handleInput() {
-                    const price = parseFloat(priceInput.value) || 0;
+                    // const price = parseFloat(priceInput.value) || 0;
+                    const price_total = parseFloat(row.querySelector('.totalAmount').value) || 0;
                     const discount = parseFloat(discountInput.value) || 0;
                     const tax = parseFloat(taxInput.value) || 0;
 
-                    const discountAmount = (price * discount) / 100;
-                    const priceSubTotal = price - discountAmount;
-                    const taxAmount = (price * tax) / 100;
-                    const totalAmount = priceSubTotal + taxAmount;
+                    const discountAmount = (price_total * discount) / 100;
+                    const taxAmount = price_total - (price_total / (1+(tax / 100)));
+                    const priceSubTotal = price_total - taxAmount;
 
                     row.querySelector('.discountAmount').value = discountAmount.toFixed(2);
                     row.querySelector('.taxAmount').value = taxAmount.toFixed(2);
@@ -627,16 +630,9 @@
                 if (target.classList.contains('duplicate-row')) {
                     const row = target.closest('tr');
                     const data = {
-                        // price: row.querySelector('.price')?.value,
-                        // discount: row.querySelector('.discount')?.value,
                         discount_amount: row.querySelector('.discount_amount')?.value,
-                        // total: row.querySelector('.total')?.value,
-
                         priceSubTotal: row.querySelector('.priceSubTotal')?.value || '',
-                        // tax: row.querySelector('.tax')?.value || '',
-
                         tax_amount: row.querySelector('.tax-amount')?.value || '',
-
                         total: row.querySelector('.total')?.value || ''
                     };
                     const selectedProduct = row.querySelector('.product-name')?.value;
@@ -647,6 +643,7 @@
                     createRow({
                         ...data
                     });
+
 
                     const newRow = tbody.lastElementChild;
                     newRow.querySelector('.product-name').value = selectedProduct;
@@ -682,19 +679,29 @@
         }
 
         function updateRowCalculations(row) {
-            const price = parseFloat(row.querySelector('.price').value) || 0;
+            // const price = parseFloat(row.querySelector('.price').value) || 0;
+            const price_total = parseFloat(row.querySelector('.totalAmount').value) || 0;
             const discount = parseFloat(row.querySelector('.discount').value) || 0;
             const tax = parseFloat(row.querySelector('.tax').value) || 0;
 
-            const discountAmount = (price * discount) / 100;
-            const taxAmount = (price * tax) / 100;
-            const priceSubTotal = price - discountAmount;
-            const totalAmount = priceSubTotal + taxAmount;
+            // const discountAmount = (price * discount) / 100;
+            // const taxAmount = (price * tax) / 100;
+            // const priceSubTotal = price - discountAmount;
+            // const totalAmount = priceSubTotal + taxAmount;
+
+            const discountAmount = (price_total * discount) / 100;
+            const taxAmount = price_total - (price_total / (1+(tax / 100)));
+            const priceSubTotal = price_total - taxAmount;
+            // const totalAmount = priceSubTotal + taxAmount;
 
             row.querySelector('.discountAmount').value = discountAmount.toFixed(2);
             row.querySelector('.taxAmount').value = taxAmount.toFixed(2);
             row.querySelector('.priceSubTotal').value = priceSubTotal.toFixed(2);
             row.querySelector('.totalAmount').value = totalAmount.toFixed(2);
+
+            updateGrandTotal();
+            updateTotalTaxAmount();
+            updateTotalAmount();
         }
 
         function updateGrandTotal() {

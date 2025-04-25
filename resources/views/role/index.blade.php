@@ -6,22 +6,6 @@
 
 @section('content-page')
 
-{{-- @if (!empty($alerts))
-    <script>
-        window.onload = function() {
-            let alerts = @json($alerts);
-            console.log(alerts);
-            alerts.forEach(function(alert) {
-                Swal.fire({
-                    title: 'Reminder',
-                    text: alert,
-                    icon: 'info',
-                    confirmButtonText: 'Okay'
-                });
-            });
-        };
-    </script>
-@endif --}}
     <div class="container">
         <div class="page-inner">
             <div class="page-header">
@@ -50,9 +34,9 @@
                 <div class="col-md-12">
                   <div class="card">
                     <div class="card-header">
-                        @can('create-role')
+{{--                        @can('create-role')--}}
                         <a href="{{ route('admin.role.create') }}" class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i> Role</a>
-                        @endcan
+{{--                        @endcan--}}
                         <h4 class="card-title">Role</h4>
                     </div>
                     <div class="card-body">
@@ -72,11 +56,11 @@
                               <td>{{$item->id }}</td>
                               <td>{{$item->name }}</td>
                               <td>
-                                  @can('edit-role')
+{{--                                  @can('edit-role')--}}
                                 <a href="{{ route('admin.role.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">
                                   <i class="fa fa-edit">
                                 </i></a>
-                                  @endcan
+{{--                                  @endcan--}}
                                       @can('delete-role')
                                 <button  onclick="deletevehicle_info({{ $item->id }})" class="btn btn-link btn-danger">
                                   <i class="fa fa-trash">

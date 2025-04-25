@@ -124,15 +124,15 @@
                                                     </td>
                                                     <td><input type="text" class="form-control" name="color[]"
                                                             id="color" value="{{  $pp->color }}" required></td>
-                                                    <td><input type="text" class="form-control" name="price[]"
+                                                    <td><input type="number" class="form-control" name="price[]"
                                                             id="price" value="{{  $pp->price }}" required></td>
-                                                    <td><input type="text" value="{{  $pp->discount }}" class="form-control" name="discount[]"
+                                                    <td><input type="number" value="{{  $pp->discount }}" class="form-control" name="discount[]"
                                                             id="discount" required></td>
                                                    <input type="hidden"  value="{{  $pp->discount_amount }}"   class="form-control" name="discount_amount[]"
                                                             id="discount_amount" >
-                                                    <td><input type="text" class="form-control" readonly name="price_subtotal[]"
+                                                    <td><input type="number" class="form-control" readonly name="price_subtotal[]"
                                                             id="price_subtotal" value="{{  $pp->price_subtotal }}" required></td>
-                                                    <td><input type="text" class="form-control" name="tax[]"
+                                                    <td><input type="number" class="form-control" name="tax[]"
                                                             id="tax" value="{{  $pp->tax }}" required></td>
                                                     <input type="hidden" class="form-control" name="tax_amount[]"
                                                             id="tax_amount" value="{{  $pp->tax_amount }}" >

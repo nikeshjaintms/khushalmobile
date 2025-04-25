@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DealerRequest;
 use App\Models\Dealer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class DealerController extends Controller
 {
@@ -32,7 +35,7 @@ class DealerController extends Controller
         $validatedData=   $request->validate([
             'name' => 'required',
             'address' => 'required',
-            'phone' => 'required',
+            'phone' => 'required|unique:dealers,phone',
             'city' => 'required',
         ]);
         Dealer::create($validatedData);
@@ -59,17 +62,21 @@ class DealerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Dealer $dealer, $id)
+
+    public function update(Request $request, $id)
     {
         $validatedData=   $request->validate([
             'name' => 'required',
-            '`address`' => 'required',
-            'phone' => 'required',
+            'phone' => [
+                'required',
+                Rule::unique('dealers', 'phone')->ignore($id, 'id'),
+            ],
+            'address' => 'required',
             'city' => 'required',
         ]);
+        $dealer = Dealer::findOrFail($id);
 
-        $data = Dealer::findOrFail($id);
-        $data->update($validatedData);
+        $dealer->update($validatedData);
 
         return redirect()->route('admin.dealer.index')->with('success', 'Dealer updated successfully.');
     }

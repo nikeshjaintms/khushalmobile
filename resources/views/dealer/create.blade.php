@@ -44,6 +44,9 @@
                                             <label for="">Name<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="name" id="name"
                                                 placeholder="Enter Dealer Name" required />
+                                            @error('name')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -51,6 +54,9 @@
                                             <label for="">Phone<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="phone" id="phone"
                                                 placeholder="Enter Phone Number" required />
+                                            @error('phone')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -58,6 +64,9 @@
                                         <div class="form-group">
                                             <label for="">Address<span style="color: red">*</span></label>
                                             <textarea type="text" class="form-control" name="address" id="address" placeholder="Enter your address" required></textarea>
+                                            @error('address')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -65,6 +74,9 @@
                                             <label for="">City<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="city" id="city"
                                                 placeholder="Enter your city" required />
+                                            @error('city')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>

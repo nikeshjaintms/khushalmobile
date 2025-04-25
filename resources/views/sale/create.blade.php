@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 {{-- @if (Auth::guard('admin')->check()) --}}
 @section('title', 'Admin Panel')
@@ -54,13 +55,13 @@
                                             <div>
                                                 <label for="">Customer<span style="color: red">*</span></label>
                                                 <select class="form-select customer" name="customer_id"
-                                                    aria-label="Default select example">
+                                                        aria-label="Default select example">
                                                     <option selected value=""> Select Customer</option>
                                                     @foreach ($customers as $item)
                                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                                     @endforeach
                                                     @error('customer_id')
-                                                        <p style="color: red;">{{ $message }}</p>
+                                                    <p style="color: red;">{{ $message }}</p>
                                                     @enderror
                                                 </select>
                                             </div>
@@ -71,9 +72,9 @@
                                             <div>
                                                 <label for="">Invoice No<span style="color: red">*</span></label>
                                                 <input type="text" class="form-control" name="invoice_no" id="invoice_no"
-                                                    value="{{ $invoiceNo }}" readonly required />
+                                                       value="{{ $invoiceNo }}" readonly required />
                                                 @error('invoice_no')
-                                                    <p style="color: red;">{{ $message }}</p>
+                                                <p style="color: red;">{{ $message }}</p>
                                                 @enderror
                                             </div>
                                         </div>
@@ -84,9 +85,9 @@
                                             <div>
                                                 <label for="">Invoice Date<span style="color: red">*</span></label>
                                                 <input id="datepicker" name="invoice_date" class="form-control datepicker"
-                                                    placeholder="Select Date" onchange="GetOrderNo()" />
+                                                       placeholder="Select Date" onchange="GetOrderNo()" />
                                                 @error('invoice_date')
-                                                    <p style="color: red;">{{ $message }}</p>
+                                                <p style="color: red;">{{ $message }}</p>
                                                 @enderror
                                             </div>
                                         </div>
@@ -95,133 +96,133 @@
                                     <div class="col-md-12">
                                         <table class="display table table-striped table-hover">
                                             <thead>
-                                                <tr>
-                                                    <th scope="col">sr no</th>
-                                                    <th scope="col">Brand</th>
-                                                    <th scope="col">Product</th>
-                                                    <th scope="col">IMEI No</th>
-                                                    {{-- <th scope="col">Price</th> --}}
-                                                    <th scope="col">Discount</th>
-                                                    {{-- <th scope="col">Discount Amount</th> --}}
-                                                    <th scope="col"> Sub Total</th>
-                                                    <th scope="col">Tax</th>
-                                                    <th scope="col">Tax Amount</th>
-                                                    <th scope="col">Total</th>
-                                                    <th scope="col">Action</th>
-                                                </tr>
+                                            <tr>
+                                                <th scope="col">sr no</th>
+                                                <th scope="col">Brand</th>
+                                                <th scope="col">Product</th>
+                                                <th scope="col">IMEI No</th>
+                                                {{-- <th scope="col">Price</th> --}}
+                                                <th scope="col">Discount</th>
+                                                {{-- <th scope="col">Discount Amount</th> --}}
+                                                <th scope="col"> Sub Total</th>
+                                                <th scope="col">Tax</th>
+                                                <th scope="col">Tax Amount</th>
+                                                <th scope="col">Total</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
                                             </thead>
                                             <tbody class="table-group-divider" id="add-table-row">
-                                                <tr>
-                                                    <th scope="row" class="row-index" style="text-align: center">1</th>
-                                                    <td>
-                                                        <select
-                                                            class="form-control form-select
+                                            <tr>
+                                                <th scope="row" class="row-index" style="text-align: center">1</th>
+                                                <td>
+                                                    <select
+                                                        class="form-control form-select
                                                     brand-name brand-select"
-                                                            name="products[0][brand_id]" aria-label="Default select example"
-                                                            required>
-                                                            <option value="">Select Brand</option>
-                                                            @foreach ($brands as $brand)
-                                                                <option value="{{ $brand->id }}"
-                                                                    {{ request('brand_id') == $brand->id ? 'selected' : '' }}>
-                                                                    {{ $brand->name }}
-                                                                </option>
-                                                            @endforeach
-                                                            @error('brand_id')
-                                                                <p style="color: red;">{{ $message }}</p>
-                                                            @enderror
-                                                        </select>
-                                                    </td>
-                                                    <td>
-                                                        <select id="product"
-                                                                class="form-control form-select product-name product-select product"
-                                                                name="products[0][product_id]">
-                                                            <option value=""> Select Product</option>
-                                                        </select>
-                                                        @error('product_id')
-                                                            <p style="color: red;">{{ $message }}</p>
+                                                        name="products[0][brand_id]" aria-label="Default select example"
+                                                        required>
+                                                        <option value="">Select Brand</option>
+                                                        @foreach ($brands as $brand)
+                                                            <option value="{{ $brand->id }}"
+                                                                {{ request('brand_id') == $brand->id ? 'selected' : '' }}>
+                                                                {{ $brand->name }}
+                                                            </option>
+                                                        @endforeach
+                                                        @error('brand_id')
+                                                        <p style="color: red;">{{ $message }}</p>
                                                         @enderror
-                                                    </td>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select id="product"
+                                                            class="form-control form-select product-name product-select product"
+                                                            name="products[0][product_id]">
+                                                        <option value=""> Select Product</option>
+                                                    </select>
+                                                    @error('product_id')
+                                                    <p style="color: red;">{{ $message }}</p>
+                                                    @enderror
+                                                </td>
 
-                                                    <td>
-                                                        <select class="form-control form-select imei_id imei-id"
+                                                <td>
+                                                    <select class="form-control form-select imei_id imei-id"
                                                             name="products[0][imei_id]" aria-label="Default select example"
                                                             required>
-                                                            <option selected> Select Imi No</option>
-                                                        </select>
-                                                         @error('imiNo') <p style="color: red;">{{ $message }}</p> @enderror
-                                                    </td>
+                                                        <option selected> Select Imi No</option>
+                                                    </select>
+                                                    @error('imiNo') <p style="color: red;">{{ $message }}</p> @enderror
+                                                </td>
 
 
-                                                    <input type="hidden" class="form-control price-select price"
-                                                        name="products[0][price]" id="price" required />
-                                                    @error('price')
-                                                        <p style="color: red;">{{ $message }}</p>
+                                                <input type="hidden" class="form-control price-select price"
+                                                       name="products[0][price]" id="price" required />
+                                                @error('price')
+                                                <p style="color: red;">{{ $message }}</p>
+                                                @enderror
+
+                                                <td>
+                                                    <input type="number" class="form-control discount"
+                                                           name="products[0][discount]"  id="discount"
+                                                           required />
+                                                    @error('discount')
+                                                    <p style="color: red;">{{ $message }}</p>
                                                     @enderror
-
-                                                    <td>
-                                                        <input type="text" class="form-control discount"
-                                                            name="products[0][discount]"  id="discount"
-                                                            required />
-                                                        @error('discount')
-                                                            <p style="color: red;">{{ $message }}</p>
-                                                        @enderror
-                                                    </td>
+                                                </td>
 
 
-                                                    <input type="hidden"
-                                                        class="form-control discountAmount discount_amount"
-                                                        name="products[0][discount_amount]" id="discountAmount" readonly
-                                                        required />
-                                                    @error('discount_amount')
-                                                        <p style="color: red;">{{ $message }}</p>
+                                                <input type="hidden"
+                                                       class="form-control discountAmount discount_amount"
+                                                       name="products[0][discount_amount]" id="discountAmount" readonly
+                                                       required />
+                                                @error('discount_amount')
+                                                <p style="color: red;">{{ $message }}</p>
+                                                @enderror
+
+
+                                                <td>
+                                                    <input type="number" class="form-control priceSubTotal" readonly
+                                                           id="priceSubTotal" name="products[0][price_subtotal]"
+                                                           required />
+                                                    @error('price_subtotal')
+                                                    <p style="color: red;">{{ $message }}</p>
                                                     @enderror
+                                                </td>
+
+                                                <td>
+                                                    <input type="number" class="form-control tax" id="tax"
+                                                           name="products[0][tax]" value="18" required />
+                                                    @error('tax')
+                                                    <p style="color: red;">{{ $message }}</p>
+                                                    @enderror
+                                                </td>
 
 
-                                                    <td>
-                                                        <input type="text" class="form-control priceSubTotal" readonly
-                                                            id="priceSubTotal" name="products[0][price_subtotal]"
-                                                            required />
-                                                        @error('price_subtotal')
-                                                            <p style="color: red;">{{ $message }}</p>
-                                                        @enderror
-                                                    </td>
+                                                <td>
+                                                    <input type="number" class="form-control taxAmount tax-amount"
+                                                           name="products[0][tax_amount]" id="tax_amount" readonly
+                                                           required />
+                                                    @error('tax_amount')
+                                                    <p style="color: red;">{{ $message }}</p>
+                                                    @enderror
+                                                </td>
 
-                                                                                                       <td>
-                                                        <input type="text" class="form-control tax" id="tax"
-                                                               name="products[0][tax]" value="18" required />
-                                                        @error('tax')
-                                                        <p style="color: red;">{{ $message }}</p>
-                                                        @enderror
-                                                    </td>
+                                                <td>
+                                                    <input type="number"
+                                                           class="form-control total total-amount totalAmount"
+                                                           id="totalAmount" name="products[0][price_total]" required />
+                                                    @error('total')
+                                                    <p style="color: red;">{{ $message }}</p>
+                                                    @enderror
+                                                </td>
 
-
-                                                    <td>
-                                                        <input type="text" class="form-control taxAmount tax-amount"
-                                                            name="products[0][tax_amount]" id="tax_amount" readonly
-                                                            required />
-                                                        @error('tax_amount')
-                                                            <p style="color: red;">{{ $message }}</p>
-                                                        @enderror
-                                                    </td>
-
-                                                    <td>
-                                                        <input type="text"
-                                                            class="form-control total total-amount totalAmount"
-                                                            id="totalAmount" name="products[0][price_total]" required />
-                                                        @error('total')
-                                                            <p style="color: red;">{{ $message }}</p>
-                                                        @enderror
-                                                    </td>
-
-                                                    <td class="d-inline-flex gap-1">
-                                                        <button type="button" class="btn btn-success add-row">+</button>
-                                                        <button type="button" class="btn btn-danger remove-row">-
-                                                        </button>
-                                                        <button type="button" class="btn btn-secondary duplicate-row">
-                                                            <i class="fas fa-copy"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
+                                                <td class="d-inline-flex gap-1">
+                                                    <button type="button" class="btn btn-success add-row">+</button>
+                                                    <button type="button" class="btn btn-danger remove-row">-
+                                                    </button>
+                                                    <button type="button" class="btn btn-secondary duplicate-row">
+                                                        <i class="fas fa-copy"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
                                             </tbody>
 
 
@@ -232,11 +233,11 @@
                                         <div class="form-group">
                                             <div>
                                                 <label for="">Sub Total<span style="color: red"
-                                                        id="grandTotal">*</span></label>
-                                                <input type="text" class="form-control subTotal" name="sub_total"
-                                                    placeholder="sub total" readonly required />
+                                                                             id="grandTotal">*</span></label>
+                                                <input type="number" class="form-control subTotal" name="sub_total"
+                                                       placeholder="sub total" readonly required />
                                                 @error('sub_total')
-                                                    <p style="color: red;">{{ $message }}</p>
+                                                <p style="color: red;">{{ $message }}</p>
                                                 @enderror
                                             </div>
                                         </div>
@@ -246,13 +247,13 @@
                                         <div class="form-group">
                                             <label for="">Tax Type<span style="color: red">*</span></label>
                                             <select class="form-control form-select taxType" name="tax_type"
-                                                aria-label="Default select example" required>
+                                                    aria-label="Default select example" required>
                                                 <option  value="1" selected> CGST/SGST</option>
                                                 <option value="2"> IGST</option>
                                             </select>
 
                                             @error('tax_type')
-                                                <p style="color: red;">{{ $message }}</p>
+                                            <p style="color: red;">{{ $message }}</p>
                                             @enderror
                                         </div>
                                     </div>
@@ -261,11 +262,11 @@
                                         <div class="form-group">
                                             <label for=""> Total Tax Amount<span
                                                     style="color: red">*</span></label>
-                                            <input type="text" class="form-control totalTaxAmount"
-                                                name="total_tax_amount" id="total_tax_amount"
-                                                placeholder="Enter Total Tax Amount" readonly required />
+                                            <input type="number" class="form-control totalTaxAmount"
+                                                   name="total_tax_amount" id="total_tax_amount"
+                                                   placeholder="Enter Total Tax Amount" readonly required />
                                             @error('tax_amount')
-                                                <p style="color: red;">{{ $message }}</p>
+                                            <p style="color: red;">{{ $message }}</p>
                                             @enderror
                                         </div>
                                     </div>
@@ -273,11 +274,11 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="">Total Amount<span style="color: red">*</span></label>
-                                            <input type="text" class="form-control finalTotalAmount"
-                                                name="total_amount" id="total_amount" placeholder="Enter Total  Amount"
-                                                readonly required />
+                                            <input type="number" class="form-control finalTotalAmount"
+                                                   name="total_amount" id="total_amount" placeholder="Enter Total  Amount"
+                                                   readonly required />
                                             @error('total_amount')
-                                                <p style="color: red;">{{ $message }}</p>
+                                            <p style="color: red;">{{ $message }}</p>
                                             @enderror
                                         </div>
                                     </div>
@@ -286,13 +287,13 @@
                                         <div class="form-group">
                                             <label for="">Payment Method<span style="color: red">*</span></label>
                                             <select class="form-select paymentMethod" aria-label="Default select example"
-                                                name="payment_method">
-                                                <option selected> Select Payment Method</option>
-                                                <option value="1">Online/Cash</option>
+                                                    name="payment_method">
+                                                <option > Select Payment Method</option>
+                                                <option value="1" selected>Online/Cash</option>
                                                 <option value="2">Finance</option>
                                             </select>
                                             @error('payment_method')
-                                                <p style="color: red;">{{ $message }}</p>
+                                            <p style="color: red;">{{ $message }}</p>
                                             @enderror
                                         </div>
                                     </div>
@@ -301,34 +302,34 @@
                                         <h4>Payment</h4>
                                         <table class="display table table-striped table-hover">
                                             <thead>
-                                                <tr>
-                                                    <th>Mode</th>
-                                                    <th>Amount</th>
-                                                    <th>Reference</th>
-                                                    <th>Action</th>
-                                                </tr>
+                                            <tr>
+                                                <th>Mode</th>
+                                                <th>Amount</th>
+                                                <th>Reference</th>
+                                                <th>Action</th>
+                                            </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <select name="payment[0][payment_mode]" id="mode"
+                                            <tr>
+                                                <td>
+                                                    <select name="payment[0][payment_mode]" id="mode"
                                                             class="form-control">
-                                                            <option value="1">Cash</option>
-                                                            <option value="2">Online</option>
-                                                            <option value="3">Finance</option>
-                                                        </select>
-                                                    </td>
-                                                    <td><input type="text" name="payment[0][amount]" id="amount"
-                                                            class="form-control amount"></td>
-                                                    <td><input type="text" name="payment[0][reference_no]"
-                                                            id="reference_no" class="form-control reference_no"></td>
-                                                    <td>
-                                                        <button type="button"
+                                                        <option value="1">Cash</option>
+                                                        <option value="2">Online</option>
+                                                        <option value="3">Finance</option>
+                                                    </select>
+                                                </td>
+                                                <td><input type="number" name="payment[0][amount]" id="amount"
+                                                           class="form-control amount"></td>
+                                                <td><input type="text" name="payment[0][reference_no]"
+                                                           id="reference_no" class="form-control reference_no"></td>
+                                                <td>
+                                                    <button type="button"
                                                             class="btn btn-success add-payment-row">+</button>
-                                                        <button type="button" class="btn btn-danger remove-payment-row">-
-                                                        </button>
-                                                    </td>
-                                                </tr>
+                                                    <button type="button" class="btn btn-danger remove-payment-row">-
+                                                    </button>
+                                                </td>
+                                            </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -342,7 +343,7 @@
                                                     <label> Select Finance </label>
 
                                                     <select class="form-select" name="finances_master_id"
-                                                            aria-label="Default select example">
+                                                            aria-label="Default select example ">
                                                         <option selected value=""> Select finance</option>
                                                         @foreach ($financeMasters as $item)
                                                             <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -358,32 +359,32 @@
                                             <div class="form-group">
                                                 <label> Processing Fee </label>
                                                 <input type="text" name="Processing" id="Processing"
-                                                    class="form-control  Processingfee required" placeholder="--Processing Fee--"
-                                                    onkeyup="SetFinanceAmount()" ;>
+                                                       class="form-control  Processingfee required" placeholder="--Processing Fee--"
+                                                       onkeyup="SetFinanceAmount()" ;>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label> Security / Insurance Charge </label>
                                                 <input type="text" name="mobile_security_charges" id="mobile_security_charges"
-                                                    class="form-control required" placeholder="--Security/Insurance Charge--"
-                                                    onkeyup="SetFinanceAmount()" ;>
+                                                       class="form-control required" placeholder="--Security/Insurance Charge--"
+                                                       onkeyup="SetFinanceAmount()" ;>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label> Per Month EMI Charge </label>
                                                 <input type="text" name="EMICharge" id="EMICharge"
-                                                    class="form-control emicharge required" placeholder="--Per Month EMI Charge--"
-                                                    value='0' onkeyup="SetMonthDuration()" ;>
+                                                       class="form-control emicharge required" placeholder="--Per Month EMI Charge--"
+                                                       value='0' onkeyup="SetMonthDuration()" ;>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label> Down Payment </label>
                                                 <input type="text" name="DownPayment" id="DownPayment"
-                                                    class="form-control DownPayment required" placeholder="--Down Payment--"
-                                                    onkeyup="SetFinanceAmount()" ;>
+                                                       class="form-control DownPayment required" placeholder="--Down Payment--"
+                                                       onkeyup="SetFinanceAmount()" ;>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -391,23 +392,23 @@
                                             <div class="form-group">
                                                 <label> Payable Amount </label>
                                                 <input type="text" name="FinanceAmount" id="FinanceAmount"
-                                                    class="form-control FinanceAmount required" placeholder="--Payable Amount--"
-                                                    readonly>
+                                                       class="form-control FinanceAmount required" placeholder="--Payable Amount--"
+                                                       readonly>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label> Month Duration </label>
                                                 <input type="text" name="MonthDuration" id="MonthDuration"
-                                                    class="form-control MonthDuration required" placeholder="--Month Duration--"
-                                                    onkeyup="SetMonthDuration()" ;>
+                                                       class="form-control MonthDuration required" placeholder="--Month Duration--"
+                                                       onkeyup="SetMonthDuration()" ;>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label> Deduction Date </label>
                                                 <select class="form-control  required" name="DeductionDate"
-                                                    id="DeductionDate">
+                                                        id="DeductionDate">
                                                     @for ($i = 1; $i <= 28; $i++)
                                                         <option value="{{ $i }}" >{{ $i }}</option>
                                                     @endfor
@@ -418,7 +419,7 @@
                                             <div class="form-group">
                                                 <label> Penalty Charges </label>
                                                 <input type="text" name="Penalty" id="Penalty"
-                                                    class="form-control Penalty required" placeholder="--Penalty Charges--">
+                                                       class="form-control Penalty required" placeholder="--Penalty Charges--">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -495,22 +496,22 @@
           </td>
          <input type="hidden" class="form-control price"  id="price" name="products[${productIndex}][price]"  value="${data.mrp || ''}" readonly required />
 
-          <td><input type="text" class="form-control discount" name="products[${productIndex}][discount]" value="${data.discount || ''}"   required /></td>
+          <td><input type="number" class="form-control discount" name="products[${productIndex}][discount]" value="${data.discount || ''}"   required /></td>
 
           <input type="hidden" class="form-control discount_amount discountAmount" name="products[${productIndex}][discount_amount]" value="${data.discount_amount ||
                 ''}" id="discountAmount" readonly required />
 
-            <td><input type="text" class="form-control priceSubTotal" value="${data.priceSubTotal || ''}" name="products[${productIndex}][price_subtotal]" readonly
+            <td><input type="number" class="form-control priceSubTotal" value="${data.priceSubTotal || ''}" name="products[${productIndex}][price_subtotal]" readonly
              required/>
            </td>
 
-           <td><input type="text" class="form-control tax"   value="18" name="products[${productIndex}][tax]"  required /></td>
+           <td><input type="number" class="form-control tax"   value="18" name="products[${productIndex}][tax]"  required /></td>
 
-           <td><input type="text" class="form-control tax-amount taxAmount" value="${data.tax_amount || ''}" name="products[${productIndex}][tax_amount]" readonly
+           <td><input type="number" class="form-control tax-amount taxAmount" value="${data.tax_amount || ''}" name="products[${productIndex}][tax_amount]" readonly
             required/>
           </td>
 
-          <td><input type="text" class="form-control total total-amount totalAmount" value="${data.total || ''}" name="products[${productIndex}][price_total]"
+          <td><input type="number" class="form-control total total-amount totalAmount" value="${data.total || ''}" name="products[${productIndex}][price_total]"
            required /></td>
 
           <td class="d-inline-flex gap-1">
@@ -528,7 +529,6 @@
 
                 updateButtons();
 
-
                 const priceInput = row.querySelector('.price');
                 const discountInput = row.querySelector('.discount');
                 const taxInput = row.querySelector('.tax');
@@ -542,17 +542,15 @@
                 });
                 document.querySelector('#add-table-row').appendChild(row);
 
-
-
                 function handleInput() {
-                    const price = parseFloat(priceInput.value) || 0;
+
+                    const price_total = parseFloat(row.querySelector('.totalAmount').value) || 0;
                     const discount = parseFloat(discountInput.value) || 0;
                     const tax = parseFloat(taxInput.value) || 0;
 
-                    const discountAmount = (price * discount) / 100;
-                    const priceSubTotal = price - discountAmount;
-                    const taxAmount = (price * tax) / 100;
-                    const totalAmount = priceSubTotal + taxAmount;
+                    const discountAmount = (price_total * discount) / 100;
+                    const taxAmount = price_total - (price_total / (1+(tax / 100)));
+                    const priceSubTotal = price_total - taxAmount;
 
                     row.querySelector('.discountAmount').value = discountAmount.toFixed(2);
                     row.querySelector('.taxAmount').value = taxAmount.toFixed(2);
@@ -595,16 +593,9 @@
                 if (target.classList.contains('duplicate-row')) {
                     const row = target.closest('tr');
                     const data = {
-                        // price: row.querySelector('.price')?.value,
-                        // discount: row.querySelector('.discount')?.value,
                         discount_amount: row.querySelector('.discount_amount')?.value,
-                        // total: row.querySelector('.total')?.value,
-
                         priceSubTotal: row.querySelector('.priceSubTotal')?.value || '',
-                        // tax: row.querySelector('.tax')?.value || '',
-
                         tax_amount: row.querySelector('.tax-amount')?.value || '',
-
                         total: row.querySelector('.total')?.value || ''
                     };
                     const selectedProduct = row.querySelector('.product-name')?.value;
@@ -650,19 +641,26 @@
         }
 
         function updateRowCalculations(row) {
-            const price = parseFloat(row.querySelector('.price').value) || 0;
+            // const price = parseFloat(row.querySelector('.price').value) || 0;
+            const price_total = parseFloat(row.querySelector('.totalAmount').value) || 0;
             const discount = parseFloat(row.querySelector('.discount').value) || 0;
             const tax = parseFloat(row.querySelector('.tax').value) || 0;
 
-            const discountAmount = (price * discount) / 100;
-            const taxAmount = (price * tax) / 100;
-            const priceSubTotal = price - discountAmount;
-            const totalAmount = priceSubTotal + taxAmount;
+            // const discountAmount = (price * discount) / 100;
+            // const taxAmount = (price * tax) / 100;
+            // const priceSubTotal = price - discountAmount;
+            // const totalAmount = priceSubTotal + taxAmount;
+
+            const discountAmount = (price_total * discount) / 100;
+            const taxAmount = price_total - (price_total / (1+(tax / 100)));
+            const priceSubTotal = price_total - taxAmount;
+            // const totalAmount = priceSubTotal + taxAmount;
 
             row.querySelector('.discountAmount').value = discountAmount.toFixed(2);
             row.querySelector('.taxAmount').value = taxAmount.toFixed(2);
             row.querySelector('.priceSubTotal').value = priceSubTotal.toFixed(2);
             row.querySelector('.totalAmount').value = totalAmount.toFixed(2);
+
         }
 
         function updateGrandTotal() {
@@ -671,7 +669,6 @@
                 grandTotal += parseFloat(input.value) || 0;
             });
 
-            // Update input field instead of span
             const subTotalInput = document.querySelector('.subTotal');
             if (subTotalInput) {
                 subTotalInput.value = grandTotal.toFixed(2);
@@ -684,7 +681,6 @@
                 totalTaxAmount += parseFloat(input.value) || 0;
             });
 
-            // Update input field instead of span
             const totalTaxAmountInput = document.querySelector('.totalTaxAmount');
             if (totalTaxAmountInput) {
                 totalTaxAmountInput.value = totalTaxAmount.toFixed(2);
@@ -697,12 +693,13 @@
                 FinalTotalAmount += parseFloat(input.value) || 0;
             });
 
-            // Update input field instead of span
             const FinalTotalAmountInput = document.querySelector('.finalTotalAmount');
             if (FinalTotalAmountInput) {
                 FinalTotalAmountInput.value = FinalTotalAmount.toFixed(2);
             }
         }
+
+
 
 
 
@@ -956,7 +953,6 @@
                     invoice_date: {
                         required: true
                     },
-
                     sub_total: {
                         required: true
                     },
@@ -990,8 +986,10 @@
                     },
                     product_name: {
                         required: true
+                    },
+                    amount:{
+                        required:true
                     }
-
                 },
                 messages: {
                     customer: {
@@ -1035,7 +1033,11 @@
                     },
                     brand_name: {
                         required: "please select Brand Name"
+                    },
+                    amount:{
+                        required: "please enter amount"
                     }
+
                 },
                 errorElement: 'span',
                 errorClass: 'text-danger',

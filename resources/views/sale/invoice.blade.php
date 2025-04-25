@@ -70,6 +70,7 @@
                 <td>{{ $product->discount }}</td>
                 <td>{{ $product->price_subtotal }}</td>
             </tr>
+        @endforeach
             <tr>
                 <td colspan="7" style="text-align: right">Sub Total</td>
                 <td>{{$sale->sub_total}}</td>
@@ -92,7 +93,6 @@
 
             <th colspan="7" style="text-align: right">Grand Total</th>
             <th>{{$sale->total_amount}}</th>
-        @endforeach
     </table>
 </div>
 

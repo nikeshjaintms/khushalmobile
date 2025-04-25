@@ -47,6 +47,9 @@
                                                 value="{{ $data->name }}" id="name" placeholder="Enter Customer Name"
                                                 required />
                                         </div>
+                                        @error('name')
+                                        <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -54,10 +57,14 @@
                                             <input type="email" class="form-control" name="email"
                                                 value="{{ $data->email }}" id="email" placeholder="Enter email"
                                                 required />
+                                            @error('email')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
-                                    <div class="input-group mb-3">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
                                         <label for="userRole" class="col-3 col-form-label">Roles</label>
                                         <select name="role" class="form-select" id="role">
                                             <option value="">Select</option>
@@ -67,7 +74,10 @@
                                                 </option>
                                             @endforeach
                                         </select>
-
+                                            @error('role')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
                                     </div>
 
                                 </div>
@@ -92,6 +102,10 @@
 
     <script>
         $(document).ready(function() {
+            $.validator.addMethod("regexEmail", function (value, element) {
+                let regex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+                return this.optional(element) || regex.test(value);
+            });
 
             $('input[name="phone"]').mask('0000000000');
 
@@ -100,19 +114,31 @@
                 placeholder: ''
             });
 
+            $('#email').on('keydown', function (e) {
+                if (e.which === 32) {
+                    e.preventDefault();
+                }
+            });
             $("#userForm").validate({
                 onfocusout: function(element) {
                     this.element(element); // Validate the field on blur
                 },
-                onkeyup: false, // Optional: Disable validation on keyup for performance
+                onkeyup: false,
                 rules: {
                     name: {
                         required: true,
                         minlength: 3,
                         maxlength: 50,
                     },
+                    email:{
+                        required: true,
+                        regexEmail: true,
 
+                    },
 
+                    role:{
+                        required:true
+                    }
                 },
                 messages: {
                     name: {
@@ -120,6 +146,14 @@
                         minleght: "Please Enter Minimum 3 Characters",
                         maxlength: "Please Enter Maximum 50 Characters",
                     },
+                    email: {
+                        required: "Please enter a Email",
+
+                    },
+
+                    role:{
+                        required:"Please select a role"
+                    }
 
                 },
                 errorClass: "text-danger",

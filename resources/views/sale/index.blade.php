@@ -6,22 +6,6 @@
 
 @section('content-page')
 
-    {{-- @if (!empty($alerts))
-        <script>
-            window.onload = function() {
-                let alerts = @json($alerts);
-                console.log(alerts);
-                alerts.forEach(function(alert) {
-                    Swal.fire({
-                        title: 'Reminder',
-                        text: alert,
-                        icon: 'info',
-                        confirmButtonText: 'Okay'
-                    });
-                });
-            };
-        </script>
-    @endif --}}
     <div class="container">
         <div class="page-inner">
             <div class="page-header">

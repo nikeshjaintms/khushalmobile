@@ -46,6 +46,9 @@
                                             <input type="text" class="form-control" name="name"
                                                 value="{{ $data->name }}" id="name" placeholder="Enter Customer Name"
                                                 required />
+                                            @error('name')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>

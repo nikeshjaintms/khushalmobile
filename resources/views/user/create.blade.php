@@ -44,6 +44,9 @@
                                             <label for="">Name<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="name" id="name"
                                                 placeholder="Enter Customer Name" required />
+                                            @error('name')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -52,6 +55,9 @@
                                             <label for="">Email</label>
                                             <input type="email" class="form-control" name="email" id="email"
                                                    placeholder="Enter your Email"  />
+                                            @error('email')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -59,16 +65,24 @@
                                             <label for="">Password<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="password" id="password"
                                                    placeholder="Enter your Password" required />
+                                            @error('password')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
-                                    <div class="input-group mb-3">
-                                        <label for="userRole" class="col-3 col-form-label">Roles</label>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="userRole">Roles<span style="color: red">*</span></label>
                                         <select name="role" class="form-select" id="role">
                                             <option value="" id="role">Select</option>
                                             @foreach($roles as $role)
                                                 <option value="{{ $role->name }}">{{ $role->name }}</option>
                                             @endforeach
                                         </select>
+                                            @error('role')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -93,12 +107,21 @@
 
     <script>
         $(document).ready(function() {
+            $.validator.addMethod("regexEmail", function (value, element) {
+                let regex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+                return this.optional(element) || regex.test(value);
+            });
 
             $('input[name="phone"]').mask('0000000000');
 
             $('#name, #city').inputmask({
                 regex: "^[a-zA-Z ]*$",
                 placeholder: ''
+            });
+            $('#email,#password').on('keydown', function (e) {
+                if (e.which === 32) {
+                    e.preventDefault();
+                }
             });
 
             $('#userForm').validate({
@@ -107,14 +130,34 @@
                         required: true,
                         minlength: 2
                     },
+                    email:{
+                        required: true,
+                        regexEmail: true,
 
+                    },
+                    password:{
+                        required:true,
 
+                    },
+                    role:{
+                        required:true
+                    }
                 },
                 messages: {
                     name: {
                         required: "Please enter a User name",
                         minlength: "customer name must be at least 2 characters long"
                     },
+                    email: {
+                        required: "Please enter a Email",
+
+                    },
+                    password: {
+                        required: "Please enter a Password",
+                    },
+                    role:{
+                        required:"Please select a role"
+                    }
 
                 },
                 errorElement: 'span',

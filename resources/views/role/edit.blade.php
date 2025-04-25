@@ -44,6 +44,9 @@
                                         <div class="form-group">
                                             <label for="name">Role<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="name" value="{{ $data->name}}" id="name" placeholder="Enter Role Name" required />
+                                            @error('name')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>

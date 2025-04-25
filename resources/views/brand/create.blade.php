@@ -43,6 +43,9 @@
                                         <div class="form-group">
                                             <label for="driver_name">Brand<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="name" id="name" placeholder="Enter Brand Name" required />
+                                            @error('name')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -69,27 +72,26 @@
             rules: {
                 name: {
                     required: true,
-                    minlength: 2
+                    minlength: 2,
+                    unique:true
                 }
             },
             messages: {
                 name: {
                     required: "Please enter a brand name",
-                    minlength: "Brand name must be at least 2 characters long"
+                    minlength: "Brand name must be at least 2 characters long",
+                    unique: "<span class='text-danger'>The name is already has been taken</span>"
                 }
             },
             errorElement: 'span',
             errorClass: 'text-danger',
             highlight: function (element, errorClass) {
                 $(element).addClass("is-invalid");
-            
-                
             },
             unhighlight: function (element, errorClass) {
                 $(element).removeClass("is-invalid");
             }
             });
-       
     });
 </script>
 @endsection

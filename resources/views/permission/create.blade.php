@@ -43,6 +43,9 @@
                                         <div class="form-group">
                                             <label for="driver_name">Permission<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="name" id="name" placeholder="Enter Permission Name" required />
+                                            @error('name')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>

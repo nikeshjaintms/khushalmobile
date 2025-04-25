@@ -28,8 +28,8 @@ class DashboardController extends Controller
         $sales = Sale::whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
             ->count();
-            $transactionIn = Transction::where('type', 'in')->whereDate('created_at', Carbon::today())->sum('amount');
-            $transactionOut = Transction::where('type', 'out')->whereDate('created_at', Carbon::today())->sum('amount');
+            $transactionIn = Transction::where('type', 'in')->whereDate('created_at', Carbon::today())->sum('amount')?? 0.00 ;
+            $transactionOut = Transction::where('type', 'out')->whereDate('created_at', Carbon::today())->sum('amount') ?? 0.00;
 
         return response()->json([
             'product_count' => $productCount,

@@ -134,13 +134,13 @@
                                                             <div class="text-red-500">{{ $message }}</div>
                                                         @enderror
                                                     </td>
-                                                    <td><input type="text" class="form-control" name="price[]"
+                                                    <td><input type="number" class="form-control" name="price[]"
                                                             id="price" required>
                                                         @error('price[]')
                                                             <div class="text-red-500">{{ $message }}</div>
                                                         @enderror
                                                     </td>
-                                                    <td><input type="text" class="form-control" name="discount[]"
+                                                    <td><input type="number" class="form-control" name="discount[]"
                                                             id="discount" required>
                                                         @error('discount[]')
                                                             <div class="text-red-500">{{ $message }}</div>
@@ -154,7 +154,7 @@
                                                             <div class="text-red-500">{{ $message }}</div>
                                                         @enderror
                                                     </td>
-                                                    <td><input type="text" class="form-control" name="tax[]"
+                                                    <td><input type="number" class="form-control" name="tax[]"
                                                             id="tax" required value="18">
                                                         @error('tax[]')
                                                             <div class="text-red-500">{{ $message }}</div>
@@ -162,7 +162,7 @@
                                                     </td>
                                                     <input type="hidden" class="form-control" readonly
                                                         name="tax_amount[]" id="tax_amount" required>
-                                                    <td><input type="text" class="form-control" readonly
+                                                    <td><input type="number" class="form-control" readonly
                                                             name="product_total[]" id="product_total" required>
                                                         @error('product_total[]')
                                                             <div class="text-red-500">{{ $message }}</div>
@@ -521,7 +521,7 @@
                     },
                     "imei[]": {
                         required: true,
-                        minlength: 15,
+                        minlength: 5,
                         maxlength: 15,
                         uniqueIMEI: true
                     },

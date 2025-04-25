@@ -46,6 +46,9 @@
                                             <input type="text" class="form-control" name="name"
                                                 value="{{ $data->name }}" id="name" placeholder="Enter Customer Name"
                                                 required />
+                                            @error('name')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -54,6 +57,9 @@
                                             <input type="text" class="form-control" name="phone"
                                                 value="{{ $data->phone }}" id="phone" placeholder="Enter Phone Number"
                                                 required />
+                                            @error('phone')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -61,7 +67,10 @@
                                             <label for="">Alternate Phone</label>
                                             <input type="text" class="form-control" name="alternate_phone"
                                                    value="{{ $data->alternate_phone }}" id="alternate_phone" placeholder="Enter alternate Phone Number"
-                                                   required />
+                                                    />
+{{--                                            @error('alternate_phone')--}}
+{{--                                            <div class="text-danger">{{ $message }}</div>--}}
+{{--                                            @enderror--}}
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -70,6 +79,9 @@
                                             <input type="text" class="form-control" name="city"
                                                 value="{{ $data->city }}" id="city" placeholder="Enter your city"
                                                 required />
+                                            @error('city')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -96,10 +108,17 @@
         $(document).ready(function() {
 
             $('input[name="phone"]').mask('0000000000');
+            $('input[name="alternate_phone"]').mask('0000000000');
 
             $('#name, #city').inputmask({
                 regex: "^[a-zA-Z ]*$",
                 placeholder: ''
+            });
+
+            $('#alternate_phone,#phone').on('keydown', function (e) {
+                if (e.which === 32) {
+                    e.preventDefault();
+                }
             });
 
             $("#customerForm").validate({
@@ -116,10 +135,6 @@
                     phone: {
                         required: true
                     },
-
-                    address: {
-                        required: true
-                    },
                     city: {
                         required: true
                     }
@@ -133,9 +148,6 @@
                     },
                     phone: {
                         required: "Please enter phone number"
-                    },
-                    address: {
-                        required: "Please enter address"
                     },
                     city: {
                         required: "please enter city"

@@ -15,7 +15,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.product.index') }}">Purchase</a>
+                        <a href="{{ route('admin.purchase.index') }}">Purchase</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>

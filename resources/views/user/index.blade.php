@@ -43,7 +43,6 @@
                                         <th>Id</th>
                                         <th>Name</th>
                                         <th>Email</th>
-
                                         <th>Action</th>
                                     </tr>
                                     </thead>
@@ -55,6 +54,13 @@
                                             <td>{{$item->email }}</td>
 
                                             <td>
+                                                @can('show-user')
+                                                    <a href="{{ route('admin.user.show', $item->id) }}"
+                                                       class="btn btn-lg btn-link btn-primary">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                @endcan
+
                                                 @can('edit-user')
                                                     <a href="{{ route('admin.user.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">
                                                         <i class="fa fa-edit">

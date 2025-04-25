@@ -35,9 +35,11 @@
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
                     </li>
+
                     <li class="nav-item">
                         <a href="{{ route('admin.transaction.index') }}">Transaction</a>
                     </li>
+
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
                     </li>
@@ -50,7 +52,9 @@
                 <div class="col-md-12">
                   <div class="card">
                     <div class="card-header">
-                        <a href="{{ route('admin.transaction.create') }}" class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i> Brand</a>
+                        @can('create-transaction')
+                        <a href="{{ route('admin.transaction.create') }}" class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i> Transaction</a>
+                        @endcan
                         <h4 class="card-title">Transaction</h4>
                     </div>
                     <div class="card-body">
@@ -74,20 +78,26 @@
                                 <span class="badge badge-success">
                                     {{ Str::upper($item->type) }}</td>
                                 </span>
+                                <td>
                                 @elseif($item->type == 'out')
                                 <span class="badge badge-danger">
                                     {{ Str::upper($item->type) }}</td>
                                 </span>
                                 @endif
-                              </td>
+{{--                              </td>--}}
                               <td>
+                                  @can('edit-transaction')
                                 <a href="{{ route('admin.transaction.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">
                                   <i class="fa fa-edit">
                                 </i></a>
+                                  @endcan
+
+                                      @can('delete-transaction')
                                 <button  onclick="deletevehicle_info({{ $item->id }})" class="btn btn-link btn-danger">
                                   <i class="fa fa-trash">
                                 </i>
                                 </button>
+                                      @endcan
                               </td>
                             </tr>
                             @empty

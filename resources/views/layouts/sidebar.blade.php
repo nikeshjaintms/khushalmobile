@@ -47,6 +47,7 @@
                 </span>
                 <h4 class="text-section">Modules</h4>
               </li>
+                @can('sidebar-user')
                 <li class="nav-item">
                     <a  href="{{ route('admin.user.index') }}">
                         <i class="fas fa-layer-group"></i>
@@ -54,6 +55,8 @@
                         <span class="caret"></span>
                     </a>
                 </li>
+                @endcan
+                @can('sidebar-role')
                 <li class="nav-item">
                     <a  href="{{ route('admin.role.index') }}">
                         <i class="fas fa-layer-group"></i>
@@ -61,6 +64,8 @@
                         <span class="caret"></span>
                     </a>
                 </li>
+                @endcan
+                @can('sidebar-permission')
                 <li class="nav-item">
                     <a  href="{{ route('admin.permission.index') }}">
                         <i class="fas fa-layer-group"></i>
@@ -68,7 +73,8 @@
                         <span class="caret"></span>
                     </a>
                 </li>
-
+                @endcan
+                @can('sidebar-brand')
               <li class="nav-item">
                 <a  href="{{ route('admin.brand.index') }}">
                   <i class="fas fa-layer-group"></i>
@@ -76,6 +82,8 @@
                   <span class="caret"></span>
                 </a>
               </li>
+                @endcan
+                @can('sidebar-product')
               <li class="nav-item">
                 <a  href="{{ route('admin.product.index') }}">
                   <i class="fas fa-layer-group"></i>
@@ -83,6 +91,8 @@
                   <span class="caret"></span>
                 </a>
               </li>
+                @endcan
+                @can('sidebar-dealer')
               <li class="nav-item">
                 <a  href="{{ route('admin.dealer.index') }}">
                   <i class="fas fa-layer-group"></i>
@@ -90,6 +100,8 @@
                   <span class="caret"></span>
                 </a>
               </li>
+                @endcan
+                @can('sidebar-customer')
               <li class="nav-item">
                 <a  href="{{ route('admin.customer.index') }}">
                   <i class="fas fa-layer-group"></i>
@@ -97,13 +109,17 @@
                   <span class="caret"></span>
                 </a>
               </li>
+                @endcan
+                @can('sidebar-purchase')
               <li class="nav-item">
                 <a  href="{{ route('admin.purchase.index') }}">
                   <i class="fas fa-layer-group"></i>
-                  <p>Puchase</p>
+                  <p>Purchase</p>
                   <span class="caret"></span>
                 </a>
               </li>
+                @endcan
+                @can('sidebar-sale')
               <li class="nav-item">
                 <a  href="{{ route('admin.sale.index') }}">
                   <i class="fas fa-layer-group"></i>
@@ -111,6 +127,8 @@
                   <span class="caret"></span>
                 </a>
               </li>
+                @endcan
+                @can('sidebar-deduction')
               <li class="nav-item">
                 <a  href="{{ route('admin.deduction.index') }}">
                   <i class="fas fa-layer-group"></i>
@@ -118,6 +136,8 @@
                   <span class="caret"></span>
                 </a>
               </li>
+                @endcan
+                @can('sidebar-transaction')
               <li class="nav-item">
                 <a  href="{{ route('admin.transaction.index') }}">
                   <i class="fas fa-layer-group"></i>
@@ -125,6 +145,8 @@
                   <span class="caret"></span>
                 </a>
               </li>
+                @endcan
+                @can('sidebar-finance-master')
                 <li class="nav-item">
                     <a  href="{{ route('admin.financeMaster.index') }}">
                         <i class="fas fa-layer-group"></i>
@@ -132,6 +154,8 @@
                         <span class="caret"></span>
                     </a>
                 </li>
+                @endcan
+                @can('sidebar-notes')
               <li class="nav-item">
                 <a  href="{{ route('admin.daily-notes.index') }}">
                   <i class="fas fa-layer-group"></i>
@@ -139,6 +163,7 @@
                   <span class="caret"></span>
                 </a>
               </li>
+                @endcan
             </ul>
           </div>
         </div>

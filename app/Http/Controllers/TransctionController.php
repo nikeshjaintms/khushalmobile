@@ -36,8 +36,13 @@ class TransctionController extends Controller
         //     'amount' => 'required',
         //     'type' => 'required',
         // ]);
+         $request->validate([
+             'payment_mode' => 'required',
+             'amount' => 'required',
+             'type' => 'required',
+         ]);
         Transction::create([
-            'payement_mode' => $request->payement_mode,
+            'payment_mode' => $request->payement_mode,
             'amount' => $request->amount,
             'type' => $request->type,
             'remark' => $request->remark ?? NULL,
@@ -75,9 +80,10 @@ class TransctionController extends Controller
     public function update(Request $request, Transction $transction, $id)
     {
         $request->validate([
+            'payment_mode' => 'required',
             'amount' => 'required',
             'type' => 'required',
-            'remark' => 'string',
+
         ]);
         $update = Transction::find($id);
         $update->update($request->all());

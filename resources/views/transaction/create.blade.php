@@ -48,6 +48,9 @@
                                                 <option value="2">Online</option>
                                                 <option value="3">Finance</option>
                                             </select>
+                                            @error('payment_mode')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -55,6 +58,9 @@
                                             <label for="amount">Amount<span style="color: red">*</span></label>
                                             <input type="number" class="form-control" name="amount" id="amount"
                                                 placeholder="Enter Amount Name" required />
+                                            @error('amount')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -62,6 +68,9 @@
                                             <label for="remark">Reference no <span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="reference_no" id="reference_no"
                                                 placeholder="Enter Reference no" />
+                                            @error('reference_no')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -72,6 +81,9 @@
                                                 <option value="in">IN</option>
                                                 <option value="out">OUT</option>
                                             </select>
+                                            @error('type')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -79,13 +91,16 @@
                                             <label for="remark">Remark <span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="remark" id="remark"
                                                 placeholder="Enter Remark" />
+                                            @error('remark')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-action">
                                 <button class="btn btn-success" type="submit">Submit</button>
-                                <a href="{{ route('admin.brand.index') }}" class="btn btn-danger">Cancel</a>
+                                <a href="{{ route('admin.transaction.index') }}" class="btn btn-danger">Cancel</a>
                             </div>
                         </form>
                     </div>
@@ -110,10 +125,9 @@
                     payment_mode:{
                         required: true,
                     },
-                    reference_no:{
-                        minlength: 5,
-
-                    },
+                    // reference_no:{
+                    //     minlength: 5,
+                    // },
                     amount: {
                         required: true,
                         number: true,
@@ -122,17 +136,17 @@
                     type: {
                         required: true,
                     },
-                    remark: {
-                        minlength: 2
-                    }
+                    // remark: {
+                    //     minlength: 2
+                    // }
                 },
                 messages: {
                     payment_mode:{
                         required: "Please select a Payment Mode",
                     },
-                    reference_no:{
-                        minlength: "Please enter at least 5 characters",
-                    },
+                    // reference_no:{
+                    //     minlength: "Please enter at least 5 characters",
+                    // },
                     amount: {
                         required: "Please enter a Amount",
                         number: "Please enter a valid number",
@@ -141,9 +155,9 @@
                     type: {
                         required: "Please enter a Transaction Type",
                     },
-                    remark: {
-                        minlength: "Remark must be at least 2 characters long"
-                    }
+                    // remark: {
+                    //     minlength: "Remark must be at least 2 characters long"
+                    // }
                 },
                 errorElement: 'span',
                 errorClass: 'text-danger',
