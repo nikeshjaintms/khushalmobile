@@ -1,11 +1,16 @@
+
 @extends('layouts.app')
 {{-- @if (Auth::guard('admin')->check()) --}}
 @section('title', 'Admin Panel')
 
-{{-- @endif --}}
-
 @section('content-page')
     <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        .table>tbody>tr>td,
+        .table>tbody>tr>th {
+            padding: 16px 5px !important;
+        }
+    </style>
     <div class="container">
         <div class="page-inner">
             <div class="page-header">
@@ -45,7 +50,7 @@
                                         <div class="form-group">
                                             <label for="">Customer<span style="color: red">*</span></label>
                                             <select class="form-select customer" aria-label="Default select example"
-                                                name="customer_id">
+                                                    name="customer_id">
                                                 <option selected> Select Customer</option>
                                                 @foreach ($customers as $item)
                                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -54,7 +59,7 @@
                                                         {{ $item->name }}</option>
                                                 @endforeach
                                                 @error('customer')
-                                                    <p style="color: red;">{{ $message }}</p>
+                                                <p style="color: red;">{{ $message }}</p>
                                                 @enderror
                                             </select>
 
@@ -65,9 +70,9 @@
                                             <div>
                                                 <label for="">Invoice No<span style="color: red">*</span></label>
                                                 <input type="text" class="form-control" name="invoice_no" id="invoice_no"
-                                                    value="{{ $data->invoice_no }}" readonly required />
+                                                       value="{{ $data->invoice_no }}" readonly required />
                                                 @error('invoice_no')
-                                                    <p style="color: red;">{{ $message }}</p>
+                                                <p style="color: red;">{{ $message }}</p>
                                                 @enderror
                                             </div>
                                         </div>
@@ -78,10 +83,10 @@
                                             <div>
                                                 <label for="">Invoice Date<span style="color: red">*</span></label>
                                                 <input id="datepicker" name="invoice_date" class="form-control datepicker"
-                                                    placeholder="Select Date" onchange="GetOrderNo()"
-                                                    value="{{ $data->invoice_date }}" />
+                                                       placeholder="Select Date" onchange="GetOrderNo()"
+                                                       value="{{ $data->invoice_date }}" />
                                                 @error('invoice_date')
-                                                    <p style="color: red;">{{ $message }}</p>
+                                                <p style="color: red;">{{ $message }}</p>
                                                 @enderror
                                             </div>
                                         </div>
@@ -91,20 +96,20 @@
                                         <table class="display table table-striped table-hover">
                                             <thead>
 
-                                                <tr >
-                                                    <th scope="col">sr no</th>
-                                                    <th scope="col">Brand</th>
-                                                    <th scope="col">Product</th>
-                                                    <th scope="col">IMI No</th>
-                                                    {{--                                                <th scope="col">Price</th> --}}
-                                                    <th scope="col">Discount</th>
-                                                    {{--                                                <th scope="col">Discount Amount</th> --}}
-                                                    <th scope="col">Sub Total</th>
-                                                    <th scope="col">Tax</th>
-                                                    <th scope="col">Tax Amount</th>
-                                                    <th scope="col">Total</th>
-                                                    <th scope="col">Action</th>
-                                                </tr>
+                                            <tr >
+                                                <th scope="col">sr no</th>
+                                                <th scope="col">Brand</th>
+                                                <th scope="col">Product</th>
+                                                <th scope="col">IMI No</th>
+                                                {{--                                                <th scope="col">Price</th> --}}
+                                                <th scope="col">Discount</th>
+                                                {{--                                                <th scope="col">Discount Amount</th> --}}
+                                                <th scope="col">Sub Total</th>
+                                                <th scope="col">Tax</th>
+                                                <th scope="col">Tax Amount</th>
+                                                <th scope="col">Total</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
                                             </thead>
                                             <tbody class="table-group-divider" id="add-table-row">
                                             @php
@@ -114,119 +119,114 @@
                                                 <tr class="product-row">
                                                     <th scope="row" class="row-index text-center index">{{ $i++ }}</th>
                                                     <td>
-                                                        <select name="products[{{$index}}][brand_id]"
-                                                            class="form-control brand-name">
-                                                            <option value="">Select Brand</option>
-                                                            @foreach ($brands as $brand)
-                                                                <option value="{{ $brand->id }}"
-                                                                    {{ $selectedBrandId == $brand->id ? 'selected' : '' }}>
+
+                                                        <select name="brand_id[]"  class="form-control brand-name">
+                                                            @foreach($brands as $brand)
+                                                                <option value="{{ $brand->id }}" {{ isset($selectedBrandId[$index]) && $selectedBrandId[$index] == $brand->id ? 'selected' : '' }}>
                                                                     {{ $brand->name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
+
                                                     </td>
                                                     <td>
-                                                        <select name="products[{{$index}}][product_id]"
-                                                            class="form-control product-name">
-                                                            <option value="">Select Product</option>
 
-                                                            @foreach ($products as $product)
-                                                                <option value="{{ $product->id }}"
-                                                                    {{ (int) $selectedProductId === (int) $product->id ? 'selected' : '' }}>
+                                                        <select name="product_id[]"  class="form-control product-name">
+                                                            @foreach($products as $product)
+                                                                <option value="{{ $product->id }}" {{ isset($selectedProductId[$index]) && $selectedProductId[$index] == $product->id ? 'selected' : '' }}>
                                                                     {{ $product->product_name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
                                                         @error('product_id')
-                                                            <p style="color: red;">{{ $message }}</p>
+                                                        <p style="color: red;">{{ $message }}</p>
                                                         @enderror
                                                     </td>
 
                                                     <td>
-                                                        <select name="products[{{$index}}][imei_id]" class="form-control imei_id">
-                                                            <option value="">Select IMEI</option>
-                                                            @foreach ($imiNumbers as $imi)
-                                                                <option value="{{ $imi->id }}"
-                                                                    {{ $selectedImi == $imi->id ? 'selected' : '' }}>
+
+                                                        <select name="imei_id[]"  class="form-control imei_id">
+                                                            @foreach($imiNumbers as $imi)
+                                                                <option value="{{ $imi->id }}" {{ isset($selectedImi[$index]) && $selectedImi[$index] == $imi->id ? 'selected' : '' }}>
                                                                     {{ $imi->imei }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
                                                         @error('imei_id')
-                                                            <p style="color: red;">{{ $message }}</p>
+                                                        <p style="color: red;">{{ $message }}</p>
                                                         @enderror
                                                     </td>
 
 
                                                     <input type="hidden" class="form-control price-select price"
-                                                        name="products[{{$index}}][price]" id="price"
-                                                        value="{{ $item->price }}" readonly required />
+                                                           name="products[{{$index}}][price]" id="price"
+                                                           value="{{ $item->price }}" readonly required />
                                                     @error('price')
-                                                        <p style="color: red;">{{ $message }}</p>
+                                                    <p style="color: red;">{{ $message }}</p>
                                                     @enderror
 
 
                                                     <td>
                                                         <input type="text" class="form-control discount"
-                                                            name="products[{{$index}}][discount]" id="discount"
-                                                            value="{{ $item->discount }}" required />
+                                                               name="products[{{$index}}][discount]" id="discount"
+                                                               value="{{ $item->discount }}" required />
                                                         @error('discount')
-                                                            <p style="color: red;">{{ $message }}</p>
+                                                        <p style="color: red;">{{ $message }}</p>
                                                         @enderror
                                                     </td>
 
 
                                                     <input type="hidden"
-                                                        class="form-control discountAmount discount_amount"
-                                                        name="products[{{$index}}][discount_amount]"
-                                                        value="{{ $item->discount_amount }}" id="discountAmount"
-                                                        readonly required />
+                                                           class="form-control discountAmount discount_amount"
+                                                           name="products[{{$index}}][discount_amount]"
+                                                           value="{{ $item->discount_amount }}" id="discountAmount"
+                                                           readonly required />
                                                     @error('discount_amount')
-                                                        <p style="color: red;">{{ $message }}</p>
+                                                    <p style="color: red;">{{ $message }}</p>
                                                     @enderror
 
 
                                                     <td>
                                                         <input type="number" class="form-control priceSubTotal"
-                                                            id="priceSubTotal" name="products[{{$index}}][price_subtotal]"
-                                                            value="{{ $item->price_subtotal }}" readonly required />
+                                                               id="priceSubTotal" name="products[{{$index}}][price_subtotal]"
+                                                               value="{{ $item->price_subtotal }}" readonly required />
                                                         @error('price_subtotal')
-                                                            <p style="color: red;">{{ $message }}</p>
+                                                        <p style="color: red;">{{ $message }}</p>
                                                         @enderror
                                                     </td>
 
                                                     <td>
                                                         <input type="number" class="form-control tax" id="tax"
-                                                            name="products[{{$index}}][tax]" value="{{ $item->tax }}"
-                                                            required />
+                                                               name="products[{{$index}}][tax]" value="{{ $item->tax }}"
+                                                               required />
                                                         @error('tax')
-                                                            <p style="color: red;">{{ $message }}</p>
+                                                        <p style="color: red;">{{ $message }}</p>
                                                         @enderror
                                                     </td>
 
                                                     <td>
                                                         <input type="number" class="form-control taxAmount tax-amount"
-                                                            name="products[{{$index}}][tax_amount]" id="tax_amount"
-                                                            value="{{ $item->tax_amount }}" readonly required />
+                                                               name="products[{{$index}}][tax_amount]" id="tax_amount"
+                                                               value="{{ $item->tax_amount }}" readonly required />
                                                         @error('tax_amount')
-                                                            <p style="color: red;">{{ $message }}</p>
+                                                        <p style="color: red;">{{ $message }}</p>
                                                         @enderror
                                                     </td>
 
                                                     <td>
                                                         <input type="number"
-                                                            class="form-control total total-amount totalAmount"
-                                                            id="totalAmount" name="products[{{$index}}][price_total]"
-                                                            value="{{ $item->price_total }}" required />
+                                                               class="form-control total total-amount totalAmount"
+                                                               id="totalAmount" name="products[{{$index}}][price_total]"
+                                                               value="{{ $item->price_total }}" required />
                                                         @error('total')
-                                                            <p style="color: red;">{{ $message }}</p>
+                                                        <p style="color: red;">{{ $message }}</p>
                                                         @enderror
                                                     </td>
 
                                                     <td class="d-inline-flex gap-1">
                                                         <button type="button" class="btn btn-success add-row">+</button>
                                                         <button type="button"
-                                                            class="btn btn-danger remove-row">-</button>
+                                                                class="btn btn-danger remove-row">-</button>
                                                         <button type="button" class="btn btn-secondary duplicate-row">
                                                             <i class="fas fa-copy"></i>
                                                         </button>
@@ -241,12 +241,12 @@
                                         <div class="form-group">
                                             <div>
                                                 <label for="">Sub Total<span style="color: red"
-                                                        id="grandTotal">*</span></label>
+                                                                             id="grandTotal">*</span></label>
                                                 <input type="number" class="form-control subTotal"
-                                                    name="products[0][sub_total]" placeholder="sub total"
-                                                    value="{{ $data->sub_total }}" readonly required />
+                                                       name="products[0][sub_total]" placeholder="sub total"
+                                                       value="{{ $data->sub_total }}" readonly required />
                                                 @error('sub_total')
-                                                    <p style="color: red;">{{ $message }}</p>
+                                                <p style="color: red;">{{ $message }}</p>
                                                 @enderror
                                             </div>
                                         </div>
@@ -257,7 +257,7 @@
                                             <div>
                                                 <label for="">Tax Type<span style="color: red">*</span></label>
                                                 <select class="form-control form-select taxType" name="tax_type"
-                                                    aria-label="Default select example" required>
+                                                        aria-label="Default select example" required>
                                                     <option selected>Select Tax Type</option>
                                                     <option value="1" {{ $data->tax_type == 1 ? 'selected' : '' }}>
                                                         CGST/SGST</option>
@@ -266,7 +266,7 @@
                                                 </select>
 
                                                 @error('tax_type')
-                                                    <p style="color: red;">{{ $message }}</p>
+                                                <p style="color: red;">{{ $message }}</p>
                                                 @enderror
                                             </div>
                                         </div>
@@ -278,11 +278,11 @@
                                                 <label for=""> Total Tax Amount<span
                                                         style="color: red">*</span></label>
                                                 <input type="number" class="form-control totalTaxAmount"
-                                                    name="total_tax_amount" id="total_tax_amount"
-                                                    placeholder="Enter Total Tax Amount"
-                                                    value="{{ $data->total_tax_amount }}" readonly required />
+                                                       name="total_tax_amount" id="total_tax_amount"
+                                                       placeholder="Enter Total Tax Amount"
+                                                       value="{{ $data->total_tax_amount }}" readonly required />
                                                 @error('tax_amount')
-                                                    <p style="color: red;">{{ $message }}</p>
+                                                <p style="color: red;">{{ $message }}</p>
                                                 @enderror
                                             </div>
                                         </div>
@@ -294,11 +294,11 @@
                                                 <label for="">Total Amount<span
                                                         style="color: red">*</span></label>
                                                 <input type="number" class="form-control finalTotalAmount"
-                                                    name="total_amount" id="total_amount"
-                                                    placeholder="Enter Total  Amount" value="{{ $data->total_amount }}"
-                                                    readonly required />
+                                                       name="total_amount" id="total_amount"
+                                                       placeholder="Enter Total  Amount" value="{{ $data->total_amount }}"
+                                                       readonly required />
                                                 @error('total_amount')
-                                                    <p style="color: red;">{{ $message }}</p>
+                                                <p style="color: red;">{{ $message }}</p>
                                                 @enderror
                                             </div>
                                         </div>
@@ -310,8 +310,8 @@
                                                 <label for="paymentMethod">Payment Method<span
                                                         style="color: red">*</span></label>
                                                 <select class="form-select paymentMethod"
-                                                    aria-label="Default select example" name="payment_method"
-                                                    id="paymentMethod">
+                                                        aria-label="Default select example" name="payment_method"
+                                                        id="paymentMethod">
                                                     <option selected> Select Payment Method</option>
                                                     <option value="3"
                                                         {{ $data->payment_method == 1 ? 'selected' : '' }}>Online</option>
@@ -319,7 +319,7 @@
                                                         {{ $data->payment_method == 2 ? 'selected' : '' }}>Finance</option>
                                                 </select>
                                                 @error('payment_method')
-                                                    <p style="color: red;">{{ $message }}</p>
+                                                <p style="color: red;">{{ $message }}</p>
                                                 @enderror
                                             </div>
                                         </div>
@@ -328,140 +328,140 @@
                                         <h4>Payment</h4>
                                         <table class="display table table-striped table-hover">
                                             <thead>
-                                                <tr>
-                                                    <th>Mode</th>
-                                                    <th>Amount</th>
-                                                    <th>Reference</th>
-                                                    <th>Action</th>
-                                                </tr>
+                                            <tr>
+                                                <th>Mode</th>
+                                                <th>Amount</th>
+                                                <th>Reference</th>
+                                                <th>Action</th>
+                                            </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <select name="payment[0][payment_mode]" id="mode"
+                                            <tr>
+                                                <td>
+                                                    <select name="payment[0][payment_mode]" id="mode"
                                                             class="form-control">
-                                                            <option value="1">Cash</option>
-                                                            <option value="2">Online</option>
-                                                            <option value="3">Finance</option>
-                                                        </select>
-                                                    </td>
-                                                    <td><input type="text" name="payment[0][amount]" id="amount"
-                                                            value="{{ $selectedAmount }}" class="form-control amount">
-                                                    </td>
-                                                    <td><input type="text" name="payment[0][reference_no]"
-                                                            id="reference_no" value="{{ $selectedRefer }}"
-                                                            class="form-control reference_no "></td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-success add-payment-row">+
-                                                        </button>
-                                                        <button type="button" class="btn btn-danger remove-payment-row">-
-                                                        </button>
-                                                    </td>
-                                                </tr>
+                                                        <option value="1">Cash</option>
+                                                        <option value="2">Online</option>
+                                                        <option value="3">Finance</option>
+                                                    </select>
+                                                </td>
+                                                <td><input type="text" name="payment[0][amount]" id="amount"
+                                                           value="{{ $selectedAmount }}" class="form-control amount">
+                                                </td>
+                                                <td><input type="text" name="payment[0][reference_no]"
+                                                           id="reference_no" value="{{ $selectedRefer }}"
+                                                           class="form-control reference_no "></td>
+                                                <td>
+                                                    <button type="button" class="btn btn-success add-payment-row">+
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger remove-payment-row">-
+                                                    </button>
+                                                </td>
+                                            </tr>
                                             </tbody>
                                         </table>
                                     </div>
 
                                     @if($selectfinance)
-                                    <div class="row mt-3" id="finance_detail">
-                                        <h4>Finance Details</h4>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label> Select Finance </label>
-                                                <select class="select2 form-control required" name="Finance"
-                                                    id="Finance">
-                                                    @foreach ($financeMaster as $item)
-                                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                                        <option value="{{ $item->id }}"
-                                                            {{ $selectedFinance->contains($item->id) ? 'selected' : '' }}>
-                                                            {{ $item->name }}</option>
-                                                    @endforeach
-                                                    @error('customer')
+                                        <div class="row mt-3" id="finance_detail">
+                                            <h4>Finance Details</h4>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label> Select Finance </label>
+                                                    <select class="select2 form-control required" name="Finance"
+                                                            id="Finance">
+                                                        @foreach ($financeMaster as $item)
+                                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                            <option value="{{ $item->id }}"
+                                                                {{ $selectedFinance->contains($item->id) ? 'selected' : '' }}>
+                                                                {{ $item->name }}</option>
+                                                        @endforeach
+                                                        @error('customer')
                                                         <p style="color: red;">{{ $message }}</p>
-                                                    @enderror
-                                                </select>
+                                                        @enderror
+                                                    </select>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label> Processing Fee </label>
-                                                <input type="text" name="Processing" id="Processing"
-                                                    class="form-control Processingfee required"
-                                                    placeholder="--Processing Fee--"
-                                                    value="{{ $selectfinance->processing_fee }}" onkeyup="SetFinanceAmount()"
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label> Processing Fee </label>
+                                                    <input type="text" name="Processing" id="Processing"
+                                                           class="form-control Processingfee required"
+                                                           placeholder="--Processing Fee--"
+                                                           value="{{ $selectfinance->processing_fee }}" onkeyup="SetFinanceAmount()"
                                                     >
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label> Per Month EMI Charge </label>
-                                                <input type="text" name="EMICharge" id="EMICharge"
-                                                    class="form-control emicharge required"
-                                                    placeholder="--Per Month EMI Charge--"
-                                                    value="{{ $selectfinance->emi_charger }}" onkeyup="SetMonthDuration()" >
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label> Per Month EMI Charge </label>
+                                                    <input type="text" name="EMICharge" id="EMICharge"
+                                                           class="form-control emicharge required"
+                                                           placeholder="--Per Month EMI Charge--"
+                                                           value="{{ $selectfinance->emi_charger }}" onkeyup="SetMonthDuration()" >
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label> Down Payment </label>
-                                                <input type="text" name="DownPayment" id="DownPayment"
-                                                    class="form-control DownPayment required"
-                                                    placeholder="--Down Payment--" value="{{ $selectfinance->downpayment }}"
-                                                    onkeyup="SetFinanceAmount()" >
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label> Down Payment </label>
+                                                    <input type="text" name="DownPayment" id="DownPayment"
+                                                           class="form-control DownPayment required"
+                                                           placeholder="--Down Payment--" value="{{ $selectfinance->downpayment }}"
+                                                           onkeyup="SetFinanceAmount()" >
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label> Payable Amount </label>
-                                                <input type="text" name="FinanceAmount" id="FinanceAmount"
-                                                    class="form-control FinanceAmount required"
-                                                    placeholder="--Payable Amount--"
-                                                    value="{{ $selectfinance->finance_amount }}" readonly>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label> Payable Amount </label>
+                                                    <input type="text" name="FinanceAmount" id="FinanceAmount"
+                                                           class="form-control FinanceAmount required"
+                                                           placeholder="--Payable Amount--"
+                                                           value="{{ $selectfinance->finance_amount }}" readonly>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label> Month Duration </label>
-                                                <input type="text" name="MonthDuration" id="MonthDuration"
-                                                    class="form-control MonthDuration required"
-                                                    placeholder="--Month Duration--"
-                                                    value="{{ $selectfinance->month_duration }}" onkeyup="SetMonthDuration()"
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label> Month Duration </label>
+                                                    <input type="text" name="MonthDuration" id="MonthDuration"
+                                                           class="form-control MonthDuration required"
+                                                           placeholder="--Month Duration--"
+                                                           value="{{ $selectfinance->month_duration }}" onkeyup="SetMonthDuration()"
                                                     >
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label> Deduction Date </label>
+                                                    <select class="form-control  required" name="DeductionDate"
+                                                            id="DeductionDate">
+                                                        @for ($i = 1; $i <= 28; $i++)
+                                                            <option value="{{ $i }}"
+                                                                {{ $i == $selectfinance->dedication_date ? 'selected' : '' }}>
+                                                                {{ $i }}</option>
+                                                        @endfor
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label> Penalty Charges </label>
+                                                    <input type="text" name="Penalty" id="Penalty"
+                                                           class="form-control  Penalty required"
+                                                           placeholder="--Penalty Charges--" value="{{ $selectfinance->penalty }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group"><br><br>
+                                                    <h6>
+                                                        <div id="permonth" style="color: red;">
+                                                        </div>
+                                                    </h6>
+                                                    <input type="hidden" name="permonthvalue" id="permonthvalue"
+                                                           value="{{ $selectfinance->month_duration }}">
+                                                    <input type="hidden" name="financ_year" id="financ_year">
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label> Deduction Date </label>
-                                                <select class="form-control  required" name="DeductionDate"
-                                                    id="DeductionDate">
-                                                    @for ($i = 1; $i <= 28; $i++)
-                                                        <option value="{{ $i }}"
-                                                            {{ $i == $selectfinance->dedication_date ? 'selected' : '' }}>
-                                                            {{ $i }}</option>
-                                                    @endfor
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label> Penalty Charges </label>
-                                                <input type="text" name="Penalty" id="Penalty"
-                                                    class="form-control  Penalty required"
-                                                    placeholder="--Penalty Charges--" value="{{ $selectfinance->penalty }}">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group"><br><br>
-                                                <h6>
-                                                    <div id="permonth" style="color: red;">
-                                                    </div>
-                                                </h6>
-                                                <input type="hidden" name="permonthvalue" id="permonthvalue"
-                                                    value="{{ $selectfinance->month_duration }}">
-                                                <input type="hidden" name="financ_year" id="financ_year">
-                                            </div>
-                                        </div>
-                                    </div>
                                     @endif
                                     <div class="card-action">
                                         <button class="btn btn-success" type="submit">Submit</button>
@@ -475,188 +475,140 @@
             </div>
         </div>
     </div>
+
 @endsection
 
 @section('footer-script')
-    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const tbody = document.getElementById('add-table-row');
-
-            const brandOptionsHTML = document.querySelector('.brand-name')?.innerHTML || '';
-            const productOptionsHTML = document.querySelector('.product-name')?.innerHTML || '';
-            const imiOptionsHTML = document.querySelector('.imei_id')?.innerHTML || '';
-
-
-            function updateButtons() {
-                const rows = tbody.querySelectorAll('tr');
-                rows.forEach((row, index) => {
-                    const addBtn = row.querySelector('.add-row');
-                    if (addBtn) {
-                        addBtn.style.display = (index === rows.length - 1) ? 'inline-block' : 'none';
-                    }
-                    const th = row.querySelector('th');
-                    if (th) th.textContent = index + 1;
-                });
+        $(document).ready(function () {
+            function resetActionButtons() {
+                const $rows = $('#add-table-row tr');
+                if ($rows.length === 1) {
+                    $rows.find('.remove-row').addClass('d-none');
+                    $rows.find('.add-row').removeClass('d-none');
+                } else {
+                    $rows.each(function (index) {
+                        const $row = $(this);
+                        const isLast = index === $rows.length - 1;
+                        $row.find('.remove-row').removeClass('d-none');
+                        $row.find('.add-row').toggleClass('d-none', !isLast);
+                    });
+                }
             }
-
-            let productIndex = 1;
-
-
-
-            let usedIMEIs = new Set();
-
-            function createRow(data = {}) {
-
-                const row = document.createElement('tr');
-                row.innerHTML = ` <th scope="row" class="text-center">1</th>
-           <td>
-             <select class="form-control form-select brand-name brand-select" name="products[${productIndex}][brand_id]">
-                 ${brandOptionsHTML}
-             </select>
-           </td>
-           <td>
-             <select class="form-control form-select product-name product-select" class="product" name="products[${productIndex}][product_id]">
-                 ${productOptionsHTML}
-             </select>
-          </td>
-          <td>
-             <select class="form-control form-select imei_id" name="products[${productIndex}][imei_id]">
-               ${imiOptionsHTML}
-             </select>
-          </td>
-
-         <input type="hidden" class="form-control price"  id="price" name="products[${productIndex}][price]"  readonly required />
-
-          <td><input type="number" class="form-control discount" name="products[${productIndex}][discount]"   required /></td>
-
-          <input type="hidden" class="form-control discount_amount discountAmount" name="products[${productIndex}][discount_amount]"  id="discountAmount" readonly required />
-
-            <td><input type="number" class="form-control priceSubTotal"  name="products[${productIndex}][price_subtotal]" readonly
-             required/>
-           </td>
-
-           <td><input type="number" class="form-control tax"   value="18" name="products[${productIndex}][tax]"  required /></td>
-
-           <td><input type="number" class="form-control tax-amount taxAmount" name="products[${productIndex}][tax_amount]" readonly
-            required/>
-          </td>
-
-          <td><input type="number" class="form-control total total-amount totalAmount"  name="products[${productIndex}][price_total]"
-           required /></td>
-
-          <td class="d-inline-flex gap-1">
-             <button type="button" class="btn btn-success add-row">+</button>
-             <button type="button" class="btn btn-danger remove-row">-</button>
-             <button type="button" class="btn btn-secondary duplicate-row">
-                 <i class="fas fa-copy"></i>
-             </button>
-              </td>
-
-                     `;
-
-                productIndex++;
-                tbody.appendChild(row);
-
-                updateButtons();
-
-
-                const priceInput = row.querySelector('.price');
-                const discountInput = row.querySelector('.discount');
-                const taxInput = row.querySelector('.tax');
-                const imeiSelect = row.querySelector('.imei_id');
-
-                imeiSelect.addEventListener('change', function() {
-                    const selectedIMEI = imeiSelect.value;
-                    if (selectedIMEI) {
-                        usedIMEIs.add(selectedIMEI);
-                    }
-                });
-                document.querySelector('#add-table-row').appendChild(row);
-
-
-                function handleInput() {
-                    // const price = parseFloat(priceInput.value) || 0;
-                    const price_total = parseFloat(row.querySelector('.totalAmount').value) || 0;
-                    const discount = parseFloat(discountInput.value) || 0;
-                    const tax = parseFloat(taxInput.value) || 0;
-
-                    const discountAmount = (price_total * discount) / 100;
-                    const taxAmount = price_total - (price_total / (1+(tax / 100)));
-                    const priceSubTotal = price_total - taxAmount;
-
-                    row.querySelector('.discountAmount').value = discountAmount.toFixed(2);
-                    row.querySelector('.taxAmount').value = taxAmount.toFixed(2);
-                    row.querySelector('.totalAmount').value = totalAmount.toFixed(2);
-                    row.querySelector('.priceSubTotal').value = priceSubTotal.toFixed(2);
-
-                    updateGrandTotal();
-                    updateTotalTaxAmount();
-                    updateTotalAmount();
-
-                }
-
-                priceInput.addEventListener('input', handleInput);
-                discountInput.addEventListener('input', handleInput);
-                taxInput.addEventListener('input', handleInput);
-
-            }
-
-            tbody.addEventListener('click', function(e) {
-                const target = e.target.closest('button');
-
-                if (!target) return;
-
-                if (target.classList.contains('add-row')) {
-                    createRow();
-
-                }
-
-                if (target.classList.contains('remove-row')) {
-                    const row = target.closest('tr');
-                    if (tbody.querySelectorAll('tr').length > 1) {
-                        row.remove();
-                        updateButtons();
-                        updateGrandTotal();
-                        updateTotalTaxAmount();
-                        updateTotalAmount();
-                    }
-                }
-
-                if (target.classList.contains('duplicate-row')) {
-                    const row = target.closest('tr');
-                    const data = {
-                        discount_amount: row.querySelector('.discount_amount')?.value,
-                        priceSubTotal: row.querySelector('.priceSubTotal')?.value || '',
-                        tax_amount: row.querySelector('.tax-amount')?.value || '',
-                        total: row.querySelector('.total')?.value || ''
-                    };
-                    const selectedProduct = row.querySelector('.product-name')?.value;
-                    const selectedBrand = row.querySelector('.brand-name')?.value;
-                    const selectedImi = row.querySelector('.imei_id ')?.value;
-                    const selectedPrice = row.querySelector('.price ')?.value;
-
-                    createRow({
-                        ...data
+            function resetRowIndexes() {
+                $('#add-table-row tr').each(function(index, row) {
+                    $(row).find('input, select').each(function() {
+                        let name = $(this).attr('name');
+                        if (name) {
+                            // Update number inside [ ]
+                            name = name.replace(/\[\d+\]/, `[${index}]`);
+                            $(this).attr('name', name);
+                        }
                     });
 
+                    // Update row number display (Sr No column)
+                    $(row).find('.row-index').text(index + 1);
+                });
+            }
 
-                    const newRow = tbody.lastElementChild;
-                    newRow.querySelector('.product-name').value = selectedProduct;
-                    newRow.querySelector('.brand-name').value = selectedBrand;
-                    newRow.querySelector('.imei_id ').value = selectedImi;
-                    newRow.querySelector('.price').value = selectedPrice;
+            function calculateRow($row) {
+                const price = parseFloat($row.find('.price').val()) || 0;
+                const discount = parseFloat($row.find('.discount').val()) || 0;
+                const tax = parseFloat($row.find('.tax').val()) || 0;
 
-                    updateGrandTotal();
-                    updateRowCalculations(newRow);
+                const discountAmount = (price * discount) / 100;
+                const subtotal = price - discountAmount;
+                const taxAmount = (subtotal * tax) / 100;
+                const total = subtotal + taxAmount;
+
+                $row.find('.discountAmount').val(discountAmount.toFixed(2));
+                $row.find('.priceSubTotal').val(subtotal.toFixed(2));
+                $row.find('.taxAmount').val(taxAmount.toFixed(2));
+                $row.find('.totalAmount').val(total.toFixed(2));
+            }
+
+            function calculateGrandTotal() {
+                let subtotalSum = 0, taxSum = 0, totalSum = 0;
+
+                $('#add-table-row tr').each(function () {
+                    subtotalSum += parseFloat($(this).find('.priceSubTotal').val()) || 0;
+                    taxSum += parseFloat($(this).find('.taxAmount').val()) || 0;
+                    totalSum += parseFloat($(this).find('.totalAmount').val()) || 0;
+                });
+
+                $('.subTotal').val(subtotalSum.toFixed(2));
+                $('.totalTaxAmount').val(taxSum.toFixed(2));
+                $('.finalTotalAmount').val(totalSum.toFixed(2));
+            }
+
+            // Input event: price, discount, tax
+            $(document).on('input', '.price, .discount, .tax', function () {
+                const $row = $(this).closest('tr');
+                calculateRow($row);
+                calculateGrandTotal();
+            });
+
+            // When total amount (only) changes
+            $(document).on('input', '.totalAmount', function () {
+                calculateGrandTotal();
+            });
+            // Add new row
+            $(document).on('click', '.add-row', function() {
+                let $row = $(this).closest('tr');
+                let $newRow = $row.clone();
+
+                // Clear all input/select values
+                $newRow.find('input').val('');
+                $newRow.find('select').val('');
+                $newRow.find('.tax').val('18');
+
+                // Append cloned row
+                $('#add-table-row').append($newRow);
+
+                resetRowIndexes();
+                resetActionButtons();// 🔥 Very important
+            });
+
+
+            // Remove row
+            $(document).on('click', '.remove-row', function () {
+                if ($('#add-table-row tr').length > 1) {
+                    $(this).closest('tr').remove();
+                    resetRowIndexes();
+                    resetActionButtons();
+                    calculateGrandTotal();
                 }
+            });
+
+            // Duplicate row
+            $(document).on('click', '.duplicate-row', function () {
+                const $row = $(this).closest('tr');
+                const $dupRow = $row.clone();
+
+                // Preserve selects (brand, product, IMEI) if needed
+                const selectedBrand = $row.find('.brand-select').val();
+                const selectedProduct = $row.find('.product-select').val();
+                const selectedIMEI = $row.find('.imei_id').val();
+
+                $dupRow.find('input').val(''); // clear inputs
+
+                $dupRow.find('.brand-select').val(selectedBrand);
+                $dupRow.find('.product-select').val(selectedProduct);
+                $dupRow.find('.imei_id').val(selectedIMEI);
+                $dupRow.find('.tax').val('18');
+                $dupRow.find('.remove-row').removeClass('d-none');
+
+                $('#add-table-row').append($dupRow);
+                resetActionButtons();
+                calculateGrandTotal();
+                resetRowIndexes();
 
             });
-            updateButtons();
+
+            // On page load, calculate totals
+            calculateGrandTotal();
+            resetActionButtons();
         });
 
 
@@ -678,71 +630,6 @@
             });
         }
 
-        function updateRowCalculations(row) {
-            // const price = parseFloat(row.querySelector('.price').value) || 0;
-            const price_total = parseFloat(row.querySelector('.totalAmount').value) || 0;
-            const discount = parseFloat(row.querySelector('.discount').value) || 0;
-            const tax = parseFloat(row.querySelector('.tax').value) || 0;
-
-            // const discountAmount = (price * discount) / 100;
-            // const taxAmount = (price * tax) / 100;
-            // const priceSubTotal = price - discountAmount;
-            // const totalAmount = priceSubTotal + taxAmount;
-
-            const discountAmount = (price_total * discount) / 100;
-            const taxAmount = price_total - (price_total / (1+(tax / 100)));
-            const priceSubTotal = price_total - taxAmount;
-            // const totalAmount = priceSubTotal + taxAmount;
-
-            row.querySelector('.discountAmount').value = discountAmount.toFixed(2);
-            row.querySelector('.taxAmount').value = taxAmount.toFixed(2);
-            row.querySelector('.priceSubTotal').value = priceSubTotal.toFixed(2);
-            row.querySelector('.totalAmount').value = totalAmount.toFixed(2);
-
-            updateGrandTotal();
-            updateTotalTaxAmount();
-            updateTotalAmount();
-        }
-
-        function updateGrandTotal() {
-            let grandTotal = 0;
-            document.querySelectorAll('.priceSubTotal').forEach(input => {
-                grandTotal += parseFloat(input.value) || 0;
-            });
-
-            // Update input field instead of span
-            const subTotalInput = document.querySelector('.subTotal');
-            if (subTotalInput) {
-                subTotalInput.value = grandTotal.toFixed(2);
-            }
-        }
-
-        function updateTotalTaxAmount() {
-            let totalTaxAmount = 0;
-            document.querySelectorAll('.taxAmount').forEach(input => {
-                totalTaxAmount += parseFloat(input.value) || 0;
-            });
-
-            // Update input field instead of span
-            const totalTaxAmountInput = document.querySelector('.totalTaxAmount');
-            if (totalTaxAmountInput) {
-                totalTaxAmountInput.value = totalTaxAmount.toFixed(2);
-            }
-        }
-
-        function updateTotalAmount() {
-            let FinalTotalAmount = 0;
-            document.querySelectorAll('.totalAmount').forEach(input => {
-                FinalTotalAmount += parseFloat(input.value) || 0;
-            });
-
-            // Update input field instead of span
-            const FinalTotalAmountInput = document.querySelector('.finalTotalAmount');
-            if (FinalTotalAmountInput) {
-                FinalTotalAmountInput.value = FinalTotalAmount.toFixed(2);
-            }
-        }
-
 
         function SetFinanceAmount() {
             var DownPayment = $("#DownPayment").val();
@@ -750,13 +637,13 @@
             var EMICharge = $("#EMICharge").val();
             var Price = $("#total_amount").val();
             var MonthDuration = $("#MonthDuration").val();
-            total = (parseInt(Price) + parseInt(Processing)) - DownPayment;
+            var SecurityDeposit = $("#mobile_security_charges").val();
+            total = (parseInt(Price) + parseInt(Processing) + parseInt(SecurityDeposit)) - DownPayment;
 
             $("#FinanceAmount").val(total);
             $("#MonthDuration").val("");
             $("#permonth").html("");
         }
-
 
         function PriceAmount() {
             var DownPayment = $("#DownPayment").val();
@@ -774,13 +661,15 @@
             var Price = $("#total_amount").val();
             var Processing = $("#Processing").val();
             var DownPayment = $("#DownPayment").val();
+            var SecurityDeposit = $("#mobile_security_charges").val();
+
             if (EMICharge == "") {
                 EMICharge = '0';
             } else {
                 EMICharge = EMICharge;
             }
             var ChargeTotal = parseInt(EMICharge) * parseInt(MonthDuration);
-            Financetotal = (parseInt(Price) + parseInt(Processing)) - DownPayment;
+            Financetotal = (parseInt(Price) + parseInt(Processing) + parseInt(SecurityDeposit)) - DownPayment;
             AmountTotal = parseInt(Financetotal) + parseInt(ChargeTotal);
 
             $("#FinanceAmount").val(Math.round(AmountTotal));
@@ -788,18 +677,6 @@
             $("#permonthvalue").val(Math.round(total));
             $("#permonth").html("EMI Per Month : " + Math.round(total));
         }
-
-        // Attach event listeners
-        document.querySelectorAll('.totalAmount, .discount, .tax, .price').forEach(input => {
-            input.addEventListener('change', function() {
-                const row = this.closest('tr');
-                updateRowCalculations(row);
-                updateGrandTotal();
-                updateTotalTaxAmount();
-                updateTotalAmount();
-            });
-        });
-
 
         $('#datepicker').datepicker({
             uiLibrary: 'bootstrap5',
@@ -864,31 +741,17 @@
             });
         });
 
-        function toggleFinanceDetails() {
-            const paymentMethod = document.getElementById('paymentMethod').value;
-            const financeDetails = document.getElementById('finance_detail');
-
-            if (paymentMethod === '2') {
-                financeDetails.style.display = 'block';
-            } else {
-                financeDetails.style.display = 'none';
-            }
-        }
-
-        // Optional: Call this function on page load if you're in edit mode
-        window.onload = function() {
-            toggleFinanceDetails();
-        };
-
         $(document).ready(function() {
 
             // Initially hide the finance detail section
             $('#finance_detail').hide();
+            $('#online_detail').hide();
+
             // Listen to changes on the payment method dropdown
             $('.paymentMethod').change(function() {
                 var selected = $(this).val();
 
-                if (selected == '2') { // 2 = Finance
+                if (selected == '2') { // 3 = Finance
                     $('#finance_detail').show();
                 } else {
                     $('#finance_detail').hide();
@@ -955,35 +818,32 @@
                 });
             }
 
-            $(document).on('change', '.product-select', function() {
+            $(document).on('change', '.product-select', function () {
                 let $row = $(this).closest('tr'); // Get current row
                 let productId = $(this).val();
                 let imeiDropdown = $row.find('.imei_id');
-                let urK = "{{ route('admin.sale.get-imeis', ':productId') }}".replace(':productId',
-                    productId);
+                let urK = "{{ route('admin.sale.get-imeis', ':productId') }}".replace(':productId', productId);
 
                 if (productId) {
                     $.ajax({
                         url: urK,
                         method: 'GET',
-                        success: function(data) {
-                            imeiDropdown.empty().append(
-                                '<option value="">Select IMEI No</option>');
-                            $.each(data, function(id, imei) {
-                                imeiDropdown.append('<option value="' + id + '">' +
-                                    imei + '</option>');
+                        success: function (data) {
+                            imeiDropdown.empty().append('<option value="">Select IMEI No</option>');
+                            $.each(data, function (id, imei) {
+                                imeiDropdown.append('<option value="' + id + '">' + imei + '</option>');
                             });
 
                             updateIMEIDropdowns();
                         },
-                        error: function() {
+                        error: function () {
                             alert('Could not fetch IMEI numbers.');
                         }
                     });
                 }
             });
 
-            $(document).on('change', '.imei_id', function() {
+            $(document).on('change', '.imei_id', function () {
                 updateIMEIDropdowns();
             });
 
@@ -1007,7 +867,6 @@
                     invoice_date: {
                         required: true
                     },
-
                     sub_total: {
                         required: true
                     },
@@ -1041,8 +900,10 @@
                     },
                     product_name: {
                         required: true
+                    },
+                    amount:{
+                        required:true
                     }
-
                 },
                 messages: {
                     customer: {
@@ -1086,22 +947,21 @@
                     },
                     brand_name: {
                         required: "please select Brand Name"
+                    },
+                    amount:{
+                        required: "please enter amount"
                     }
+
                 },
                 errorElement: 'span',
                 errorClass: 'text-danger',
                 highlight: function(element, errorClass) {
                     $(element).addClass("is-invalid");
-
-
                 },
                 unhighlight: function(element, errorClass) {
                     $(element).removeClass("is-invalid");
                 }
             });
-
-
         });
     </script>
-
 @endsection

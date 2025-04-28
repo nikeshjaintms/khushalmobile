@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Brand;
 use App\Models\Customer;
 use App\Models\Finance;
@@ -26,7 +25,6 @@ class SaleController extends Controller
         return view('sale.index', compact('sales'));
     }
 
-
     public function getImeis($product_id)
     {
         $imeis = PurchaseProduct::where('product_id', $product_id)
@@ -42,7 +40,6 @@ class SaleController extends Controller
      */
     public function create(Request $request)
     {
-
         $customers = Customer::all();
         $brands = Brand::all();
         $products = Product::all();
@@ -98,8 +95,6 @@ class SaleController extends Controller
             'products.*.tax' => 'numeric|min:0',
             'products.*.tax_amount' => 'numeric|min:0',
             'products.*.price_total' => 'numeric|min:0',
-
-
         ]);
 
         DB::beginTransaction();
@@ -155,7 +150,6 @@ class SaleController extends Controller
                         'status' => 'sold',
                         'invoice_id' => $sale->id,
                     ]);
-
             }
 
             foreach ($request->payment as $pay) {
@@ -168,10 +162,7 @@ class SaleController extends Controller
                     'reference_no' => $pay['reference_no'] ?? null,
                 ]);
             }
-
-
             DB::commit();
-
             return redirect()->route('admin.sale.index')->with('success', 'Sale created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -200,7 +191,6 @@ class SaleController extends Controller
      */
     public function edit( Sale $sales, $id)
     {
-
         $data = Sale::find($id);
         $data1 = SaleProduct::with('product')->where('sales_id', $id)->get();
 
@@ -208,7 +198,7 @@ class SaleController extends Controller
         $selectedCustomer = $data->customer->pluck('id');
 
         $products = Product::all();
-        //$selectedProductId = $data1->product->id;
+
         foreach ($data1 as $saleProduct) {
             $selectedProductId = $saleProduct->product->id;
             $selectedBrandId = $saleProduct->product->brand_id;
@@ -216,10 +206,8 @@ class SaleController extends Controller
         }
 
         $brands = Brand::all();
-        //$selectedBrandId = $data1->product->brand_id;
 
         $imiNumbers = PurchaseProduct::all();
-        //$selectedImi = $data1->imei_id ?? null;
 
         $refernce = SaleTransaction::where('invoice_id', $id)->first();
         $selectedRefer = $refernce->reference_no ?? null;
@@ -233,7 +221,6 @@ class SaleController extends Controller
         $selectfinance = Finance::where('customer_id', $sale->customer_id)->where('invoice_id', $id)->first();
 
         return view('sale.edit', compact('data', 'data1', 'customers', 'selectedCustomer', 'products', 'brands', 'selectedProductId', 'selectedBrandId', 'imiNumbers', 'selectfinance', 'selectedImi', 'refernce', 'selectedRefer', 'selectedAmount', 'financeMaster', 'selectedFinance'));
-
     }
 
     /**
@@ -244,7 +231,6 @@ class SaleController extends Controller
         //dd($request->all());
         DB::beginTransaction();
         try {
-
             $data = Sale::all()->find($id);
             $data->update([
                 'customer_id' => $request->customer_id,
@@ -270,7 +256,6 @@ class SaleController extends Controller
                     'tax_amount' => $product['tax_amount'] ?? 0,
                     'price_total' => $product['price_total'] ?? 0,
                 ]);
-
             }
 
             foreach ($request->payment as $pay) {
@@ -282,8 +267,6 @@ class SaleController extends Controller
                     'reference_no' => $pay['reference_no'] ?? null,
                 ]);
             }
-
-
             DB::commit();
             return redirect()->route('admin.sale.index')->with('success', 'Sale updated successfully.');
         } catch (\Exception $e) {

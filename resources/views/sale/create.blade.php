@@ -1,15 +1,10 @@
-
 @extends('layouts.app')
 {{-- @if (Auth::guard('admin')->check()) --}}
 @section('title', 'Admin Panel')
-
 {{-- @endif --}}
 {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> --}}
-
-
 @section('content-page')
     <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
-
     <style>
         .table>tbody>tr>td,
         .table>tbody>tr>th {
@@ -224,8 +219,6 @@
                                                 </td>
                                             </tr>
                                             </tbody>
-
-
                                         </table>
                                     </div>
 
@@ -453,174 +446,134 @@
 @section('footer-script')
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const tbody = document.getElementById('add-table-row');
-
-            const brandOptionsHTML = document.querySelector('.brand-name')?.innerHTML || '';
-            const productOptionsHTML = document.querySelector('.product-name')?.innerHTML || '';
-            const imiOptionsHTML = document.querySelector('.imei_id')?.innerHTML || '';
-
-
-            function updateButtons() {
-                const rows = tbody.querySelectorAll('tr');
-                rows.forEach((row, index) => {
-                    const addBtn = row.querySelector('.add-row');
-                    if (addBtn) {
-                        addBtn.style.display = (index === rows.length - 1) ? 'inline-block' : 'none';
-                    }
-                    const th = row.querySelector('th');
-                    if (th) th.textContent = index + 1;
-                });
-            }
-
-            let productIndex = 1;
-            let usedIMEIs = new Set();
-
-            function createRow(data = {}) {
-                const row = document.createElement('tr');
-                row.innerHTML = ` <th scope="row" class="text-center">1</th>
-           <td>
-             <select class="form-control form-select brand-name brand-select" name="products[${productIndex}][brand_id]">
-                 ${brandOptionsHTML}
-             </select>
-           </td>
-           <td>
-             <select class="form-control form-select product-name product-select" class="product" name="products[${productIndex}][product_id]">
-                 ${productOptionsHTML}
-             </select>
-          </td>
-          <td>
-             <select class="form-control form-select imei_id" name="products[${productIndex}][imei_id]">
-               ${imiOptionsHTML}
-             </select>
-          </td>
-         <input type="hidden" class="form-control price"  id="price" name="products[${productIndex}][price]"  value="${data.mrp || ''}" readonly required />
-
-          <td><input type="number" class="form-control discount" name="products[${productIndex}][discount]" value="${data.discount || ''}"   required /></td>
-
-          <input type="hidden" class="form-control discount_amount discountAmount" name="products[${productIndex}][discount_amount]" value="${data.discount_amount ||
-                ''}" id="discountAmount" readonly required />
-
-            <td><input type="number" class="form-control priceSubTotal" value="${data.priceSubTotal || ''}" name="products[${productIndex}][price_subtotal]" readonly
-             required/>
-           </td>
-
-           <td><input type="number" class="form-control tax"   value="18" name="products[${productIndex}][tax]"  required /></td>
-
-           <td><input type="number" class="form-control tax-amount taxAmount" value="${data.tax_amount || ''}" name="products[${productIndex}][tax_amount]" readonly
-            required/>
-          </td>
-
-          <td><input type="number" class="form-control total total-amount totalAmount" value="${data.total || ''}" name="products[${productIndex}][price_total]"
-           required /></td>
-
-          <td class="d-inline-flex gap-1">
-             <button type="button" class="btn btn-success add-row">+</button>
-             <button type="button" class="btn btn-danger remove-row">-</button>
-             <button type="button" class="btn btn-secondary duplicate-row">
-                 <i class="fas fa-copy"></i>
-             </button>
-              </td>
-
-                     `;
-
-                productIndex++;
-                tbody.appendChild(row);
-
-                updateButtons();
-
-                const priceInput = row.querySelector('.price');
-                const discountInput = row.querySelector('.discount');
-                const taxInput = row.querySelector('.tax');
-                const imeiSelect = row.querySelector('.imei_id');
-
-                imeiSelect.addEventListener('change', function() {
-                    const selectedIMEI = imeiSelect.value;
-                    if (selectedIMEI) {
-                        usedIMEIs.add(selectedIMEI);
-                    }
-                });
-                document.querySelector('#add-table-row').appendChild(row);
-
-                function handleInput() {
-
-                    const price_total = parseFloat(row.querySelector('.totalAmount').value) || 0;
-                    const discount = parseFloat(discountInput.value) || 0;
-                    const tax = parseFloat(taxInput.value) || 0;
-
-                    const discountAmount = (price_total * discount) / 100;
-                    const taxAmount = price_total - (price_total / (1+(tax / 100)));
-                    const priceSubTotal = price_total - taxAmount;
-
-                    row.querySelector('.discountAmount').value = discountAmount.toFixed(2);
-                    row.querySelector('.taxAmount').value = taxAmount.toFixed(2);
-                    row.querySelector('.totalAmount').value = totalAmount.toFixed(2);
-                    row.querySelector('.priceSubTotal').value = priceSubTotal.toFixed(2);
-
-                    updateGrandTotal();
-                    updateTotalTaxAmount();
-                    updateTotalAmount();
-
-                }
-
-                priceInput.addEventListener('input', handleInput);
-                discountInput.addEventListener('input', handleInput);
-                taxInput.addEventListener('input', handleInput);
-
-            }
-
-            tbody.addEventListener('click', function(e) {
-                const target = e.target.closest('button');
-
-                if (!target) return;
-
-                if (target.classList.contains('add-row')) {
-                    createRow();
-
-                }
-
-                if (target.classList.contains('remove-row')) {
-                    const row = target.closest('tr');
-                    if (tbody.querySelectorAll('tr').length > 1) {
-                        row.remove();
-                        updateButtons();
-                        updateGrandTotal();
-                        updateTotalTaxAmount();
-                        updateTotalAmount();
-                    }
-                }
-
-                if (target.classList.contains('duplicate-row')) {
-                    const row = target.closest('tr');
-                    const data = {
-                        discount_amount: row.querySelector('.discount_amount')?.value,
-                        priceSubTotal: row.querySelector('.priceSubTotal')?.value || '',
-                        tax_amount: row.querySelector('.tax-amount')?.value || '',
-                        total: row.querySelector('.total')?.value || ''
-                    };
-                    const selectedProduct = row.querySelector('.product-name')?.value;
-                    const selectedBrand = row.querySelector('.brand-name')?.value;
-                    const selectedImi = row.querySelector('.imei_id ')?.value;
-                    const selectedPrice = row.querySelector('.price ')?.value;
-
-                    createRow({
-                        ...data
+        $(document).ready(function () {
+            function resetActionButtons() {
+                const $rows = $('#add-table-row tr');
+                if ($rows.length === 1) {
+                    $rows.find('.remove-row').addClass('d-none');
+                    $rows.find('.add-row').removeClass('d-none');
+                } else {
+                    $rows.each(function (index) {
+                        const $row = $(this);
+                        const isLast = index === $rows.length - 1;
+                        $row.find('.remove-row').removeClass('d-none');
+                        $row.find('.add-row').toggleClass('d-none', !isLast);
                     });
-
-                    const newRow = tbody.lastElementChild;
-                    newRow.querySelector('.product-name').value = selectedProduct;
-                    newRow.querySelector('.brand-name').value = selectedBrand;
-                    newRow.querySelector('.imei_id ').value = selectedImi;
-                    newRow.querySelector('.price').value = selectedPrice;
-
-                    updateGrandTotal();
-                    updateRowCalculations(newRow);
                 }
+            }
+            function resetRowIndexes() {
+                $('#add-table-row tr').each(function(index, row) {
+                    $(row).find('input, select').each(function() {
+                        let name = $(this).attr('name');
+                        if (name) {
+                            // Update number inside [ ]
+                            name = name.replace(/\[\d+\]/, `[${index}]`);
+                            $(this).attr('name', name);
+                        }
+                    });
+                    // Update row number display (Sr No column)
+                    $(row).find('.row-index').text(index + 1);
+                });
+            }
+
+            function calculateRow($row) {
+                const price = parseFloat($row.find('.price').val()) || 0;
+                const discount = parseFloat($row.find('.discount').val()) || 0;
+                const tax = parseFloat($row.find('.tax').val()) || 0;
+
+                const discountAmount = (price * discount) / 100;
+                const subtotal = price - discountAmount;
+                const taxAmount = (subtotal * tax) / 100;
+                const total = subtotal + taxAmount;
+
+                $row.find('.discountAmount').val(discountAmount.toFixed(2));
+                $row.find('.priceSubTotal').val(subtotal.toFixed(2));
+                $row.find('.taxAmount').val(taxAmount.toFixed(2));
+                $row.find('.totalAmount').val(total.toFixed(2));
+            }
+
+            function calculateGrandTotal() {
+                let subtotalSum = 0, taxSum = 0, totalSum = 0;
+
+                $('#add-table-row tr').each(function () {
+                    subtotalSum += parseFloat($(this).find('.priceSubTotal').val()) || 0;
+                    taxSum += parseFloat($(this).find('.taxAmount').val()) || 0;
+                    totalSum += parseFloat($(this).find('.totalAmount').val()) || 0;
+                });
+
+                $('.subTotal').val(subtotalSum.toFixed(2));
+                $('.totalTaxAmount').val(taxSum.toFixed(2));
+                $('.finalTotalAmount').val(totalSum.toFixed(2));
+            }
+
+            // Input event: price, discount, tax
+            $(document).on('input', '.price, .discount, .tax', function () {
+                const $row = $(this).closest('tr');
+                calculateRow($row);
+                calculateGrandTotal();
+            });
+
+            // When total amount (only) changes
+            $(document).on('input', '.totalAmount', function () {
+                calculateGrandTotal();
+            });
+            // Add new row
+            $(document).on('click', '.add-row', function() {
+                let $row = $(this).closest('tr');
+                let $newRow = $row.clone();
+
+                // Clear all input/select values
+                $newRow.find('input').val('');
+                $newRow.find('select').val('');
+                $newRow.find('.tax').val('18');
+
+                // Append cloned row
+                $('#add-table-row').append($newRow);
+
+                resetRowIndexes();
+                resetActionButtons();// 🔥 Very important
+            });
+
+
+            // Remove row
+            $(document).on('click', '.remove-row', function () {
+                if ($('#add-table-row tr').length > 1) {
+                    $(this).closest('tr').remove();
+                    resetRowIndexes();
+                    resetActionButtons();
+                    calculateGrandTotal();
+                }
+            });
+
+            // Duplicate row
+            $(document).on('click', '.duplicate-row', function () {
+                const $row = $(this).closest('tr');
+                const $dupRow = $row.clone();
+
+                // Preserve selects (brand, product, IMEI) if needed
+                const selectedBrand = $row.find('.brand-select').val();
+                const selectedProduct = $row.find('.product-select').val();
+                const selectedIMEI = $row.find('.imei_id').val();
+
+                $dupRow.find('input').val(''); // clear inputs
+
+                $dupRow.find('.brand-select').val(selectedBrand);
+                $dupRow.find('.product-select').val(selectedProduct);
+                $dupRow.find('.imei_id').val(selectedIMEI);
+                $dupRow.find('.tax').val('18');
+                $dupRow.find('.remove-row').removeClass('d-none');
+
+                $('#add-table-row').append($dupRow);
+                resetActionButtons();
+                calculateGrandTotal();
+                resetRowIndexes();
 
             });
-            updateButtons();
-        });
 
+            // On page load, calculate totals
+            calculateGrandTotal();
+            resetActionButtons();
+        });
 
         function GetOrderNo() {
             var selectDate = $("#invoice_date").val();
@@ -639,70 +592,6 @@
                 }
             });
         }
-
-        function updateRowCalculations(row) {
-            // const price = parseFloat(row.querySelector('.price').value) || 0;
-            const price_total = parseFloat(row.querySelector('.totalAmount').value) || 0;
-            const discount = parseFloat(row.querySelector('.discount').value) || 0;
-            const tax = parseFloat(row.querySelector('.tax').value) || 0;
-
-            // const discountAmount = (price * discount) / 100;
-            // const taxAmount = (price * tax) / 100;
-            // const priceSubTotal = price - discountAmount;
-            // const totalAmount = priceSubTotal + taxAmount;
-
-            const discountAmount = (price_total * discount) / 100;
-            const taxAmount = price_total - (price_total / (1+(tax / 100)));
-            const priceSubTotal = price_total - taxAmount;
-            // const totalAmount = priceSubTotal + taxAmount;
-
-            row.querySelector('.discountAmount').value = discountAmount.toFixed(2);
-            row.querySelector('.taxAmount').value = taxAmount.toFixed(2);
-            row.querySelector('.priceSubTotal').value = priceSubTotal.toFixed(2);
-            row.querySelector('.totalAmount').value = totalAmount.toFixed(2);
-
-        }
-
-        function updateGrandTotal() {
-            let grandTotal = 0;
-            document.querySelectorAll('.priceSubTotal').forEach(input => {
-                grandTotal += parseFloat(input.value) || 0;
-            });
-
-            const subTotalInput = document.querySelector('.subTotal');
-            if (subTotalInput) {
-                subTotalInput.value = grandTotal.toFixed(2);
-            }
-        }
-
-        function updateTotalTaxAmount() {
-            let totalTaxAmount = 0;
-            document.querySelectorAll('.taxAmount').forEach(input => {
-                totalTaxAmount += parseFloat(input.value) || 0;
-            });
-
-            const totalTaxAmountInput = document.querySelector('.totalTaxAmount');
-            if (totalTaxAmountInput) {
-                totalTaxAmountInput.value = totalTaxAmount.toFixed(2);
-            }
-        }
-
-        function updateTotalAmount() {
-            let FinalTotalAmount = 0;
-            document.querySelectorAll('.totalAmount').forEach(input => {
-                FinalTotalAmount += parseFloat(input.value) || 0;
-            });
-
-            const FinalTotalAmountInput = document.querySelector('.finalTotalAmount');
-            if (FinalTotalAmountInput) {
-                FinalTotalAmountInput.value = FinalTotalAmount.toFixed(2);
-            }
-        }
-
-
-
-
-
 
         function SetFinanceAmount() {
             var DownPayment = $("#DownPayment").val();
@@ -752,18 +641,6 @@
             $("#permonth").html("EMI Per Month : " + Math.round(total));
         }
 
-        // Attach event listeners
-        document.querySelectorAll('.totalAmount, .discount, .tax, .price').forEach(input => {
-            input.addEventListener('change', function() {
-                const row = this.closest('tr');
-                updateRowCalculations(row);
-                updateGrandTotal();
-                updateTotalTaxAmount();
-                updateTotalAmount();
-            });
-        });
-
-
         $('#datepicker').datepicker({
             uiLibrary: 'bootstrap5',
             format: 'yyyy-mm-dd',
@@ -771,7 +648,6 @@
             todayHighlight: true,
             orientation: 'bottom',
             startDate: new Date()
-
         });
 
         $(document).on('change', '.product-select', function() {
