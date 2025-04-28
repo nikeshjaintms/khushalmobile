@@ -476,25 +476,50 @@
                 });
             }
 
-            function calculateRow($row) {
-                const price = parseFloat($row.find('.price').val()) || 0;
-                const total_Amount = parseFloat($row.find('.totalAmount').val()) || 0;
-                const discount = parseFloat($row.find('.discount').val()) || 0;
-                const tax = parseFloat($row.find('.tax').val()) || 0;
+            // function calculateRow($row) {
+            //     const price = parseFloat($row.find('.price').val()) || 0;
+            //     const total_Amount = parseFloat($row.find('.totalAmount').val()) || 0;
+            //     const discount = parseFloat($row.find('.discount').val()) || 0;
+            //     const tax = parseFloat($row.find('.tax').val()) || 0;
+            //
+            //     const discountAmount = (price * discount) / 100;
+            //     const taxAmount =   total_Amount - (total_Amount / (1+(tax / 100)));
+            //     const subtotal = total_Amount - taxAmount - discountAmount;
+            //     const totalAmount = price - discountAmount;
+            //
+            //     $row.find('.discountAmount').val(discountAmount.toFixed(2));
+            //     $row.find('.priceSubTotal').val(subtotal.toFixed(2));
+            //     $row.find('.taxAmount').val(taxAmount.toFixed(2));
+            //     $row.find('.totalAmount').val(totalAmount.toFixed(2));
+            // }
 
-                const discountAmount = (price * discount) / 100;
-                const taxAmount =   total_Amount - (total_Amount / (1+(tax / 100)));
-                const subtotal = total_Amount - taxAmount - discountAmount;
-                const totalAmount = price - discountAmount;
+            function calculateRow($row, isTotalAmountEdited) {
+                let price = parseFloat($row.find('.price').val()) || 0;
+                let discount = parseFloat($row.find('.discount').val()) || 0;
+                let tax = parseFloat($row.find('.tax').val()) || 0;
+                let totalAmount = parseFloat($row.find('.totalAmount').val()) || 0;
+
+                let discountAmount = 0;
+
+                if (isTotalAmountEdited) {
+                    // When user edited totalAmount manually:
+                    discountAmount = (totalAmount * discount) / 100;
+                    price = totalAmount + discountAmount;  // back calculate price
+                } else {
+                    // When user edited price/discount/tax:
+                    discountAmount = (price * discount) / 100;
+                    totalAmount = price - discountAmount;
+                    $row.find('.totalAmount').val(totalAmount.toFixed(2));
+                }
+
+                const taxAmount = totalAmount - (totalAmount / (1 + (tax / 100)));
+                const subtotal = totalAmount - taxAmount;
 
                 $row.find('.discountAmount').val(discountAmount.toFixed(2));
                 $row.find('.priceSubTotal').val(subtotal.toFixed(2));
                 $row.find('.taxAmount').val(taxAmount.toFixed(2));
-                $row.find('.totalAmount').val(totalAmount.toFixed(2));
             }
-
-
-
+            
             function calculateGrandTotal() {
                 let subtotalSum = 0, taxSum = 0, totalSum = 0;
 
@@ -510,14 +535,16 @@
             }
 
             // Input event: price, discount, tax
-            $(document).on('input', '.price, .discount, .tax', function () {
+            $(document).on('input', '.price, .discount, .tax ', function () {
                 const $row = $(this).closest('tr');
-                calculateRow($row);
+                calculateRow($row, false);
                 calculateGrandTotal();
             });
 
             // When total amount (only) changes
             $(document).on('input', '.totalAmount', function () {
+                const $row = $(this).closest('tr');
+                calculateRow($row, true);
                 calculateGrandTotal();
             });
             // Add new row
