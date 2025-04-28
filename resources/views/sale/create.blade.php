@@ -148,7 +148,7 @@
                                                 </td>
 
 
-                                                <input type="hidden" class="form-control price-select price"
+                                                <input type="hidden" class="form-control price-select price originalPrice"
                                                        name="products[0][price]" id="price" required />
                                                 @error('price')
                                                 <p style="color: red;">{{ $message }}</p>
@@ -478,19 +478,22 @@
 
             function calculateRow($row) {
                 const price = parseFloat($row.find('.price').val()) || 0;
+                const total_Amount = parseFloat($row.find('.totalAmount').val()) || 0;
                 const discount = parseFloat($row.find('.discount').val()) || 0;
                 const tax = parseFloat($row.find('.tax').val()) || 0;
 
                 const discountAmount = (price * discount) / 100;
-                const subtotal = price - discountAmount;
-                const taxAmount =   price - (price / (1+(tax / 100)));
-                const total = subtotal + taxAmount;
+                const taxAmount =   total_Amount - (total_Amount / (1+(tax / 100)));
+                const subtotal = total_Amount - taxAmount - discountAmount;
+                const totalAmount = price - discountAmount;
 
                 $row.find('.discountAmount').val(discountAmount.toFixed(2));
                 $row.find('.priceSubTotal').val(subtotal.toFixed(2));
                 $row.find('.taxAmount').val(taxAmount.toFixed(2));
-                $row.find('.totalAmount').val(total.toFixed(2));
+                $row.find('.totalAmount').val(totalAmount.toFixed(2));
             }
+
+
 
             function calculateGrandTotal() {
                 let subtotalSum = 0, taxSum = 0, totalSum = 0;
@@ -531,7 +534,7 @@
                 $('#add-table-row').append($newRow);
 
                 resetRowIndexes();
-                resetActionButtons();// 🔥 Very important
+                resetActionButtons();
             });
 
 
@@ -807,11 +810,6 @@
 
             $(document).on('change', '.imei_id', function () {
                 updateIMEIDropdowns();
-            });
-
-            $('.tax, .discount, .total,.amount,.reference_no , .Processingfee,.emicharge , .DownPayment,.FinanceAmount,.MonthDuration,.DeductionDate , .Penalty').inputmask({
-                regex: "^[0-9.]*$",
-                placeholder: ''
             });
 
             $('#name, #city').inputmask({

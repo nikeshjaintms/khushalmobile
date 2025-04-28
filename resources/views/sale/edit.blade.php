@@ -514,14 +514,14 @@
 
             function calculateRow($row) {
                 const price = parseFloat($row.find('.price').val()) || 0;
+                const total_Amount = parseFloat($row.find('.totalAmount').val()) || 0;
                 const discount = parseFloat($row.find('.discount').val()) || 0;
                 const tax = parseFloat($row.find('.tax').val()) || 0;
 
                 const discountAmount = (price * discount) / 100;
                 const subtotal = price - discountAmount;
-                const taxAmount =   price - (price / (1+(tax / 100)));
+                const taxAmount =   total_Amount - (total_Amount / (1+(tax / 100)));
                 const total = subtotal + taxAmount;
-
 
 
                 $row.find('.discountAmount').val(discountAmount.toFixed(2));
