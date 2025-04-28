@@ -53,7 +53,15 @@
                             </div>
 
                             <div>
-                                <h5>Permissions</h5>
+                                <div class="card-header">
+                                    <div class="form-group">
+                                        <label for="driver_name">Permissions:</label>
+                                        <div class="form-check-inline float-end">
+                                            <input class="form-check-input" type="checkbox"  id="select-all" name="select-all">
+                                            <label class="form-check-label" for="select-all">Select All</label>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="card-body">
                                     <div class="row">
                                         @foreach($permissions as $permission)
@@ -92,6 +100,12 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
 <script>
+    document.getElementById('select-all').addEventListener('click', function() {
+        const checkboxes = document.querySelectorAll('input[name="permissions[]"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
     $(document).ready(function () {
         $("#roleForm").validate({
             onfocusout: function (element) {

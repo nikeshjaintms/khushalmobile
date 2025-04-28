@@ -483,7 +483,7 @@
 
                 const discountAmount = (price * discount) / 100;
                 const subtotal = price - discountAmount;
-                const taxAmount = (subtotal * tax) / 100;
+                const taxAmount =   price - (price / (1+(tax / 100)));
                 const total = subtotal + taxAmount;
 
                 $row.find('.discountAmount').val(discountAmount.toFixed(2));
