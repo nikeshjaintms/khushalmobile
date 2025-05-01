@@ -314,6 +314,7 @@
                 // Clear input and select values
                 $newRow.find('input').val('');
                 $newRow.find('select').val('');
+                $newRow.find('input[name="tax[]"]').val(18);
 
                 // Show remove button
                 $newRow.find('.remove-row').removeClass('d-none');
@@ -342,6 +343,8 @@
                 // Preserve values
 
                 $dupRow.find('input').val('');
+                $dupRow.find('input[name="tax[]"]').val(18);
+
 
                 let selectedBrand = $row.find('.brand-select').val();
                 let selectedProduct = $row.find('.product-select').val();
