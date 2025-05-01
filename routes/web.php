@@ -32,13 +32,15 @@ Route::get('/', function () {
     return view('login');
 })->name('login');
 
-Route::get('admin', function () {
-    return view('index');
-})->name('dashboard');
+
 
 Route::post('/login', [UserController::class, 'login'])->name('admin.login.post');
 
 Route::prefix('admin')->middleware('auth')->group(function () {
+    Route::get('/', function () {
+        return view('index');
+    })->name('dashboard');
+
     Route::get('/logout', [UserController::class, 'logout'])->name('admin.logout');
 
     Route::prefix('user')->controller(UserController::class)->group(function () {
