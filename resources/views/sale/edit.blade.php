@@ -378,7 +378,7 @@
                                     </div>
 
                                     @if($selectfinance)
-                                        <div class="row mt-3" id="finance_detail">
+                                        <div  class="row mt-3" id="finance_detail">
                                             <h4>Finance Details</h4>
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -763,7 +763,6 @@
             // Initially hide the finance detail section
             $('#finance_detail').hide();
             $('#online_detail').hide();
-
             // Listen to changes on the payment method dropdown
             $('.paymentMethod').change(function() {
                 var selected = $(this).val();
@@ -777,7 +776,6 @@
                     $('#permonth').text('');
                     $('#permonthvalue').val('');
                 }
-
             });
 
 

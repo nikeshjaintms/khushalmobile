@@ -19,9 +19,9 @@ class DeductionController extends Controller
     {
         $deductions = Deduction::leftjoin('customers', 'deductions.customer_id', '=', 'customers.id')
             ->select('deductions.*', 'customers.name as customer_name')
+            ->where('deductions.status', 'paid')
             ->get();
         $finance = Finance::with('customers', 'deductions')->first();
-
 
         return view('deduction.index', compact('deductions', 'finance'));
     }
@@ -52,6 +52,7 @@ class DeductionController extends Controller
 
     public function getDeductions(Request $request)
     {
+
         $financeId = $request->finance_id;
 
         $deductions = Deduction::where('finance_id', $financeId)->count();

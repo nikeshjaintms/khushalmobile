@@ -66,7 +66,10 @@
 
                                             <td>
                                                 @if($row['status'] === 'paid')
-                                                    <span class="badge bg-success">Paid</span>
+                                                    <button
+                                                            class="btn btn-sm btn-success btn-pay" disabled
+                                                    >Paid
+                                                    </button>
                                                 @else
                                                     <button
                                                         class="btn btn-sm btn-success btn-pay"
@@ -239,7 +242,9 @@
 
 
             $.ajax({
+
                 url: '{{ route('admin.finance.deductions') }}',
+
                 method: 'POST',
                 data: {
                     finance_id: id,
