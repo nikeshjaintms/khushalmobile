@@ -133,6 +133,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::delete('delete/{id}', 'destroy')->name('admin.purchase.delete')->middleware('permission:delete-purchase');
     });
 
+
     Route::prefix('transaction')->controller(TransctionController::class)->group(function () {
         Route::get('/', 'index')->name('admin.transaction.index')->middleware('permission:index-transaction');
         Route::get('create', 'create')->name('admin.transaction.create');
@@ -169,7 +170,11 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::prefix('deduction')->controller(DeductionController::class)->group(function () {
         Route::get('/', 'index')->name('admin.deduction.index')->middleware('permission:index-deduction');
         Route::get('create', 'create')->name('admin.deduction.create')->middleware('permission:create-deduction');
+        Route::get('show/{customerId}/{financeId}', 'showByCustomer')->name('admin.deduction.show');
+
         Route::post('store', 'store')->name('admin.deduction.store');
+        Route::post('pay',  'pay')->name('deduction.pay');
+
         Route::get('edit/{id}', 'edit')->name('admin.deduction.edit')->middleware('permission:edit-deduction');
         Route::put('update/{id}', 'update')->name('admin.deduction.update');
         Route::delete('delete/{id}', 'destroy')->name('admin.deduction.delete')->middleware('permission:delete-deduction');

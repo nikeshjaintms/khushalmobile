@@ -15,4 +15,8 @@ class Customer extends Model
         'alternate_phone',
         'city',
     ];
+
+    public function finances(){
+        return $this->hasMany(Finance::class, 'customer_id');
+    }
 }

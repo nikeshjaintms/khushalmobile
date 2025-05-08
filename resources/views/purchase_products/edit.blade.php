@@ -119,9 +119,18 @@
                                                     </select>
                                                     </td>
                                                     <td style="width: fit-content;">
-                                                        <input type="text" class="form-control" name="imei[]"
-                                                            id="imei" value="{{  $pp->imei }}" required>
+{{--                                                        <input type="text" class="form-control" name="imei[]"--}}
+{{--                                                            id="imei" value="{{  $pp->imei }}" required>--}}
+                                                        @foreach (old('imei', ['']) as $index => $value)
+                                                            <input type="text" class="form-control" name="imei[]"
+                                                                   id="imei" value="{{  $pp->imei }}" required>
+
+                                                            @error('imei.' . $index)
+                                                            <div class="text-danger">{{ $message }}</div>
+                                                            @enderror
+                                                        @endforeach
                                                     </td>
+
                                                     <td><input type="text" class="form-control" name="color[]"
                                                             id="color" value="{{  $pp->color }}" required></td>
                                                     <td><input type="number" class="form-control" name="price[]"
@@ -207,7 +216,6 @@
 
             // Function to get next serial number
 
-
             function resetActionButtons() {
                 const $rows = $('#product-table tbody tr');
 
@@ -273,7 +281,7 @@
                 // Clear input and select values
                 $newRow.find('input').val('');
                 $newRow.find('select').val('');
-                $newRow.find('input[name="tax[]"]').val(18); 
+                $newRow.find('input[name="tax[]"]').val(18);
 
                 // Show remove button
                 $newRow.find('.remove-row').removeClass('d-none');

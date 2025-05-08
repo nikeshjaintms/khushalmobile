@@ -167,9 +167,12 @@
 
 
                                                     <td>
+                                                        <div class="input-group">
                                                         <input type="text" class="form-control discount"
                                                                name="products[{{$index}}][discount]" id="discount"
                                                                value="{{ $item->discount }}" required />
+                                                        <span class="input-group-text" id="basic-addon2">%</span>
+                                                        </div>
                                                         @error('discount')
                                                         <p style="color: red;">{{ $message }}</p>
                                                         @enderror
@@ -187,37 +190,49 @@
 
 
                                                     <td>
+                                                        <div class="input-group">
+                                                        <span class="input-group-text" id="basic-addon2">₹</span>
                                                         <input type="number" class="form-control priceSubTotal"
                                                                id="priceSubTotal" name="products[{{$index}}][price_subtotal]"
                                                                value="{{ $item->price_subtotal }}" readonly required />
+                                                        </div>
                                                         @error('price_subtotal')
                                                         <p style="color: red;">{{ $message }}</p>
                                                         @enderror
                                                     </td>
 
                                                     <td>
+                                                        <div class="input-group">
                                                         <input type="number" class="form-control tax" id="tax"
                                                                name="products[{{$index}}][tax]" value="{{ $item->tax }}"
                                                                required />
+                                                            <span class="input-group-text" id="basic-addon2">%</span>
+                                                        </div>
                                                         @error('tax')
                                                         <p style="color: red;">{{ $message }}</p>
                                                         @enderror
                                                     </td>
 
                                                     <td>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" id="basic-addon2">₹</span>
                                                         <input type="number" class="form-control taxAmount tax-amount"
                                                                name="products[{{$index}}][tax_amount]" id="tax_amount"
                                                                value="{{ $item->tax_amount }}" readonly required />
+                                                        </div>
                                                         @error('tax_amount')
                                                         <p style="color: red;">{{ $message }}</p>
                                                         @enderror
                                                     </td>
 
                                                     <td>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" id="basic-addon2">₹</span>
                                                         <input type="number"
                                                                class="form-control total total-amount totalAmount"
                                                                id="totalAmount" name="products[{{$index}}][price_total]"
                                                                value="{{ $item->price_total }}" required />
+                                                        </div>
                                                         @error('total')
                                                         <p style="color: red;">{{ $message }}</p>
                                                         @enderror

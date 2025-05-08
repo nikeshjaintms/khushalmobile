@@ -25,7 +25,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="#">Add Deductation</a>
+                        <a href="#">Show EMI details</a>
                     </li>
                 </ul>
             </div>
@@ -36,34 +36,55 @@
                             <div class="card-title">Deductation</div>
                         </div>
                         <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="">Customer<span style="color: red">*</span></label>
-                                        <select name="customer_id" class="form-control" id="">
-                                            <option value="">Select Customer</option>
-                                            @foreach ($customers as $customer)
-                                                <option value="{{ $customer->id }}">{{ $customer->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="table-responsive">
-                                <table id="basic-datatables" class="display table table-striped table-hover">
+                                <table class="table">
                                     <thead>
                                     <tr>
-                                        <th>Id</th>
-                                        <th>Customer</th>
-                                        <th>Phone</th>
-                                        <th>City</th>
+                                        <th>Deduction Date</th>
+                                        <th>Status</th>
+                                        <th>EMI Value</th>
+                                        <th>Paid Date</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
-                                    <tbody id="financeDetails">
-                                    <tr>
-                                        <td colspan="8" class="text-center">No data available</td>
-                                    </tr>
+                                    <tbody>
+                                    @foreach($deductions as $row)
+                                        <tr>
+                                            <td>{{ $row->emi_date }}</td>
+
+                                            <td>
+                                                @if($row['status'] === 'paid')
+                                                    <span class="badge bg-success">{{ $row['status'] }}</span>
+                                                @else
+                                                    <span class="badge bg-danger">{{ $row['status'] }}</span>
+                                                @endif
+                                            </td>
+
+                                            <td>{{ $row->emi_value }}</td>
+
+                                            <td>{{ $row['paid_date'] }}</td>
+
+                                            <td>
+                                                @if($row['status'] === 'paid')
+                                                    <span class="badge bg-success">Paid</span>
+                                                @else
+                                                    <button
+                                                        class="btn btn-sm btn-success btn-pay"
+                                                        data-id="{{ $row->id ?? '' }}"
+                                                        data-invoice="{{ $row->invoice_no }}"
+                                                        data-emiValue="{{ $row->emi_value}}"
+                                                        data-deduction-date="{{ $row['due_date'] }}"
+                                                        data-penalty="{{ $row->first()->penalty ?? '' }}"
+                                                        data-down-payment="{{ $row->downpayment ?? '' }}"
+                                                        data-customer="{{ $row->customer_name ?? '' }}"
+                                                        data-month-duration="{{ $row->month_duration ?? '' }}"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#paymentModal"
+                                                    >Pay</button>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -77,9 +98,9 @@
     <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel"
          aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form id="paymentForm" method="POST" action="{{ route('admin.deduction.store') }}">
+            <form id="paymentForm" method="POST" action="{{ route('deduction.pay') }}">
                 @csrf
-                <input type="hidden" name="finance_id" id="modalFinanceId">
+                <input type="hidden" name="id" id="modalDeductionId">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="paymentModalLabel">Make Payment</h5>
@@ -88,7 +109,6 @@
                         </button>
                     </div>
                     <div class="modal-body">
-
                         <div class="row">
                             <div class="form-group">
                                 <label>Invoice</label>
@@ -163,6 +183,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
+
     <script>
         function updateCalculations() {
             const emiValue = parseFloat($('#EmiValue').val()) || 0;
@@ -201,11 +222,12 @@
                 $('#modalPenaltyAmount').html('0.00');
                 $('#modalPenaltyAmount').closest('.form-group').hide();
             }
+
             ;
 
             // console.log(Emi_value)
 
-            $('#modalFinanceId').val(id);
+            $('#modalDeductionId').val(id);
             $('#modalInvoice').val(invoice);
             $('#modalDownPayment').val(downpayment);
             $('#modalCustomer').val(customer);
@@ -270,10 +292,9 @@
                         );
                         return;
                     }
-
+                    console.log(finance);
                     let html = '';
                     finance.forEach((item, index) => {
-                        let url = `show/${item.customer_id}/${item.id}`;
                         html += `
                         <tr>
                             <td>${index + 1}</td>
@@ -281,15 +302,9 @@
                             <td>${item.phone ?? 'N/A'}</td>
                             <td>${item.city ?? 'N/A'}</td>
                             <td>
-
-                       <a href="${url}" route="{{'admin.deduction.show'}}" class="btn btn-sm btn-success">
-                          View EMI Details
-                       </a>
-{{--                           <a href="{{ route('admin.deduction.show')}}" class="btn btn-sm btn-success">--}}
-                        {{--    View EMI Details--}}
-                        {{--</a>--}}
-                        </td>
-                    </tr>`;
+                                 <button class="btn btn-sm btn-success btn-pay" data-id="${item.id}" data-customer-id="${item.customer_id}" data-invoice="${item.invoice_no ?? ''}" data-emiValue="${item?.emi_value ?? ''}" data-deduction-date="${item?.dedication_date ?? ''}" data-penalty="${item.penalty ?? ''}" data-down-payment="${item?.downpayment ?? ''}" data-customer="${item?.customer_name ?? ''}" data-month-duration="${item?.month_duration ?? ''}" >Pay</button>
+                            </td>
+                        </tr>`;
                     });
 
                     $('#financeDetails').html(html);
@@ -304,6 +319,80 @@
         });
     </script>
     <script>
+        $(document).ready(function () {
+            const referenceGroup = $('input[name="refernce_no"]').closest('.form-group');
+
+            // Toggle reference no field visibility
+            $('select[name="payment_mode"]').on('change', function () {
+                if ($(this).val() === '1') {
+                    referenceGroup.removeClass('d-none');
+                } else {
+                    referenceGroup.addClass('d-none');
+                }
+            });
+
+            // Form validation
+            $('#paymentForm').validate({
+                rules: {
+                    emi_value_paid: {
+                        required: true,
+                        number: true,
+                        min: 1
+                    },
+                    payment_mode: {
+                        required: true
+                    },
+                    refernce_no: {
+                        required: function (element) {
+                            return $('select[name="payment_mode"]').val() === '1';
+                        }
+                    }
+                },
+                messages: {
+                    emi_value_paid: {
+                        required: "Please enter the amount.",
+                        number: "Please enter a valid number.",
+                        min: "Amount must be greater than 1."
+                    },
+                    payment_mode: {
+                        required: "Please select a payment method."
+                    },
+                    refernce_no: {
+                        required: "Reference number is required for online payments."
+                    }
+                },
+                errorElement: 'span',
+                errorClass: 'text-danger',
+                highlight: function (element) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).on('click', '.btn-pay', function () {
+            let deductionId = $(this).data('id');
+
+            $.ajax({
+                url: '{{ route("deduction.pay") }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    deduction_id: deductionId,
+                    payment_mode: 'Cash',
+                    penalty: 0
+                },
+                success: function (response) {
+                    alert("Payment successful!");
+                    location.reload();
+                }
+
+            });
+
+        });
         $(document).ready(function () {
             const referenceGroup = $('input[name="refernce_no"]').closest('.form-group');
 

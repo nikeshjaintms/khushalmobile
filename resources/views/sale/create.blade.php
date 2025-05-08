@@ -155,14 +155,16 @@
                                                 @enderror
 
                                                 <td>
+                                                    <div class="input-group">
                                                     <input type="number" class="form-control discount"
                                                            name="products[0][discount]"  id="discount"
-                                                           required />
+                                                           required  />
+                                                    <span class="input-group-text" id="basic-addon2">%</span>
+                                                    </div>
                                                     @error('discount')
                                                     <p style="color: red;">{{ $message }}</p>
                                                     @enderror
                                                 </td>
-
 
                                                 <input type="hidden"
                                                        class="form-control discountAmount discount_amount"
@@ -174,17 +176,23 @@
 
 
                                                 <td>
+                                                    <div class="input-group">
+                                                    <span class="input-group-text" id="basic-addon2">₹</span>
                                                     <input type="number" class="form-control priceSubTotal" readonly
                                                            id="priceSubTotal" name="products[0][price_subtotal]"
                                                            required />
+                                                    </div>
                                                     @error('price_subtotal')
                                                     <p style="color: red;">{{ $message }}</p>
                                                     @enderror
                                                 </td>
 
                                                 <td>
+                                                    <div class="input-group">
                                                     <input type="number" class="form-control tax" id="tax"
                                                            name="products[0][tax]" value="18" required />
+                                                    <span class="input-group-text" id="basic-addon2">%</span>
+                                                    </div>
                                                     @error('tax')
                                                     <p style="color: red;">{{ $message }}</p>
                                                     @enderror
@@ -192,18 +200,24 @@
 
 
                                                 <td>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text" id="basic-addon2">₹</span>
                                                     <input type="number" class="form-control taxAmount tax-amount"
                                                            name="products[0][tax_amount]" id="tax_amount" readonly
                                                            required />
+                                                    </div>
                                                     @error('tax_amount')
                                                     <p style="color: red;">{{ $message }}</p>
                                                     @enderror
                                                 </td>
 
                                                 <td>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text" id="basic-addon2">₹</span>
                                                     <input type="number"
                                                            class="form-control total total-amount totalAmount"
                                                            id="totalAmount" name="products[0][price_total]" required />
+                                                    </div>
                                                     @error('total')
                                                     <p style="color: red;">{{ $message }}</p>
                                                     @enderror
@@ -446,7 +460,14 @@
 @section('footer-script')
 
     <script>
+
         $(document).ready(function () {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const formattedDate = `${year}-${month}-${day}`;
+            document.getElementById("datepicker").value = formattedDate;
             function resetActionButtons() {
                 const $rows = $('#add-table-row tr');
                 if ($rows.length === 1) {
@@ -500,7 +521,6 @@
                 let totalAmount = parseFloat($row.find('.totalAmount').val()) || 0;
 
                 let discountAmount = 0;
-
                 if (isTotalAmountEdited) {
                     // When user edited totalAmount manually:
                     discountAmount = (totalAmount * discount) / 100;
@@ -519,7 +539,7 @@
                 $row.find('.priceSubTotal').val(subtotal.toFixed(2));
                 $row.find('.taxAmount').val(taxAmount.toFixed(2));
             }
-            
+
             function calculateGrandTotal() {
                 let subtotalSum = 0, taxSum = 0, totalSum = 0;
 
@@ -690,7 +710,6 @@
                     type: 'GET',
                     success: function(data) {
                         $row.find('.price').val(data.mrp);
-                        $row.find('.priceSubTotal').val(data.mrp);
                         $row.find('.totalAmount').val(data.mrp);
                         console.log(data.mrp);
                     }
@@ -777,6 +796,7 @@
                                     '">' + product.product_name +
                                     '</option>');
                             });
+                            calculateRow();
                         },
                         error: function() {
                             $productSelect.html(

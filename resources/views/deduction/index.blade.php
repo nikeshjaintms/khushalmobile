@@ -45,7 +45,7 @@
                               <th>EMI</th>
                               <th>Paid Amount</th>
                               <th>Status</th>
-                              <th>Action</th>
+{{--                              <th>Action</th>--}}
 
                             </tr>
                           </thead>
@@ -54,22 +54,20 @@
                             <tr>
                               <td>{{$item->id }}</td>
                               <td>{{$item->customer_name }}</td>
-                                <td>{{$item->emi_value }}</td>
+                                <td>{{$finance->emi_value }}</td>
                                 <td>{{$item->emi_value_paid }}</td>
                                 <td>
                                     <span class="badge badge-success">
                                         {{ Str::upper($item->status) }}
                                     </span>
+
+
                                 </td>
-                              <td>
+{{--                              <td>--}}
                                 {{-- <a href="{{ route('admin.deduction.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">
                                   <i class="fa fa-edit">
                                 </i></a> --}}
-                                <button  onclick="deletecustomer_info({{ $item->id }})" class="btn btn-link btn-danger">
-                                  <i class="fa fa-trash">
-                                </i>
-                                </button>
-                              </td>
+{{--                              </td>--}}
                             </tr>
                             @empty
                             <tr>

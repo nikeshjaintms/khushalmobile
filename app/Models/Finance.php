@@ -37,11 +37,13 @@ class Finance extends Model
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
+
     public function invoices(){
         return $this->belongsTo(Sale::class, 'invoice_id');
     }
 
-
-
-
+    public function deductions()
+    {
+        return $this->hasMany(Deduction::class, 'finance_id');
+    }
 }

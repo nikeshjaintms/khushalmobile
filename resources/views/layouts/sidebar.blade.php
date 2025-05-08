@@ -50,7 +50,7 @@
                 @can('sidebar-user')
                 <li class="nav-item">
                     <a  href="{{ route('admin.user.index') }}">
-                        <i class="fas fa-layer-group"></i>
+                        <i class="fas fa-user"></i>
                         <p>User</p>
                         <span class="caret"></span>
                     </a>
@@ -128,7 +128,7 @@
                 </a>
               </li>
                 @endcan
-                @can('sidebar-deduction')
+{{--                @can('sidebar-deduction')--}}
               <li class="nav-item">
                 <a  href="{{ route('admin.deduction.index') }}">
                   <i class="fas fa-layer-group"></i>
@@ -136,7 +136,7 @@
                   <span class="caret"></span>
                 </a>
               </li>
-                @endcan
+{{--                @endcan--}}
                 @can('sidebar-transaction')
               <li class="nav-item">
                 <a  href="{{ route('admin.transaction.index') }}">

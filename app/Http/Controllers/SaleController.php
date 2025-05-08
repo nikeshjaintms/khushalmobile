@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Brand;
 use App\Models\Customer;
+use App\Models\Deduction;
 use App\Models\Finance;
 use App\Models\financeMaster;
 use App\Models\Product;
@@ -11,6 +12,7 @@ use App\Models\Sale;
 use App\Models\SaleProduct;
 use App\Models\SaleTransaction;
 use App\Models\Transction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -162,6 +164,23 @@ class SaleController extends Controller
                     'reference_no' => $pay['reference_no'] ?? null,
                 ]);
             }
+            
+            $startDate = Carbon::createFromDate(now()->year, now()->month, $finance->dedication_date)->addMonth();
+            for ($i = 0; $i < $finance->month_duration; $i++) {
+                $dueDate = $startDate->copy()->addMonths($i);
+                Deduction::create([
+                    'customer_id' => $finance->customer_id,
+                    'finance_id' => $finance->id,
+                    'status' => 'unpaid',
+                    'emi_date' =>  $dueDate->format('Y-m-d'),
+                    'emi_value' => $request->emi_value,
+                    'created_at' => $dueDate,
+                    'updated_at' => $dueDate,
+                ]);
+            }
+
+
+
             DB::commit();
             return redirect()->route('admin.sale.index')->with('success', 'Sale created successfully.');
         } catch (\Exception $e) {
@@ -267,6 +286,7 @@ class SaleController extends Controller
                     'reference_no' => $pay['reference_no'] ?? null,
                 ]);
             }
+
             DB::commit();
             return redirect()->route('admin.sale.index')->with('success', 'Sale updated successfully.');
         } catch (\Exception $e) {
@@ -274,6 +294,7 @@ class SaleController extends Controller
             return back()->with('error', 'Update failed: ' . $e->getMessage());
         }
     }
+
 
     /**
      * Remove the specified resource from storage.

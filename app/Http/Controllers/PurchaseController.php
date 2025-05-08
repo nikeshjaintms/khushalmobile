@@ -10,6 +10,7 @@ use App\Models\Brand;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\Rule;
 
 class PurchaseController extends Controller
 {
@@ -41,6 +42,16 @@ class PurchaseController extends Controller
      */
     public function store(Request $request)
     {
+
+        $request->validate([
+            'imei' => 'required|array|min:1',
+            'imei.*' => 'required|string|distinct|unique:purchase_product,imei',
+        ], [
+            'imei.*.unique' => 'One or more IMEI numbers already exist in the system.',
+            'imei.*.distinct' => 'IMEI numbers must be unique within the form.',
+            'imei.*.required' => 'Each IMEI number is required.',
+        ]);
+
         DB::beginTransaction();
 
         try {
@@ -58,6 +69,15 @@ class PurchaseController extends Controller
             $prices = $request->post('price');
             $colors = $request->post('color'); // <-- Add this line
             $imeis = $request->post('imei');
+
+            //foreach ($imeis as $imei) {
+            //    if (PurchaseProduct::where('imei', $imei)->exists()) {
+            //        return redirect()->back()->withInput()->withErrors([
+            //            'imei' => "The IMEI '$imei' already exists in the system.",
+            //        ]);
+            //    }
+            //}
+
             $discounts = $request->post('discount');
             $discountAmounts = $request->post('discount_amount');
             $subtotals = $request->post('price_subtotal');
@@ -141,6 +161,21 @@ class PurchaseController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'imei' => 'required|array|min:1',
+            'imei.*' => [
+                'required',
+                'string',
+                'distinct',
+                Rule::unique('purchase_product', 'imei')->ignore($id),
+            ],
+        ], [
+            'imei.*.unique' => 'One or more IMEI numbers already exist in the system.',
+            'imei.*.distinct' => 'IMEI numbers must be unique within the form.',
+            'imei.*.required' => 'Each IMEI number is required.',
+        ]);
+
+
         $purchase = Purchase::findOrFail($id);
 
         // Update purchase main fields

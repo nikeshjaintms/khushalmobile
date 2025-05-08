@@ -73,7 +73,7 @@
                                         <div class="form-group">
                                             <label for="purchase_date">Purchase Date<span
                                                     style="color: red">*</span></label>
-                                            <input type="date" class="form-control" name="po_date" id="po_date"
+                                            <input type="date" class="form-control" name="po_date"  id="po_date"
                                                 placeholder=" " required />
                                             @error('po_date')
                                                 <div class="text-red-500">{{ $message }}</div>
@@ -98,6 +98,7 @@
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
+                                            @foreach(old('imei', ['']) as $index => $imei)
                                             <tbody>
                                                 <tr>
                                                     <td><select name="brand_id[]" class="form-control brand-select"
@@ -121,13 +122,25 @@
                                                             <div class="text-red-500">{{ $message }}</div>
                                                         @enderror
                                                     </td>
-                                                    <td style="width: fit-content;">
-                                                        <input type="text" class="form-control imei-input" name="imei[]"
-                                                            id="imei" required>
-                                                        @error('imei[]')
-                                                            <div class="text-red-500">{{ $message }}</div>
-                                                        @enderror
-                                                    </td>
+{{--                                                    <td style="width: fit-content;">--}}
+{{--                                                        <input type="text" class="form-control imei-input" name="imei[]"--}}
+{{--                                                            id="imei" required>--}}
+
+{{--                                                        @error('imei[]')--}}
+{{--                                                            <div class="text-red-500">{{ $message }}</div>--}}
+{{--                                                        @enderror--}}
+
+                                                        <td style="width: fit-content;">
+{{--                                                            @foreach(old('imei', ['']) as $index => $imei)--}}
+                                                            <input type="text" class="form-control imei-input" name="imei[]" value="{{ $imei }}" required>
+
+                                                            @if ($errors->has("imei.$index"))
+                                                                <div class="text-danger">{{ $errors->first("imei.$index") }}</div>
+                                                            @endif
+{{--                                                            @endforeach--}}
+                                                        </td>
+
+{{--                                                    </td>--}}
                                                     <td><input type="text" class="form-control" name="color[]"
                                                             id="color" required>
                                                         @error('color[]')
@@ -179,6 +192,7 @@
                                                     </td>
                                                 </tr>
                                             </tbody>
+                                            @endforeach
                                         </table>
                                     </div>
                                     <div class="col-md-3">
@@ -197,7 +211,7 @@
                                             <label for="">Tax Type<span class="text-danger">*</span></label>
                                             <select name="tax_type" id="" class="form-control" required>
                                                 <option value="">Select GST</option>
-                                                <option value="cgst/sgst">CGST/SGST</option>
+                                                <option value="cgst/sgst" selected>CGST/SGST</option>
                                                 <option value="cgst/sgst">IGST</option>
                                             </select>
                                             @error('tax_type')
@@ -244,10 +258,34 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
     <script>
+
         $(document).ready(function() {
 
-            // Function to get next serial number
+            document.querySelectorAll(".imei-input").forEach(input => {
+                input.addEventListener("blur", function () {
+                    const value = input.value.trim();
+                    const errorContainer = input.closest('.imei-wrapper').querySelector('.imei-error');
+                    // Clear old message
+                    errorContainer.textContent = '';
+                    if (value !== '') {
+                        fetch(`/check-imei?imei=${value}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.exists) {
+                                    errorContainer.textContent = `IMEI ${value} already exists in the system.`;
+                                }
+                            });
+                    }
+                });
+            });
 
+            // Function to get next serial number
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const formattedDate = `${year}-${month}-${day}`;
+            document.getElementById("po_date").value = formattedDate;
 
             function resetActionButtons() {
                 const $rows = $('#product-table tbody tr');
@@ -526,7 +564,7 @@
                         required: true,
                         minlength: 5,
                         maxlength: 15,
-                        uniqueIMEI: true
+                        uniqueIMEI: true,
                     },
                     "discount[]": {
                         required: true,

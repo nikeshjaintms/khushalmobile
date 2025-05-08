@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\Deduction;
 use App\Models\Finance;
+use App\Models\Sale;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -16,9 +18,12 @@ class DeductionController extends Controller
     public function index()
     {
         $deductions = Deduction::leftjoin('customers', 'deductions.customer_id', '=', 'customers.id')
-        ->select('deductions.*', 'customers.name as customer_name')
-        ->get();
-        return view('deduction.index', compact('deductions'));
+            ->select('deductions.*', 'customers.name as customer_name')
+            ->get();
+        $finance = Finance::with('customers', 'deductions')->first();
+
+
+        return view('deduction.index', compact('deductions', 'finance'));
     }
 
 
@@ -32,7 +37,7 @@ class DeductionController extends Controller
     {
         $finance = Finance::leftjoin('customers', 'finances.customer_id', '=', 'customers.id')
             ->leftjoin('sales', 'finances.invoice_id', '=', 'sales.id')
-            ->select('finances.*', 'customers.name as customer_name','customers.phone','customers.city', 'sales.invoice_no')
+            ->select('finances.*', 'customers.name as customer_name', 'customers.phone', 'customers.city', 'sales.invoice_no')
             ->where('finances.customer_id', $request->customer_id)
             ->where('status', 'pending')->get();
 
@@ -51,12 +56,11 @@ class DeductionController extends Controller
 
         $deductions = Deduction::where('finance_id', $financeId)->count();
 
-        $dremaining = Deduction::where('finance_id', $financeId)->orderby('id','desc')->first();
+        $dremaining = Deduction::where('finance_id', $financeId)->orderby('id', 'desc')->first();
 
         $remaining = $dremaining->remaining ?? 0;
 
         $sum = Deduction::where('finance_id', $financeId)->sum('emi_value_paid');
-
 
         return response()->json([
             'deductions' => $deductions,
@@ -65,18 +69,18 @@ class DeductionController extends Controller
         ]);
     }
 
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        // dd($request->all());
-
         $deduction = new Deduction();
         $deduction->finance_id = $request->finance_id;
         $deduction->customer_id = $request->customer_id;
         $deduction->emi_value = $request->emi_value;
         $deduction->emi_value_paid = $request->emi_value_paid;
+        $deduction->emi_date = now();
         $deduction->penalty = $request->penalty;
         $deduction->remaining = $request->remaining;
         $deduction->total = $request->total;
@@ -93,10 +97,45 @@ class DeductionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Deduction $deduction)
+
+
+    public function showByCustomer($customerId, $financeId)
     {
-        //
+        $deductions = Deduction::leftjoin('finances', 'deductions.finance_id', '=', 'finances.id')
+            ->leftjoin('sales', 'finances.invoice_id', '=', 'sales.id')
+            ->leftjoin('customers', 'deductions.customer_id', '=', 'customers.id')
+            ->select('deductions.*', 'finances.downpayment', 'finances.dedication_date', 'finances.emi_value', 'customers.name as customer_name', 'customers.phone', 'customers.city', 'sales.invoice_no')
+            ->where('deductions.customer_id', $customerId)
+            ->where('deductions.finance_id', $financeId)
+            ->where('finances.status', 'pending')
+            ->get();
+
+        foreach ($deductions as $deduction) {
+            $deduction->paid_date = $deduction->status === 'paid'
+                ? Carbon::now()->format('Y-m-d')
+                : null;
+        }
+
+        return view('deduction.show', compact('deductions'));
     }
+
+    public function pay(Request $request)
+    {
+        $deduction = Deduction::findOrFail($request->id);
+        $deduction->update([
+            'emi_value_paid' => $request->emi_value_paid,
+            'payment_mode' => $request->payment_mode,
+            'refernce_no' => $request->refernce_no ?? '',
+            'penalty' => $request->penalty,
+            'remaining' => $request->remaining,
+            'total' => $request->total,
+            'status' => 'paid',
+            //'emi_date' => now(),
+        ]);
+
+        return redirect()->route('admin.deduction.index');
+    }
+
 
     /**
      * Show the form for editing the specified resource.

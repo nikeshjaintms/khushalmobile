@@ -51,7 +51,6 @@
                                         <th>Product</th>
                                         <th>IMEI</th>
                                         <th>Final Total amount</th>
-
                                         <th>Action</th>
                                     </tr>
                                     </thead>
@@ -101,7 +100,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="6" class="text-center">No data available</td>
+                                            <td colspan="7" class="text-center">No data available</td>
                                         </tr>
                                     @endforelse
                                     </tbody>
