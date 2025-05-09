@@ -44,16 +44,16 @@
                         <table id="basic-datatables" class="display table table-striped table-hover">
                           <thead>
                             <tr>
-                              <th>Id</th>
+                              <th>Sr No</th>
                               <th>Role</th>
                             <th>Action</th>
 
                             </tr>
                           </thead>
                           <tbody>
-                            @forelse($roles as $item)
+                            @forelse($roles as $index => $item)
                             <tr>
-                              <td>{{$item->id }}</td>
+                              <td>{{ $index + 1 }}</td>
                               <td>{{$item->name }}</td>
                               <td>
 {{--                                  @can('edit-role')--}}

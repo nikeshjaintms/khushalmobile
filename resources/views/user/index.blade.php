@@ -40,16 +40,16 @@
                                 <table id="basic-datatables" class="display table table-striped table-hover">
                                     <thead>
                                     <tr>
-                                        <th>Id</th>
+                                        <th>Sr No</th>
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @forelse($user as $item)
+                                    @forelse($user as $index => $item)
                                         <tr>
-                                            <td>{{$item->id }}</td>
+                                            <td>{{ $index + 1 }}</td>
                                             <td>{{$item->name }}</td>
                                             <td>{{$item->email }}</td>
 

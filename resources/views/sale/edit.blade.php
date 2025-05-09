@@ -53,9 +53,8 @@
                                                     name="customer_id">
                                                 <option selected> Select Customer</option>
                                                 @foreach ($customers as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
                                                     <option value="{{ $item->id }}"
-                                                        {{ $selectedCustomer->contains($item->id) ? 'selected' : '' }}>
+                                                        {{ $selectedCustomer == $item->id ? 'selected' : '' }}>
                                                         {{ $item->name }}</option>
                                                 @endforeach
                                                 @error('customer')
@@ -328,8 +327,8 @@
                                                         aria-label="Default select example" name="payment_method"
                                                         id="paymentMethod">
                                                     <option selected> Select Payment Method</option>
-                                                    <option value="3"
-                                                        {{ $data->payment_method == 1 ? 'selected' : '' }}>Online</option>
+                                                    <option value="1"
+                                                        {{ $data->payment_method == 1 ? 'selected' : '' }}>Online/Cash</option>
                                                     <option value="2"
                                                         {{ $data->payment_method == 2 ? 'selected' : '' }}>Finance</option>
                                                 </select>
@@ -378,7 +377,7 @@
                                     </div>
 
                                     @if($selectfinance)
-                                        <div  class="row mt-3" id="finance_detail">
+                                        <div  class="row mt-3 financeDetail" id="finance_detail">
                                             <h4>Finance Details</h4>
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -496,6 +495,45 @@
 @section('footer-script')
 
     <script>
+
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     const paymentMethod = document.getElementById('paymentMethod');
+        //     const financeDetails = document.getElementById('finance_detail');
+        //
+        //     function toggleFinanceDetails() {
+        //         financeDetails.style.display = paymentMethod.value === '2' ? 'block' : 'none';
+        //     }
+        //
+        //     paymentMethod.addEventListener('change', toggleFinanceDetails);
+        //     window.onload = toggleFinanceDetails;
+        // });
+        document.addEventListener('DOMContentLoaded', function () {
+            const paymentMethod = document.getElementById('paymentMethod');
+            const financeDetails = document.getElementById('finance_detail');
+            const onlineDetails = document.getElementById('online_detail');
+
+            function toggleDetails() {
+                const selected = paymentMethod.value;
+                if (selected === '2') {
+                    financeDetails.style.display = 'block';
+                    if (onlineDetails) onlineDetails.style.display = 'none';
+                } else {
+                    financeDetails.style.display = 'none';
+                    if (financeDetails) {
+                        financeDetails.querySelectorAll('input, select').forEach(el => el.value = '');
+                        document.getElementById('permonth').innerText = '';
+                        document.getElementById('permonthvalue').value = '';
+                    }
+                }
+            }
+
+            // Initial run on page load
+            toggleDetails();
+
+            // On change
+            paymentMethod.addEventListener('change', toggleDetails);
+        });
+
         $(document).ready(function () {
             function resetActionButtons() {
                 const $rows = $('#add-table-row tr');
@@ -572,6 +610,7 @@
             });
             // Add new row
             $(document).on('click', '.add-row', function() {
+
                 let $row = $(this).closest('tr');
                 let $newRow = $row.clone();
 
@@ -759,15 +798,13 @@
         });
 
         $(document).ready(function() {
-
             // Initially hide the finance detail section
             $('#finance_detail').hide();
             $('#online_detail').hide();
             // Listen to changes on the payment method dropdown
             $('.paymentMethod').change(function() {
                 var selected = $(this).val();
-
-                if (selected == '2') { // 3 = Finance
+                if (selected == '2') { // 2 = Finance
                     $('#finance_detail').show();
                 } else {
                     $('#finance_detail').hide();
@@ -778,6 +815,23 @@
                 }
             });
 
+            $(document).ready(function () {
+                function toggleDetails() {
+                    var selected = $('#paymentMethod').val();
+
+                    if (selected === '2') {
+                        $('#finance_detail').show();
+                        $('#online_detail').hide();
+                    } else {
+                        $('#finance_detail').hide().find('input, select').val('');
+                        $('#permonth').text('');
+                        $('#permonthvalue').val('');
+                        $('#online_detail').show();
+                    }
+                }
+                toggleDetails();
+               $('#paymentMethod').on('load', toggleDetails);
+            });
 
             $(document).on('change', '.brand-select', function() {
                 let brandId = $(this).val();
@@ -871,6 +925,7 @@
                 regex: "^[a-zA-Z ]*$",
                 placeholder: ''
             });
+
             $('#saleForm').validate({
                 rules: {
                     customer_id: {

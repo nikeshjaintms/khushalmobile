@@ -40,22 +40,31 @@
                         <table id="basic-datatables" class="display table table-striped table-hover">
                           <thead>
                             <tr>
-                              <th>Id</th>
+                              <th>Sr No</th>
                               <th>Name</th>
+                                <th>Down Payment</th>
+                                <th>Finance Amount</th>
                               <th>EMI</th>
                               <th>Paid Amount</th>
+                                <th>Remaining value</th>
+                                <th>Total</th>
                               <th>Status</th>
 {{--                              <th>Action</th>--}}
 
                             </tr>
                           </thead>
                           <tbody>
-                            @forelse($deductions as $item)
+                            @forelse($deductions as $index => $item)
+                                @foreach($finances as $finance)
                             <tr>
-                              <td>{{$item->id }}</td>
+                              <td>{{ $index + 1 }}</td>
                               <td>{{$item->customer_name }}</td>
+                                <td>{{$finance->downpayment}}</td>
+                                <td>{{$finance->finance_amount}}</td>
                                 <td>{{$finance->emi_value }}</td>
                                 <td>{{$item->emi_value_paid }}</td>
+                                <td>{{$item->remaining }}</td>
+                                <td>{{$item->total }}</td>
                                 <td>
                                     <span class="badge badge-success">
                                         {{ Str::upper($item->status) }}
@@ -74,6 +83,7 @@
                               <td colspan="6" class="text-center">No data available</td>
                             </tr>
                             @endforelse
+                                @endforeach
                           </tbody>
                         </table>
                       </div>

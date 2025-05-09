@@ -21,9 +21,13 @@ class DeductionController extends Controller
             ->select('deductions.*', 'customers.name as customer_name')
             ->where('deductions.status', 'paid')
             ->get();
-        $finance = Finance::with('customers', 'deductions')->first();
+        $finances = Finance::join('customers', 'finances.customer_id', '=', 'customers.id')
+            ->select('finances.*', 'customers.name as customer_name')
+            ->where('finances.status', 'paid')
+            ->get();
 
-        return view('deduction.index', compact('deductions', 'finance'));
+
+        return view('deduction.index', compact('deductions', 'finances'));
     }
 
 
@@ -52,12 +56,13 @@ class DeductionController extends Controller
 
     public function getDeductions(Request $request)
     {
-
         $financeId = $request->finance_id;
 
-        $deductions = Deduction::where('finance_id', $financeId)->count();
+        $deductions = Deduction::where('finance_id', $financeId)->where('status', 'paid')->count();
 
-        $dremaining = Deduction::where('finance_id', $financeId)->orderby('id', 'desc')->first();
+        $dremaining = Deduction::where('finance_id', $financeId)->whereNotNull('remaining')->orderBy('id', 'desc')->first();
+
+        //$dremaining = array_sum($dremaining->pluck('remaining')->toArray());
 
         $remaining = $dremaining->remaining ?? 0;
 
@@ -99,13 +104,12 @@ class DeductionController extends Controller
      * Display the specified resource.
      */
 
-
     public function showByCustomer($customerId, $financeId)
     {
         $deductions = Deduction::leftjoin('finances', 'deductions.finance_id', '=', 'finances.id')
             ->leftjoin('sales', 'finances.invoice_id', '=', 'sales.id')
             ->leftjoin('customers', 'deductions.customer_id', '=', 'customers.id')
-            ->select('deductions.*', 'finances.downpayment', 'finances.dedication_date', 'finances.emi_value', 'customers.name as customer_name', 'customers.phone', 'customers.city', 'sales.invoice_no')
+            ->select('deductions.*', 'finances.downpayment', 'finances.dedication_date', 'finances.month_duration', 'finances.emi_value', 'customers.name as customer_name', 'customers.phone', 'customers.city', 'sales.invoice_no')
             ->where('deductions.customer_id', $customerId)
             ->where('deductions.finance_id', $financeId)
             ->where('finances.status', 'pending')
@@ -122,6 +126,7 @@ class DeductionController extends Controller
 
     public function pay(Request $request)
     {
+        //dd($request->all());
         $deduction = Deduction::findOrFail($request->id);
         $deduction->update([
             'emi_value_paid' => $request->emi_value_paid,
@@ -133,6 +138,12 @@ class DeductionController extends Controller
             'status' => 'paid',
             //'emi_date' => now(),
         ]);
+
+        $finance = Finance::withSum('deductions as total_paid', 'total')->find($deduction->finance_id);
+        if ($finance && $finance->total_paid >= $finance->finance_amount && $finance->status !== 'paid') {
+            $finance->update(['status' => 'paid']);
+            $finance->save();
+        }
 
         return redirect()->route('admin.deduction.index');
     }

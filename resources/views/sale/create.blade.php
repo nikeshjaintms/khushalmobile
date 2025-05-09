@@ -441,6 +441,7 @@
                                         </div>
 
                                     </div>
+
                                     <div class="card-action">
                                         <button class="btn btn-success" type="submit">Submit
                                         </button>
@@ -762,7 +763,7 @@
             $('.paymentMethod').change(function() {
                 var selected = $(this).val();
 
-                if (selected == '2') { // 3 = Finance
+                if (selected == '2') { // 2 = Finance
                     $('#finance_detail').show();
                 } else {
                     $('#finance_detail').hide();

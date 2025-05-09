@@ -26,12 +26,13 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = Product::get();
-
+        //$products = Product::get();
+        $products = Product::orderBy('id', 'asc')->get();
+        //dd($products);
         return view('products.index',compact('products'));
     }
 
-    
+
     public function create()
     {
         $brands = Brand::get();

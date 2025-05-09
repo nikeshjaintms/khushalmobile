@@ -112,7 +112,7 @@ class SaleController extends Controller
                 'total_amount' => $request->total_amount,
                 'payment_method' => $request->payment_method,
             ]);
-
+            $finance = null;
             if ($request->payment_method == '2') {
                 $finance = Finance::create([
                     'invoice_id' => $sale->id,
@@ -132,6 +132,14 @@ class SaleController extends Controller
                     'finance_year' => $request->financ_year ?? date('Y')
                 ]);
             }
+            //else{
+            //    return redirect()->route('admin.sale.index')->with('success', 'Sale Created successfully.');
+            //}
+
+            //if ($request->payment_method != '2') {
+            //    // Skip finance-related logic
+            //    return redirect()->back()->with('success', 'Sale created .');
+            //}
             // Insert related products
             foreach ($request->products as $product) {
                 $sale->saleProducts()->create([
@@ -164,23 +172,22 @@ class SaleController extends Controller
                     'reference_no' => $pay['reference_no'] ?? null,
                 ]);
             }
-            
-            $startDate = Carbon::createFromDate(now()->year, now()->month, $finance->dedication_date)->addMonth();
-            for ($i = 0; $i < $finance->month_duration; $i++) {
-                $dueDate = $startDate->copy()->addMonths($i);
-                Deduction::create([
-                    'customer_id' => $finance->customer_id,
-                    'finance_id' => $finance->id,
-                    'status' => 'unpaid',
-                    'emi_date' =>  $dueDate->format('Y-m-d'),
-                    'emi_value' => $request->emi_value,
-                    'created_at' => $dueDate,
-                    'updated_at' => $dueDate,
-                ]);
+
+            if ($finance) {
+                $startDate = Carbon::createFromDate(now()->year, now()->month, $finance->dedication_date)->addMonth();
+                for ($i = 0; $i < $finance->month_duration; $i++) {
+                    $dueDate = $startDate->copy()->addMonths($i);
+                    Deduction::create([
+                        'customer_id' => $finance->customer_id,
+                        'finance_id' => $finance->id,
+                        'status' => 'Unpaid',
+                        'emi_date' => $dueDate->format('Y-m-d'),
+                        'emi_value' => $request->emi_value,
+                        'created_at' => $dueDate,
+                        'updated_at' => $dueDate,
+                    ]);
+                }
             }
-
-
-
             DB::commit();
             return redirect()->route('admin.sale.index')->with('success', 'Sale created successfully.');
         } catch (\Exception $e) {
@@ -192,7 +199,8 @@ class SaleController extends Controller
         // dd($request->all());
     }
 
-    /**
+
+/**
      * Display the specified resource.
      */
     public function show(Sale $sales, $id)
@@ -214,7 +222,7 @@ class SaleController extends Controller
         $data1 = SaleProduct::with('product')->where('sales_id', $id)->get();
 
         $customers = Customer::all();
-        $selectedCustomer = $data->customer->pluck('id');
+        $selectedCustomer = $data->customer->id;
 
         $products = Product::all();
 

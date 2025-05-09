@@ -17,19 +17,16 @@ class DashboardController extends Controller
         $currentMonth = Carbon::now()->month;
         $currentYear = Carbon::now()->year;
 
-        $productCount = Product::whereMonth('created_at', $currentMonth)
-            ->whereYear('created_at', $currentYear)
-            ->count();
+        $productCount = Product::count();
 
-        $customerCount = Customer::whereMonth('created_at', $currentMonth)
-            ->whereYear('created_at', $currentYear)
-            ->count();
+        $customerCount = Customer::count();
 
         $sales = Sale::whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
             ->count();
-            $transactionIn = Transction::where('type', 'in')->whereDate('created_at', Carbon::today())->sum('amount')?? 0.00 ;
-            $transactionOut = Transction::where('type', 'out')->whereDate('created_at', Carbon::today())->sum('amount') ?? 0.00;
+
+        $transactionIn = Transction::where('type', 'in')->whereDate('created_at', Carbon::today())->sum('amount') ?? 0.00;
+        $transactionOut = Transction::where('type', 'out')->whereDate('created_at', Carbon::today())->sum('amount') ?? 0.00;
 
         return response()->json([
             'product_count' => $productCount,
@@ -39,6 +36,7 @@ class DashboardController extends Controller
             'transactionout' => $transactionOut,
         ]);
     }
+
     public function displaynotes()
     {
         $notes = DailyNote::latest()->get();

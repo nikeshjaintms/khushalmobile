@@ -46,7 +46,7 @@
                                 <table id="basic-datatables" class="display table table-striped table-hover">
                                     <thead>
                                         <tr>
-                                            <th>Id</th>
+                                            <th>Sr No</th>
                                             <th>Product Name</th>
                                             <th>MRP</th>
                                             <th>Action</th>
@@ -54,9 +54,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse($products as $item)
+                                        @forelse($products as $index => $item)
                                             <tr>
-                                                <td>{{ $item->id }}</td>
+                                                <td>{{ $index + 1 }}</td>
                                                 <td>{{ $item->product_name }}</td>
                                                 <td>{{ $item->mrp }}</td>
                                                 <td>

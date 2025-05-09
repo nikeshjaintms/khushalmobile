@@ -75,6 +75,7 @@
                                                         class="btn btn-sm btn-success btn-pay"
                                                         data-id="{{ $row->id ?? '' }}"
                                                         data-invoice="{{ $row->invoice_no }}"
+                                                        data-finance-id="{{ $row->finance_id }}"
                                                         data-emiValue="{{ $row->emi_value}}"
                                                         data-deduction-date="{{ $row['due_date'] }}"
                                                         data-penalty="{{ $row->first()->penalty ?? '' }}"
@@ -104,6 +105,8 @@
             <form id="paymentForm" method="POST" action="{{ route('deduction.pay') }}">
                 @csrf
                 <input type="hidden" name="id" id="modalDeductionId">
+                <input type="hidden" name="finance_id" id="modalFinanceId">
+
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="paymentModalLabel">Make Payment</h5>
@@ -166,7 +169,7 @@
                             <p>Remaining Amount: <span id="modalRemainingAmount"></span></p>
                         </div>
                         <div class="form-group  d-flex justify-content-between">
-                            <p>Old Remaing Amount: <span id="modalOldRemainingAmount"></span></p>
+                            <p>Old Remaining Amount: <span id="modalOldRemainingAmount"></span></p>
                             <p>Total Amount: <span id="modalTotalAmount"></span></p>
                         </div>
                     </div>
@@ -214,6 +217,7 @@
             const month_duration = $(this).data('month-duration');
             const penalty = $(this).data('penalty');
             const deduction = $(this).data('deduction-date');
+            const finance_Id = $(this).data('finance-id');
             const todayDay = new Date().getDate();
 
             if (todayDay > deduction) {
@@ -239,6 +243,7 @@
             $('#modalAmount').val(Emi_value);
             $('#EmiValue').val(Emi_value);
             $('#modalMonthDuration').html(month_duration);
+            $('#modalFinanceId').val(finance_Id);
 
 
             $.ajax({
@@ -247,17 +252,17 @@
 
                 method: 'POST',
                 data: {
-                    finance_id: id,
+                    finance_id: finance_Id,
                     _token: '{{ csrf_token() }}'
                 },
                 success: function (response) {
                     const deductions = response.deductions;
                     const totalemivalue = response.totalemivalue;
                     const remaining = response.remaining;
-                    console.log(remaining)
                     $('#modalPaidEMI').html(deductions);
                     $('#modalPaidemiValue').html(totalemivalue);
                     $('#modalOldRemainingAmount').html(remaining);
+                    console.log(remaining)
                     $('#modaloldremaining').val(remaining);
                     updateCalculations();
 

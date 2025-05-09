@@ -62,7 +62,7 @@
                                     </thead>
                                     <tbody id="financeDetails">
                                     <tr>
-                                        <td colspan="8" class="text-center">No data available</td>
+                                        <td colspan="9" class="text-center">No data available</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -266,7 +266,7 @@
 
                     if (finance.length === 0) {
                         $('#financeDetails').html(
-                            '<tr><td colspan="4" class="text-center">No finance data found</td></tr>'
+                            '<tr><td colspan="5" class="text-center">No finance data found</td></tr>'
                         );
                         return;
                     }
