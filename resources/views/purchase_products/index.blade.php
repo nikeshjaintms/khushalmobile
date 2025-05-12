@@ -47,7 +47,8 @@
                                     <thead>
                                         <tr>
                                             <th>Sr No</th>
-                                            <th>Purchase</th>
+                                            <th>Purchase No</th>
+                                            <th>Purchase Date</th>
                                             <th>Dealer</th>
                                             <th>Action</th>
 
@@ -58,6 +59,7 @@
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>{{ $item->po_no }}</td>
+                                                <td>{{ $item->po_date }}</td>
                                                 <td>{{ $item->name }}</td>
                                                 <td>
                                                     @can('show-purchase')

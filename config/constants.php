@@ -29,6 +29,40 @@ return [
 
                     ]
                 ]
+        ] ,
+
+        'salesTransaction' => [
+            'payment_method' => [
+                'name' => [
+                    '1' => 'Cash',
+                    '2'=> 'Online',
+                    '3' => 'Finance',
+
+                ],
+                'code' => [
+                    'Cash' => '1',
+                    'Online' => '2',
+                    'Finance' => '3',
+
+                ]
+            ],
+
+        ] ,
+
+        'deductions' => [
+            'payment_mode' => [
+                'name' => [
+                    1 => 'Online',
+                    2 => 'Cash',
+
+                ],
+                'code' => [
+                    'Online' => 1,
+                    'Cash' => 2,
+
+                ]
+            ],
+
         ]
     ]
 ];

@@ -166,6 +166,37 @@
                             </a>
                         </li>
                     @endcan
+                    <li class="nav-item">
+                        <a data-bs-toggle="collapse" href="#tables">
+                            <i class="fas fa-table"></i>
+                            <p>Reports</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse" id="tables">
+                            <ul class="nav nav-collapse">
+                                <li>
+                                    <a href="{{ route('admin.report.stock') }}">
+                                        <span class="sub-item">Stock Report</span>
+                                    </a>
+                                </li>
+{{--                                <li>--}}
+{{--                                    <a href="{{ route('admin.report.imei') }}">--}}
+{{--                                        <span class="sub-item">Imei Report</span>--}}
+{{--                                    </a>--}}
+{{--                                </li>--}}
+{{--                                <li>--}}
+{{--                                    <a href="{{ route('admin.report.sale') }}">--}}
+{{--                                        <span class="sub-item">Sale Report</span>--}}
+{{--                                    </a>--}}
+{{--                                </li>--}}
+                                <li>
+                                    <a href="{{ route('admin.report.payment') }}">
+                                        <span class="sub-item">Payment Report</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>

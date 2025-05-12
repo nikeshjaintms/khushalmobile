@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\Deduction;
 use App\Models\Finance;
-use App\Models\Sale;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -114,7 +113,6 @@ class DeductionController extends Controller
             ->where('deductions.finance_id', $financeId)
             ->where('finances.status', 'pending')
             ->get();
-
         foreach ($deductions as $deduction) {
             $deduction->paid_date = $deduction->status === 'paid'
                 ? Carbon::now()->format('Y-m-d')

@@ -42,16 +42,19 @@
                                     <tr>
                                         <th>Deduction Date</th>
                                         <th>Status</th>
+                                        <th>Remaining Value</th>
                                         <th>EMI Value</th>
+                                        <th>Paid Value</th>
                                         <th>Paid Date</th>
+                                        <th>Payment Mode</th>
                                         <th>Action</th>
+                                        <th>Transaction Id</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @foreach($deductions as $row)
                                         <tr>
-                                            <td>{{ $row->emi_date }}</td>
-
+                                            <td>{{ \Carbon\Carbon::parse($row->emi_date)->format('d.m.y') }}</td>
                                             <td>
                                                 @if($row['status'] === 'paid')
                                                     <span class="badge bg-success">{{ $row['status'] }}</span>
@@ -59,11 +62,13 @@
                                                     <span class="badge bg-danger">{{ $row['status'] }}</span>
                                                 @endif
                                             </td>
+                                            <td>{{$row->remaining ?? '-'}}</td>
 
                                             <td>{{ $row->emi_value }}</td>
+                                            <td>{{$row->emi_value_paid ?? '-'}}</td>
+                                            <td>{{ \Carbon\Carbon::parse( $row['paid_date'])->format('d.m.y') }}</td>
 
-                                            <td>{{ $row['paid_date'] }}</td>
-
+                                            <td>{{ config('constants.database_enum.deductions.payment_mode.name')[ (int) $row->payment_mode] ?? '-' }}</td>
                                             <td>
                                                 @if($row['status'] === 'paid')
                                                     <button
@@ -72,21 +77,24 @@
                                                     </button>
                                                 @else
                                                     <button
-                                                        class="btn btn-sm btn-success btn-pay"
-                                                        data-id="{{ $row->id ?? '' }}"
-                                                        data-invoice="{{ $row->invoice_no }}"
-                                                        data-finance-id="{{ $row->finance_id }}"
-                                                        data-emiValue="{{ $row->emi_value}}"
-                                                        data-deduction-date="{{ $row['due_date'] }}"
-                                                        data-penalty="{{ $row->first()->penalty ?? '' }}"
-                                                        data-down-payment="{{ $row->downpayment ?? '' }}"
-                                                        data-customer="{{ $row->customer_name ?? '' }}"
-                                                        data-month-duration="{{ $row->month_duration ?? '' }}"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#paymentModal"
-                                                    >Pay</button>
+                                                            class="btn btn-sm btn-success btn-pay"
+                                                            data-id="{{ $row->id ?? '' }}"
+                                                            data-invoice="{{ $row->invoice_no }}"
+                                                            data-finance-id="{{ $row->finance_id }}"
+                                                            data-emiValue="{{ $row->emi_value}}"
+                                                            data-deduction-date="{{ $row['due_date'] }}"
+                                                            data-penalty="{{ $row->first()->penalty ?? '' }}"
+                                                            data-down-payment="{{ $row->downpayment ?? '' }}"
+                                                            data-customer="{{ $row->customer_name ?? '' }}"
+                                                            data-month-duration="{{ $row->month_duration ?? '' }}"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#paymentModal"
+                                                    >Pay
+                                                    </button>
                                                 @endif
                                             </td>
+
+                                            <td>{{$row->refernce_no ?? '-'}}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>

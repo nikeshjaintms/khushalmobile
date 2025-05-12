@@ -8,6 +8,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TransctionController;
 use App\Http\Controllers\DashboardController;
@@ -189,5 +190,13 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('edit/{id}', 'edit')->name('admin.financeMaster.edit');
         Route::put('update/{id}', 'update')->name('admin.financeMaster.update');
         Route::delete('delete/{id}', 'destroy')->name('admin.financeMaster.delete');
+    });
+
+    Route::prefix('report')->controller(ReportController::class)->group(function () {
+        Route::get('stock', 'stockReport')->name('admin.report.stock');
+        Route::get('imei', 'imeiReport')->name('admin.report.imei');
+        Route::get('sale', 'saleReport')->name('admin.report.sale');
+        Route::get('payment', 'paymentReport')->name('admin.report.payment');
+
     });
 });

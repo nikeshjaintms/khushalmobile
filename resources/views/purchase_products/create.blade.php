@@ -63,7 +63,7 @@
                                         <div class="form-group">
                                             <label for="po_no">Purchase No<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="po_no" id="po_no"
-                                                placeholder="Enter purchase no" required />
+                                                placeholder="Enter purchase no"  required />
                                             @error('po_no')
                                                 <div class="text-red-500">{{ $message }}</div>
                                             @enderror
@@ -115,8 +115,8 @@
 
                                                     </td>
                                                     <td><select name="product_id[]" class="form-control product-select"
-                                                            id="product_id" required>
-                                                            <option value="">Select Product</option>
+                                                            id="product_id"  required>
+                                                            <option value="" >Select Product</option>
                                                         </select>
                                                         @error('product_id[]')
                                                             <div class="text-red-500">{{ $message }}</div>
@@ -142,7 +142,7 @@
 
 {{--                                                    </td>--}}
                                                     <td><input type="text" class="form-control" name="color[]"
-                                                            id="color" required>
+                                                            id="color"  required>
                                                         @error('color[]')
                                                             <div class="text-red-500">{{ $message }}</div>
                                                         @enderror
