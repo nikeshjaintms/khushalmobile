@@ -25,7 +25,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="#">Notes</a>
+                        <a href="#">Add Note</a>
                     </li>
                 </ul>
             </div>
