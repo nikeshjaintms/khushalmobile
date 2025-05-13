@@ -43,7 +43,7 @@
                                         <div class="form-group">
                                             <label for="">Name<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="name" id="name"
-                                                placeholder="Enter Customer Name" required />
+                                                placeholder="Enter Customer Name" value="{{old('name')}}" required />
                                             @error('name')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -54,7 +54,7 @@
                                         <div class="form-group">
                                             <label for="">Email</label>
                                             <input type="email" class="form-control" name="email" id="email"
-                                                   placeholder="Enter your Email"  />
+                                                   placeholder="Enter your Email" value="{{old('email')}}"  />
                                             @error('email')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -64,7 +64,7 @@
                                         <div class="form-group">
                                             <label for="">Password<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="password" id="password"
-                                                   placeholder="Enter your Password" required />
+                                                   placeholder="Enter your Password" value="{{old('password')}}" required />
                                             @error('password')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -74,7 +74,7 @@
                                         <div class="form-group">
                                             <label for="userRole">Roles<span style="color: red">*</span></label>
                                         <select name="role" class="form-select" id="role">
-                                            <option value="" id="role">Select</option>
+                                            <option value="{{old('role')}}" id="role">Select</option>
                                             @foreach($roles as $role)
                                                 <option value="{{ $role->name }}">{{ $role->name }}</option>
                                             @endforeach

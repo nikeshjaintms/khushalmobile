@@ -18,14 +18,9 @@
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
                     </li>
-{{--                    <li class="nav-item">--}}
-{{--                        <a href="{{ route('admin.product.index') }}">Product</a>--}}
-{{--                    </li>--}}
-                    <li class="separator">
-                        <i class="icon-arrow-right"></i>
-                    </li>
+
                     <li class="nav-item">
-                        <a href="#">Product</a>
+                        <a href="#">Stock Report</a>
                     </li>
                 </ul>
             </div>
@@ -33,7 +28,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Products</h4>
+                            <h4 class="card-title">Stock Report</h4>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -47,9 +42,9 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($products  as $index =>  $item)
+                                    @foreach($products as $item)
                                         <tr>
-                                            <td>{{$index+1}}</td>
+                                            <td>{{$loop-> iteration}}</td>
                                             <td>{{ $item['brand_name'] }}</td>
                                             <td>{{ $item['product_name'] }}</td>
                                             <td>{{ $item['null_status_and_invoice'] }}</td>

@@ -18,12 +18,6 @@
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
                     </li>
-                    {{--                    <li class="nav-item">--}}
-                    {{--                        <a href="{{ route('admin.product.index') }}">Product</a>--}}
-                    {{--                    </li>--}}
-                    <li class="separator">
-                        <i class="icon-arrow-right"></i>
-                    </li>
                     <li class="nav-item">
                         <a href="#">Payment Report</a>
                     </li>

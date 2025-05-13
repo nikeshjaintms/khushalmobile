@@ -78,7 +78,7 @@
                                                         </i>
                                                     </a>
                                                 @can('show-sale')
-                                                    <a href="{{ route('admin.sale.show', $item->id) }}"
+                                                    <a href="{{ route('admin.sale.show', $item->id ) }}"
                                                        class="btn btn-lg btn-link btn-primary">
                                                         <i class="fa fa-eye"></i>
                                                     </a>

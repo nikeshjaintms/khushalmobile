@@ -179,16 +179,16 @@
                                         <span class="sub-item">Stock Report</span>
                                     </a>
                                 </li>
-{{--                                <li>--}}
-{{--                                    <a href="{{ route('admin.report.imei') }}">--}}
-{{--                                        <span class="sub-item">Imei Report</span>--}}
-{{--                                    </a>--}}
-{{--                                </li>--}}
-{{--                                <li>--}}
-{{--                                    <a href="{{ route('admin.report.sale') }}">--}}
-{{--                                        <span class="sub-item">Sale Report</span>--}}
-{{--                                    </a>--}}
-{{--                                </li>--}}
+                                <li>
+                                    <a href="{{ route('admin.report.imei') }}">
+                                        <span class="sub-item">Imei Report</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.report.sale') }}">
+                                        <span class="sub-item">Sale Report</span>
+                                    </a>
+                                </li>
                                 <li>
                                     <a href="{{ route('admin.report.payment') }}">
                                         <span class="sub-item">Payment Report</span>

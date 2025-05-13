@@ -16,7 +16,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.customer.index')}}">User</a>
+                        <a href="{{ route('admin.user.index')}}">User</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>

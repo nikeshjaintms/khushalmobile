@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use App\Models\Product;
 use App\Models\PurchaseProduct;
+use App\Models\Sale;
 use App\Models\SaleTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -31,13 +32,28 @@ class ReportController extends Controller
 
     public function imeiReport()
     {
+        $products = Product::with(['brand', 'purchaseProducts'])->get();
 
-        return view('reports.imei');
+        $flatProducts = collect();
+        foreach ($products as $product) {
+            foreach ($product->purchaseProducts as $purchaseProduct) {
+                $flatProducts->push([
+                    'brand_name'   => $product->brand->name ?? 'No Brand',
+                    'product_name' => $product->product_name,
+                    'imei'         => $purchaseProduct->imei,
+                    'color'        => $purchaseProduct->color,
+                    'mrp'          => $product->mrp,
+                ]);
+            }
+        }
+        return view('reports.imei', compact('products','flatProducts'));
     }
 
     public function saleReport()
     {
-        return view('reports.sale');
+        $sales = Sale::with('saleProducts','customer')->get();
+        $totalAmount = Sale::where('total_amount','>',0)->sum('total_amount');
+        return view('reports.sale',compact('sales','totalAmount'));
     }
 
     public function paymentReport()
