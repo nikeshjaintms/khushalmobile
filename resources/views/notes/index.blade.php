@@ -21,13 +21,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.daily-notes.index') }}">Transaction</a>
-                    </li>
-                    <li class="separator">
-                        <i class="icon-arrow-right"></i>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#">Transaction</a>
+                        <a href="{{ route('admin.daily-notes.index') }}">Notes</a>
                     </li>
                 </ul>
             </div>
