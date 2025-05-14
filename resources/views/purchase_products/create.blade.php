@@ -739,9 +739,7 @@
                                                 .addClass('d-none');
                                         }
                                     });
-
                             }
-
 
                              else {
                                 alert('Something went wrong!');
