@@ -323,7 +323,7 @@
                                                             class="form-control">
                                                         <option value="1">Cash</option>
                                                         <option value="2">Online</option>
-                                                        <option value="3">Finance</option>
+{{--                                                        <option value="3">Finance</option>--}}
                                                     </select>
                                                 </td>
                                                 <td><input type="number" name="payment[0][amount]" id="amount"

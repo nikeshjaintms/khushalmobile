@@ -37,13 +37,46 @@ class PurchaseController extends Controller
         return view('purchase_products.create', compact('dealers', 'brands'));
     }
 
+    public function checkIMEINumbers(Request $request)
+    {
+        $imeiNumbers = $request->post('imeiNumbers');
+        $duplicates = collect($imeiNumbers)->duplicates();
+
+        if ($duplicates->isNotEmpty()) {
+            return response()->json([
+                'status' => 422,
+                'message' => 'Duplicate IMEI numbers found!',
+                'invalid_numbers' => $duplicates
+            ]);
+        }
+
+        $existingImeis = PurchaseProduct::whereIn('imei', $imeiNumbers)->pluck('imei');
+
+        if ($existingImeis->isNotEmpty()) {
+            return response()->json([
+                'status' => 422,
+                'message' => 'IMEI numbers already exists!',
+                'invalid_numbers' => $existingImeis
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'IMEIs are unique and not in the database.'
+        ]);
+    }
+
+
+
+
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
 
-        $request->validate([
+       $request->validate([
             'imei' => 'required|array|min:1',
             'imei.*' => 'required|string|distinct|unique:purchase_product,imei',
         ], [
@@ -51,7 +84,6 @@ class PurchaseController extends Controller
             'imei.*.distinct' => 'IMEI numbers must be unique within the form.',
             'imei.*.required' => 'Each IMEI number is required.',
         ]);
-
         DB::beginTransaction();
 
         try {
@@ -108,14 +140,16 @@ class PurchaseController extends Controller
             DB::commit();
             Session::flash('success', "Purchase Order saved! ");
 
+
+
             return redirect()->route('admin.purchase.index');
         } catch (\Exception $e) {
             DB::rollBack();
             // Optionally log the error for debugging
             // dd("Error saving purchase: " . $e->getMessage());
 
-            Session::flash('error', "Something went wrong while saving the purchase order.");
-            return redirect()->back()->withInput();
+            //Session::flash('error', "Something went wrong while saving the purchase order.");
+            //return redirect()->back()->withInput();
         }
     }
 

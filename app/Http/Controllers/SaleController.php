@@ -236,9 +236,9 @@ class SaleController extends Controller
 
         $imiNumbers = PurchaseProduct::all();
 
-        $refernce = SaleTransaction::where('invoice_id', $id)->first();
-        $selectedRefer = $refernce->reference_no ?? null;
-        $selectedAmount = $refernce->amount ?? null;
+        $salestransc = SaleTransaction::where('invoice_id', $id)->get();
+        //$selectedRefer = $refernce->reference_no ?? null;
+        //$selectedAmount = $refernce->amount ?? null;
 
         $sale = Sale::with(['customer', 'saleProducts', 'saleProducts.product.brand', 'saleProducts.product', 'saleProducts.purchaseProduct'])->where('id', $id)->first();
 
@@ -247,7 +247,7 @@ class SaleController extends Controller
 
         $selectfinance = Finance::where('customer_id', $sale->customer_id)->where('invoice_id', $id)->first();
 
-        return view('sale.edit', compact('data', 'data1', 'customers', 'selectedCustomer', 'products', 'brands', 'selectedProductId', 'selectedBrandId', 'imiNumbers', 'selectfinance', 'selectedImi', 'refernce', 'selectedRefer', 'selectedAmount', 'financeMaster', 'selectedFinance'));
+        return view('sale.edit', compact('data', 'data1', 'customers', 'selectedCustomer', 'products', 'brands', 'selectedProductId', 'selectedBrandId', 'imiNumbers', 'selectfinance', 'selectedImi',  'financeMaster', 'selectedFinance','salestransc'));
     }
 
     /**

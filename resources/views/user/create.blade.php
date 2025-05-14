@@ -43,7 +43,7 @@
                                         <div class="form-group">
                                             <label for="">Name<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="name" id="name"
-                                                placeholder="Enter Customer Name" value="{{old('name')}}" required />
+                                                placeholder="Enter User Name" value="{{old('name')}}" required />
                                             @error('name')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror

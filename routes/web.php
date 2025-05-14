@@ -135,6 +135,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     });
 
 
+    Route::post('check-imei-numbers', [PurchaseController::class, 'checkIMEINumbers'])->name('check.imei-numbers');
+
     Route::prefix('transaction')->controller(TransctionController::class)->group(function () {
         Route::get('/', 'index')->name('admin.transaction.index')->middleware('permission:index-transaction');
         Route::get('create', 'create')->name('admin.transaction.create');

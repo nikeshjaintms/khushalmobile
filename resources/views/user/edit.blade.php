@@ -44,7 +44,7 @@
                                         <div class="form-group">
                                             <label for="name">Name<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="name"
-                                                value="{{ $data->name }}" id="name" placeholder="Enter Customer Name"
+                                                value="{{ $data->name }}" id="name" placeholder="Enter User Name"
                                                 required />
                                         </div>
                                         @error('name')

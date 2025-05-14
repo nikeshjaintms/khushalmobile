@@ -350,28 +350,30 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td>
-                                                    <select name="payment[0][payment_mode]" id="mode"
-                                                            class="form-control">
-                                                        <option value="1">Cash</option>
-                                                        <option value="2">Online</option>
-                                                        <option value="3">Finance</option>
-                                                    </select>
-                                                </td>
-                                                <td><input type="text" name="payment[0][amount]" id="amount"
-                                                           value="{{ $selectedAmount }}" class="form-control amount">
-                                                </td>
-                                                <td><input type="text" name="payment[0][reference_no]"
-                                                           id="reference_no" value="{{ $selectedRefer }}"
-                                                           class="form-control reference_no "></td>
-                                                <td>
-                                                    <button type="button" class="btn btn-success add-payment-row">+
-                                                    </button>
-                                                    <button type="button" class="btn btn-danger remove-payment-row">-
-                                                    </button>
-                                                </td>
-                                            </tr>
+                                            @foreach($salestransc as $st)
+                                                <tr>
+                                                    <td>
+                                                        <select name="payment[0][payment_mode]" id="mode"
+                                                                class="form-control">
+                                                            <option {{ $st->payment_mode == '1' ? 'selected' : '' }}value="1">Cash</option>
+                                                            <option {{ $st->payment_mode == '2' ? 'selected' : '' }} value="2">Online</option>
+{{--                                                            <option {{ $st->payment_mode == '3' ? 'selected' : '' }} value="3">Finance</option>--}}
+                                                        </select>
+                                                    </td>
+                                                    <td><input type="text" name="payment[0][amount]" id="amount"
+                                                               value="{{ $st->amount ?? ''}}" class="form-control amount">
+                                                    </td>
+                                                    <td><input type="text" name="payment[0][reference_no]"
+                                                               id="reference_no" value="{{ $st->reference_no ?? '' }}"
+                                                               class="form-control reference_no "></td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-success add-payment-row">+
+                                                        </button>
+                                                        <button type="button" class="btn btn-danger remove-payment-row">-
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
                                             </tbody>
                                         </table>
                                     </div>

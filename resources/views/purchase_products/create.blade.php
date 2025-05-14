@@ -10,6 +10,17 @@
         .table>tbody>tr>th {
             padding: 16px 5px !important;
         }
+
+        .input-wrapper {
+            margin-bottom: 10px;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            display: block; /* important */
+            margin-top: 5px;
+        }
+
     </style>
     <div class="container">
         <div class="page-inner">
@@ -122,27 +133,21 @@
                                                             <div class="text-red-500">{{ $message }}</div>
                                                         @enderror
                                                     </td>
-{{--                                                    <td style="width: fit-content;">--}}
-{{--                                                        <input type="text" class="form-control imei-input" name="imei[]"--}}
-{{--                                                            id="imei" required>--}}
 
-{{--                                                        @error('imei[]')--}}
-{{--                                                            <div class="text-red-500">{{ $message }}</div>--}}
-{{--                                                        @enderror--}}
 
-                                                        <td style="width: fit-content;">
-{{--                                                            @foreach(old('imei', ['']) as $index => $imei)--}}
-                                                            <input type="text" class="form-control imei-input" name="imei[]" value="{{ $imei }}" required>
+                                                    <td style="width: fit-content;">
+                                                        <div class="input-wrapper">
+                                                            <input type="text" class="form-control imei-input" name="imei[]" value="{{ old('imei.' . $index, $imei) }}" required>
+                                                            <div class="error-message d-none"></div>
+                                                        </div>
+                                                        @if ($errors->has("imei.$index"))
+                                                            <div class="text-danger" >{{ $errors->first("imei.$index") }}</div>
+                                                        @endif
+                                                        <span id="imei-error-id" class="text-danger d-none">One or more IMEI numbers already exist in the system.</span>
+                                                    </td>
 
-                                                            @if ($errors->has("imei.$index"))
-                                                                <div class="text-danger">{{ $errors->first("imei.$index") }}</div>
-                                                            @endif
-{{--                                                            @endforeach--}}
-                                                        </td>
-
-{{--                                                    </td>--}}
                                                     <td><input type="text" class="form-control" name="color[]"
-                                                            id="color"  required>
+                                                            id="color" value="{{old('color[]')}}" required>
                                                         @error('color[]')
                                                             <div class="text-red-500">{{ $message }}</div>
                                                         @enderror
@@ -245,8 +250,11 @@
                             <div class="card-action">
                                 <button class="btn btn-success" type="submit">Submit</button>
                                 <a href="{{ route('admin.purchase.index') }}" class="btn btn-danger">Cancel</a>
+                                <div id="imeiResults"></div>
                             </div>
+
                         </form>
+                        <div id="result"></div>
                     </div>
                 </div>
             </div>
@@ -517,8 +525,12 @@
                 return currentIndex === firstIndex;
             }, "IMEI must be unique.");
 
-
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }});
             // Form validation
+
             $("#purchaseForm").validate({
                 onfocusout: function(element) {
                     this.element(element);
@@ -673,6 +685,73 @@
                         number: "Enter a valid number",
                         min: "Total must be zero or more"
                     }
+                },
+                submitHandler: function (form) {
+                    let imeiNumbers = [];
+
+                    $('.imei-input').each(function () {
+                        let val = $(this).val().trim();
+                        if (val) imeiNumbers.push(val);
+                    });
+
+                    $.ajax({
+                        url: "{{ route('check.imei-numbers') }}",
+                        method: "POST",
+                        data: {
+                            imeiNumbers: imeiNumbers
+                        },
+                        success: function (response) {
+                            if (response.status === 200) {
+                                form.submit();
+                            }
+                            else if (response.status === 422) {
+
+                                // $('.imei-input').each(function () {
+                                //     const value = parseInt($(this).val(), 10);
+                                //     const errorDiv = $(this).siblings('.error-message');
+                                //     if (response.invalid_numbers.includes(value)) {
+                                //         errorDiv.text(`The value ${value} is not allowed.`);
+                                //     } else {
+                                //         errorDiv.text('');
+                                //     }
+                                // });
+                                // console.log("Error div length:", $(this).siblings('.error-message').length);
+
+                                    //
+                                    const invalidNumbers = response.invalid_numbers.map(n => n.toString());
+
+                                    $('.imei-input').each(function () {
+                                        const value = $(this).val().trim(); // keep as string for comparison
+                                        const wrapper = $(this).closest('.input-wrapper');
+                                        const errorDiv = wrapper.find('.error-message');
+
+
+                                        if (invalidNumbers.includes(value)) {
+                                            console.log("Invalid IMEI found:", value);
+                                            errorDiv
+                                                .text(`The IMEI ${value} is not allowed.`)
+                                                .removeClass('d-none')
+                                                .css('display', 'block');
+
+                                        } else {
+                                            errorDiv
+                                                .text('')
+                                                .addClass('d-none');
+                                        }
+                                    });
+
+                            }
+
+
+                             else {
+                                alert('Something went wrong!');
+                            }
+                        },
+
+                        error: function (xhr) {
+                            console.error("Error:", xhr.responseText);
+                        }
+                    });
                 },
                 errorClass: "text-danger",
                 errorElement: "span",

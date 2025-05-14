@@ -45,7 +45,7 @@
 
                                             <label for="name">Name<span style="color: red">*</span></label>
                                             <input type="text" class="form-control" name="name"
-                                                value="{{ $data->name }}" id="name" placeholder="Enter Customer Name"
+                                                value="{{ $data->name }}" id="name" placeholder="Enter Dealer Name"
                                                 required />
                                             @error('name')
                                             <div class="text-danger">{{ $message }}</div>
