@@ -15,6 +15,10 @@ class Finance extends Model
         'product_id',
         'customer_id',
         'finances_master_id',
+        'ref_mobile_no',
+        'ref_name',
+        'ref_city',
+        'file_no',
         'price',
         'downpayment',
         'processing_fee',
@@ -37,7 +41,10 @@ class Finance extends Model
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
-
+    public function finance()
+    {
+        return $this->belongsTo(Finance::class, 'finance_id');
+    }
     public function invoices(){
         return $this->belongsTo(Sale::class, 'invoice_id');
     }

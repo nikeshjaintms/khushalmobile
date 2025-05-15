@@ -40,9 +40,11 @@ class DeductionController extends Controller
     {
         $finance = Finance::leftjoin('customers', 'finances.customer_id', '=', 'customers.id')
             ->leftjoin('sales', 'finances.invoice_id', '=', 'sales.id')
-            ->select('finances.*', 'customers.name as customer_name', 'customers.phone', 'customers.city', 'sales.invoice_no')
+            ->leftjoin('products', 'finances.product_id', '=', 'products.id')
+            ->leftjoin('brands', 'products.brand_id', '=', 'brands.id')
+            ->select('finances.*', 'customers.name as customer_name', 'customers.phone', 'customers.city', 'sales.invoice_no','brands.name as brand_name','products.product_name')
             ->where('finances.customer_id', $request->customer_id)
-            ->where('status', 'pending')->get();
+            ->get();
 
         if (!$finance) {
             return response()->json(['error' => 'Customer not found'], 404);

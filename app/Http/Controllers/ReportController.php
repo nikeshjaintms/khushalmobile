@@ -19,6 +19,7 @@ class ReportController extends Controller
             ->get()
             ->map(function ($product) {
                 return [
+                    'id' => $product->id,
                     'brand_name' => $product->brand->name ?? 'No Brand',
                     'product_name' => $product->product_name,
                     'null_status_and_invoice' => $product->purchaseProducts
@@ -30,6 +31,14 @@ class ReportController extends Controller
         return view('reports.stock', compact('products'));
     }
 
+    public function StockReportView($productId)
+    {
+        $stockData = PurchaseProduct::with('purchase.dealer')
+            ->where('product_id', $productId)->whereNull('status')->whereNull('invoice_id')
+            ->get();
+
+        return view('reports.stockShow', compact('stockData'));
+    }
     public function imeiReport()
     {
         $products = Product::with(['brand', 'purchaseProducts'])->get();
@@ -64,5 +73,4 @@ class ReportController extends Controller
 
         return view('reports.payment', compact('totals'));
     }
-
 }

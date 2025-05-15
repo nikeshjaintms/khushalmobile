@@ -718,7 +718,14 @@
                                 // console.log("Error div length:", $(this).siblings('.error-message').length);
 
                                     //
-                                    const invalidNumbers = response.invalid_numbers.map(n => n.toString());
+                                const invalidNumbers = Array.isArray(response.invalid_numbers)
+                                    ? response.invalid_numbers.map(n => n.toString())
+                                    : [];
+                                const imeiCounts = {};
+                                $('.imei-input').each(function () {
+                                    const value = $(this).val().trim();
+                                    imeiCounts[value] = (imeiCounts[value] || 0) + 1;
+                                });
 
                                     $('.imei-input').each(function () {
                                         const value = $(this).val().trim(); // keep as string for comparison
@@ -733,7 +740,12 @@
                                                 .removeClass('d-none')
                                                 .css('display', 'block');
 
-                                        } else {
+                                        }  else if (imeiCounts[value] > 1) {
+                                            errorDiv
+                                                .text(`Duplicate IMEI ${value} found.`)
+                                                .removeClass('d-none')
+                                                .css('display', 'block');
+                                        }else {
                                             errorDiv
                                                 .text('')
                                                 .addClass('d-none');

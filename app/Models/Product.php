@@ -24,4 +24,5 @@ class Product extends Model
     public function purchaseProducts(){
         return $this->hasMany(PurchaseProduct::class);
     }
+
 }

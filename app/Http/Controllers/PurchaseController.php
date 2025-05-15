@@ -69,7 +69,6 @@ class PurchaseController extends Controller
     {
         $imeiNumbers = $request->post('imeiNumbers'); // Array of IMEIs
         $ignoreIds = $request->post('ignoreIds');     // Array of PurchaseProduct IDs to ignore
-
         $duplicates = collect($imeiNumbers)->duplicates();
 
         if ($duplicates->isNotEmpty()) {
@@ -79,13 +78,6 @@ class PurchaseController extends Controller
                 'invalid_numbers' => $duplicates
             ]);
         }
-
-        // Query the database, excluding rows with IDs in $ignoreIds
-        //$existingImeis = PurchaseProduct::whereIn('imei', $imeiNumbers)
-        //    ->when(!empty($ignoreIds), function ($query) use ($ignoreIds) {
-        //        $query->whereNotIn('id', $ignoreIds);
-        //    })
-        //    ->pluck('imei');
 
         $existingImeis = PurchaseProduct::whereNotIn('id', $ignoreIds)
             ->whereIn('imei', $imeiNumbers)
@@ -104,62 +96,6 @@ class PurchaseController extends Controller
             'message' => 'IMEIs are unique and not in the database.'
         ]);
     }
-
-    //public function checkIMEINumbers(Request $request)
-    //{
-    //    dump("start");
-    //    $imeiNumbers = $request->post('imeiNumbers');
-    //    dump($imeiNumbers);
-    //    $recordIds = $request->post('recordIds', []);
-    //    dump($recordIds);
-    //
-    //    // Form-level duplicates
-    //    $duplicates = collect($imeiNumbers)->duplicates();
-    //    dump($duplicates);
-    //    if ($duplicates->isNotEmpty()) {
-    //        return response()->json([
-    //            'status' => 422,
-    //            'message' => 'Duplicate IMEI numbers found!',
-    //            'invalid_numbers' => $duplicates->values()
-    //        ]);
-    //    }
-    //    dd("stopp");
-    //    exit();
-    //    $filteredImeis = [];
-    //
-    //    foreach ($imeiNumbers as $index => $imei) {
-    //        $recordId = $recordIds[$index] ?? null;
-    //
-    //        if ($recordId) {
-    //            $existing = PurchaseProduct::find($recordId);
-    //            if ($existing && $existing->imei === $imei) {
-    //                continue; // This IMEI is unchanged
-    //            }
-    //        }
-    //
-    //        $filteredImeis[] = $imei;
-    //    }
-    //
-    //    // Check against DB
-    //    $existingImeis = PurchaseProduct::whereIn('imei', $filteredImeis)->pluck('imei');
-    //
-    //    if ($existingImeis->isNotEmpty()) {
-    //        return response()->json([
-    //            'status' => 422,
-    //            'message' => 'IMEI numbers already exist in the database!',
-    //            'invalid_numbers' => $existingImeis
-    //        ]);
-    //    }
-    //
-    //    return response()->json([
-    //        'status' => 200,
-    //        'message' => 'All IMEIs are unique.'
-    //    ]);
-    //}
-
-
-
-
 
     /**
      * Store a newly created resource in storage.

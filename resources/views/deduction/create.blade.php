@@ -53,16 +53,22 @@
                                 <table id="basic-datatables" class="display table table-striped table-hover">
                                     <thead>
                                     <tr>
-                                        <th>Id</th>
+                                        <th>Sr No</th>
                                         <th>Customer</th>
                                         <th>Phone</th>
                                         <th>City</th>
+                                        <th>File Number</th>
+                                        <th>Deduction Date</th>
+                                        <th>Brand Name</th>
+                                        <th>Product Name</th>
+                                        <th>Total Emi</th>
+                                        <th>status</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
                                     <tbody id="financeDetails">
                                     <tr>
-                                        <td colspan="9" class="text-center">No data available</td>
+                                        <td colspan="11" class="text-center">No data available</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -280,15 +286,29 @@
                             <td>${item.customer_name ?? 'N/A'}</td>
                             <td>${item.phone ?? 'N/A'}</td>
                             <td>${item.city ?? 'N/A'}</td>
-                            <td>
+                            <td>${item.file_no ?? '-'}</td>
+                            <td>${item.dedication_date ?? 'N/A'}</td>
+                            <td>${item.brand_name ?? 'N/A'}</td>
+                            <td>${item.product_name ?? 'N/A'}</td>
+                             <td>${item.month_duration ?? 'N/A'}</td>
+                          <td>
+                            ${item.status === 'pending'
+                            ? '<span class="badge bg-success">Running</span>'
+                            : '<span class="badge bg-danger">NIl</span>'
+                            }
+                         </td>
+                   
+                        <td>
+                                 ${item.status === 'paid'
+                            ? `<a href="${url}" class="btn btn-sm btn-success" disabled style="pointer-events: none; opacity: 0.6;">
+                                View EMI Details
+                                </a>`
+                            : `<a href="${url}" class="btn btn-sm btn-success">
+                           View EMI Details
+                                    </a>`
+                                 }
+                           </td>
 
-                       <a href="${url}" route="{{'admin.deduction.show'}}" class="btn btn-sm btn-success">
-                          View EMI Details
-                       </a>
-{{--                           <a href="{{ route('admin.deduction.show')}}" class="btn btn-sm btn-success">--}}
-                        {{--    View EMI Details--}}
-                        {{--</a>--}}
-                        </td>
                     </tr>`;
                     });
 

@@ -39,6 +39,7 @@
                                         <th>Brand Name</th>
                                         <th>Product Name</th>
                                         <th>Qty</th>
+                                        <th>View</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -48,6 +49,11 @@
                                             <td>{{ $item['brand_name'] }}</td>
                                             <td>{{ $item['product_name'] }}</td>
                                             <td>{{ $item['null_status_and_invoice'] }}</td>
+                                            <td>  <a href="{{ route('admin.stock.show',  $item['id']) }}"
+                                                     class="btn btn-lg btn-link btn-primary">
+                                                    <i class="fa fa-eye">
+                                                    </i></a>
+                                            </td>
                                         </tr>
                                     @endforeach
                                     </tbody>

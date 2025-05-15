@@ -12,4 +12,8 @@ class Purchase extends Model
     protected $primaryKey = 'id';
     protected $fillable = ['dealer_id','po_no','po_date','sub_total','tax_type','total_tax_amount','total'];
     use HasFactory, SoftDeletes;
+
+    public function dealer(){
+        return $this->belongsTo(Dealer::class,'dealer_id');
+    }
 }

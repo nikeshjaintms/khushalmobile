@@ -593,57 +593,7 @@
                         min: "Total must be zero or more"
                     }
                 },
-                {{--submitHandler: function (form) {--}}
-                {{--        let imeiNumbers = [];--}}
 
-                {{--        $('.imei-input').each(function () {--}}
-                {{--            let val = $(this).val().trim();--}}
-                {{--            if (val) imeiNumbers.push(val);--}}
-                {{--        });--}}
-
-                {{--        $.ajax({--}}
-                {{--            url: "{{ route('check.imei-numbers') }}",--}}
-                {{--            method: "POST",--}}
-                {{--            data: {--}}
-                {{--                imeiNumbers: imeiNumbers,--}}
-                {{--                recordId: "{{ $purchase->id ?? '' }}" // Uncomment if needed--}}
-                {{--            },--}}
-                {{--            success: function (response) {--}}
-                {{--                if (response.status === 200) {--}}
-                {{--                    form.submit(); // ✅ Submit the form if everything is valid--}}
-                {{--                } else if (response.status === 422) {--}}
-                {{--                    // const invalidNumbers = response.invalid_numbers.map(n => n.toString());--}}
-                {{--                    const invalidNumbers = Array.isArray(response.invalid_numbers)--}}
-                {{--                        ? response.invalid_numbers.map(n => n.toString())--}}
-                {{--                        : [];--}}
-                {{--                    $('.imei-input').each(function () {--}}
-                {{--                        const value = $(this).val().trim();--}}
-                {{--                        const wrapper = $(this).closest('.input-wrapper');--}}
-                {{--                        const errorDiv = wrapper.find('.error-message');--}}
-
-                {{--                        if (invalidNumbers.includes(value)) {--}}
-                {{--                            errorDiv--}}
-                {{--                                .text(`The IMEI ${value} is not allowed.`)--}}
-                {{--                                .removeClass('d-none')--}}
-                {{--                                .css('display', 'block');--}}
-                {{--                        } else {--}}
-                {{--                            errorDiv--}}
-                {{--                                .text('')--}}
-                {{--                                .addClass('d-none');--}}
-                {{--                        }--}}
-                {{--                    });--}}
-                {{--                } else {--}}
-                {{--                    alert('Something went wrong!');--}}
-                {{--                }--}}
-                {{--            },--}}
-                {{--            error: function (xhr) {--}}
-                {{--                console.error("Error:", xhr.responseText);--}}
-                {{--            }--}}
-                {{--        });--}}
-
-                {{--        // ✅ Prevent default form submission while AJAX is in progress--}}
-                {{--        return false;--}}
-                {{--    },--}}
                 submitHandler: function (form) {
                     let imeiNumbers = [];
                     let ignoreIds = [];
@@ -672,10 +622,18 @@
                         },
                         success: function (response) {
                             if (response.status === 200) {
-                                alert("Validation passed. Submitting form...");
                                 form.submit();
                             } else if (response.status === 422) {
-                                const invalidNumbers = response.invalid_numbers.map(n => n.toString());
+                                const invalidNumbers = Array.isArray(response.invalid_numbers)
+                                    ? response.invalid_numbers.map(n => n.toString())
+                                    : [];
+
+                                console.log(response.invalid_numbers);
+                                const imeiCounts = {};
+                                $('.imei-input').each(function () {
+                                    const value = $(this).val().trim();
+                                    imeiCounts[value] = (imeiCounts[value] || 0) + 1;
+                                });
 
                                 $('.imei-input').each(function () {
                                     const value = $(this).val().trim();
@@ -687,7 +645,13 @@
                                             .text(`The IMEI ${value} is not allowed.`)
                                             .removeClass('d-none')
                                             .css('display', 'block');
-                                    } else {
+                                    }   else if (imeiCounts[value] > 1) {
+                                        errorDiv
+                                            .text(`Duplicate IMEI ${value} found.`)
+                                            .removeClass('d-none')
+                                            .css('display', 'block');
+                                    }
+                                    else {
                                         errorDiv
                                             .text('')
                                             .addClass('d-none');

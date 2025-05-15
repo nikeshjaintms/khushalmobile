@@ -346,9 +346,40 @@
                                         <h4>Finance Details</h4>
                                         <div class="col-md-4">
                                             <div class="form-group">
+                                                <label> Ref Name </label>
+                                                <input type="text" name="ref_name" id="ref_name"
+                                                       class="form-control  ref_name required" placeholder="Ref Name">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label> Ref Mobile Number </label>
+                                                <input type="number" name="ref_mobile_no" id="ref_mobile_no"
+                                                       class="form-control  ref_mobile_no required" placeholder="Ref Mobile Number"
+                                                      >
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label> Ref City </label>
+                                                <input type="text" name="ref_city" id="ref_city"
+                                                       class="form-control  ref_city required" placeholder="Ref city"
+                                                >
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label> File No </label>
+                                                <input type="number" name="file_no" id="file_no"
+                                                       class="form-control  file_no required" placeholder="File number"
+                                                    >
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
                                                 <div>
                                                     <label> Select Finance </label>
-
                                                     <select class="form-select" name="finances_master_id"
                                                             aria-label="Default select example ">
                                                         <option selected value=""> Select finance</option>
@@ -875,6 +906,18 @@
                     invoice_date: {
                         required: true
                     },
+                    ref_no:{
+                        required: true
+                    },
+                    ref_city:{
+                        required: true
+                    },
+                    ref_name:{
+                        required: true
+                    },
+                    file_no:{
+                        required: true
+                    },
                     sub_total: {
                         required: true
                     },
@@ -922,6 +965,18 @@
                     },
                     invoice_date: {
                         required: "Please select date"
+                    },
+                    ref_no:{
+                        required: "Please enter a reference number",
+                    },
+                    ref_city:{
+                        required: "Please enter a reference city",
+                    },
+                    ref_name:{
+                        required: "Please enter a reference name",
+                    },
+                    file_no:{
+                        required: "Please enter a file Number",
                     },
                     sub_total: {
                         required: "Please enter sub type"

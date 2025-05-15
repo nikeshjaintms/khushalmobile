@@ -46,7 +46,7 @@
             <th>Model</th>
             <th>Colour</th>
             <th>IMEI No.</th>
-            <th>MRP (<span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>)</th>
+{{--            <th>MRP (<span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>)</th>--}}
             <th>Discount(%)</th>
             <th>Net Amount (<span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>)</th>
         </tr>
@@ -60,32 +60,32 @@
                 <td>{{$product->product->product_name }}</td>
                 <td>{{$product->purchaseProduct->color}}</td>
                 <td style="text-align: right">{{$product->purchaseProduct->imei}}</td>
-                <td style="text-align: right">{{ $product->price }}</td>
+{{--                <td style="text-align: right">{{ $product->price }}</td>--}}
                 <td style="text-align: right">{{ $product->discount }}</td>
                 <td style="text-align: right">{{ $product->price_subtotal }}</td>
             </tr>
         @endforeach
             <tr>
-                <td colspan="7" style="text-align: right">Sub Total</td>
+                <td colspan="6" style="text-align: right">Sub Total</td>
                 <td style="text-align: right">{{$sale->sub_total}}</td>
             </tr>
             @if($sale->tax_type === '1')
                 <tr>
-                    <td colspan="7" style="text-align: right">CGST</td>
+                    <td colspan="6" style="text-align: right">CGST</td>
                     <td style="text-align: right">{{ number_format($product->tax_amount / 2, 2) }}</td>
                 </tr>
                 <tr>
-                    <td colspan="7" style="text-align: right">SGST</td>
+                    <td colspan="6" style="text-align: right">SGST</td>
                     <td style="text-align: right">{{ number_format($product->tax_amount / 2, 2) }}</td>
                 </tr>
             @elseif($sale->tax_type === '2')
                 <tr>
-                    <td colspan="7" style="text-align: right">IGST</td>
+                    <td colspan="6" style="text-align: right">IGST</td>
                     <td style="text-align: right">{{ number_format($product->tax_amount, 2) }}</td>
                 </tr>
             @endif
 
-            <th colspan="7" style="text-align: right">Grand Total</th>
+            <th colspan="6" style="text-align: right">Grand Total</th>
             <th style="text-align: right">{{$sale->total_amount}}</th>
     </table>
 </div>
@@ -116,11 +116,11 @@
             <tr>
                 <td style="text-align: right">{{$loop->iteration}}</td>
                 <td style="text-align: center">{{ \Carbon\Carbon::parse($row->emi_date)->format('d.m.y') }}</td>
-                <td style="text-align: center">{{$row->status}}</td>
+                <td style="text-align: center">{{ \Illuminate\Support\Str::studly($row->status) }}</td>
                 <td style="text-align: right">{{$row->remaining}}</td>
                 <td style="text-align: right">{{$row->finance->emi_value}}</td>
                 <td style="text-align: right">{{$row->emi_value_paid}}</td>
-                <td style="text-align: center">{{ \Carbon\Carbon::parse( $row['paid_date'])->format('d.m.y') }}</td>
+                <td style="text-align: center">{{ \Carbon\Carbon::parse( $row['paid_date'])->format('d.m.y') ?? '-' }}</td>
                 <td style="text-align: center">{{ config('constants.database_enum.deductions.payment_mode.name') [(int)$row->payment_mode] ?? '-'}}</td>
                 <td style="text-align: right">{{$row->refernce_no }}  </td>
             </tr>

@@ -201,6 +201,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('imei', 'imeiReport')->name('admin.report.imei');
         Route::get('sale', 'saleReport')->name('admin.report.sale');
         Route::get('payment', 'paymentReport')->name('admin.report.payment');
+        Route::get('/{id}', 'StockReportView')->name('admin.stock.show');
 
     });
 });

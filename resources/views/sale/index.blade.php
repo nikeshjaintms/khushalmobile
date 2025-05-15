@@ -65,7 +65,7 @@
                                                     {{ $product->product->product_name ?? '-' }}@if (!$loop->last)
                                                         ,
                                                     @else
-                                                        .
+
                                                     @endif
                                                 @endforeach
                                             </td>

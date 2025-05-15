@@ -39,6 +39,7 @@
                             <tr>
                               <th>Sr No</th>
                               <th>Title</th>
+                                <th>Date</th>
                               <th>Description</th>
                               <th>Action</th>
                             </tr>
@@ -48,6 +49,7 @@
                             <tr>
                               <td>{{ $index + 1 }}</td>
                               <td>{{$item->title }}</td>
+                                <td>{{ \Carbon\Carbon::parse($item->created_at)->setTimezone('Asia/Kolkata')->format('d.m.Y / h:i A') }}</td>
                               <td>{{$item->description }}</td>
                               <td>
                                 <a href="{{ route('admin.daily-notes.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">

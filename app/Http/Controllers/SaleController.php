@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Brand;
 use App\Models\Customer;
 use App\Models\Deduction;
@@ -118,6 +119,10 @@ class SaleController extends Controller
                     'invoice_id' => $sale->id,
                     'product_id' => $request->products[0]['product_id'],
                     'customer_id' => $request->customer_id,
+                    'ref_mobile_no' => $request->ref_mobile_no,
+                    'ref_city'=> $request->ref_city,
+                    'ref_name' => $request->ref_name,
+                    'file_no' => $request->file_no,
                     'mobile_security_charges' => $request->mobile_security_charges,
                     'finances_master_id' => $request->finances_master_id,
                     'price' => $request->sub_total,
@@ -200,7 +205,7 @@ class SaleController extends Controller
     }
 
 
-/**
+    /**
      * Display the specified resource.
      */
     public function show(Sale $sales, $id)
@@ -216,7 +221,7 @@ class SaleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit( Sale $sales, $id)
+    public function edit(Sale $sales, $id)
     {
         $data = Sale::find($id);
         $data1 = SaleProduct::with('product')->where('sales_id', $id)->get();
@@ -237,17 +242,16 @@ class SaleController extends Controller
         $imiNumbers = PurchaseProduct::all();
 
         $salestransc = SaleTransaction::where('invoice_id', $id)->get();
-        //$selectedRefer = $refernce->reference_no ?? null;
-        //$selectedAmount = $refernce->amount ?? null;
 
         $sale = Sale::with(['customer', 'saleProducts', 'saleProducts.product.brand', 'saleProducts.product', 'saleProducts.purchaseProduct'])->where('id', $id)->first();
 
         $financeMaster = financeMaster::all();
-        $selectedFinance = $financeMaster->pluck('id');
 
         $selectfinance = Finance::where('customer_id', $sale->customer_id)->where('invoice_id', $id)->first();
 
-        return view('sale.edit', compact('data', 'data1', 'customers', 'selectedCustomer', 'products', 'brands', 'selectedProductId', 'selectedBrandId', 'imiNumbers', 'selectfinance', 'selectedImi',  'financeMaster', 'selectedFinance','salestransc'));
+        $selectfinanceID = optional($selectfinance)->finances_master_id;
+
+        return view('sale.edit', compact('data', 'data1', 'customers', 'selectedCustomer', 'products', 'brands', 'selectedProductId', 'selectedBrandId', 'imiNumbers', 'selectfinance', 'selectedImi', 'selectfinanceID', 'financeMaster', 'salestransc'));
     }
 
     /**
@@ -295,6 +299,61 @@ class SaleController extends Controller
                 ]);
             }
 
+            if ($request->has('finance')) {
+                $financeData = $request->finance;
+
+                // Ensure FinanceMaster exists
+                $financeMaster = FinanceMaster::find($financeData['finances_master_id']);
+                if (!$financeMaster) {
+                    throw new \Exception("Finance master not found.");
+                }
+
+                // Update Finance record
+                $finance = Finance::where('customer_id', $request->customer_id)
+                    ->where('invoice_id', $id)
+                    ->first();
+
+                if ($finance) {
+                    $finance->update([
+                        'finances_master_id' => $financeData['finances_master_id'],
+                        'price' => $data->total_amount,
+                        'ref_mobile_no' =>  $financeData['ref_mobile_no'],
+                        'ref_name' => $financeData['ref_name'],
+                        'ref_city' => $financeData['ref_city'],
+                        'file_no' => $financeData['file_no'],
+                        'downpayment' => $financeData['downpayment'],
+                        'processing_fee' => $financeData['processing_fee'],
+                        //'mobile_security_charges' => $financeData['mobile_security_charges'],
+                        'emi_charger' => $financeData['emi_charger'],
+                        'finance_amount' => $financeData['finance_amount'],
+                        'month_duration' => $financeData['month_duration'],
+                        'emi_value' => $financeData['emi_value'],
+                        'penalty' => $financeData['penalty'],
+                        'deduction_date' => $financeData['deduction_date'],
+                    ]);
+                } else {
+                    // Create finance if not found
+                    Finance::create([
+                        //'customer_id' => $request->customer_id,
+                        //'invoice_id' => $data->id,
+                        'finances_master_id' => $financeData['finances_master_id'],
+                        'ref_mobile_no' =>  $financeData['ref_mobile_no'],
+                        'ref_city' => $financeData['ref_city'],
+                        'ref_name' =>  $financeData['ref_name'],
+                        'file_no' =>  $financeData['file_no'],
+                        'price' => $financeData['price'],
+                        'downpayment' => $financeData['downpayment'],
+                        'processing_fee' => $financeData['processing_fee'],
+                        'mobile_security_charges' => $financeData['mobile_security_charges'],
+                        'emi_charger' => $financeData['emi_charger'],
+                        'final_amount' => $financeData['final_amount'],
+                        'month_duration' => $financeData['month_duration'],
+                        'emi_value' => $financeData['emi_value'],
+                        'penalty' => $financeData['penalty'],
+                        'deduction_date' => $financeData['deduction_date'],
+                    ]);
+                }
+            }
             DB::commit();
             return redirect()->route('admin.sale.index')->with('success', 'Sale updated successfully.');
         } catch (\Exception $e) {

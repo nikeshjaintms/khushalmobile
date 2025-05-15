@@ -17,5 +17,11 @@ class PurchaseProduct extends Model
     {
         return $this->belongsTo(SaleProduct::class);
     }
+    public function purchase()
+    {
+        return $this->belongsTo(Purchase::class);
+    }
+
+
 
 }
