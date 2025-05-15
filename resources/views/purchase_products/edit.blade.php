@@ -10,6 +10,15 @@
         .table>tbody>tr>th {
             padding: 16px 5px !important;
         }
+        .input-wrapper {
+            margin-bottom: 10px;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            display: block; /* important */
+            margin-top: 5px;
+        }
     </style>
     <div class="container">
         <div class="page-inner">
@@ -119,18 +128,16 @@
                                                     </select>
                                                     </td>
                                                     <td style="width: fit-content;">
-{{--                                                        <input type="text" class="form-control" name="imei[]"--}}
-{{--                                                            id="imei" value="{{  $pp->imei }}" required>--}}
-                                                        @foreach (old('imei', ['']) as $index => $value)
-                                                            <input type="text" class="form-control" name="imei[]"
-                                                                   id="imei" value="{{  $pp->imei }}" required>
-
-                                                            @error('imei.' . $index)
+                                                            <div class="input-wrapper">
+                                                            <input type="text" class="form-control imei-input" name="imei[]"
+                                                                   id="imei" value="{{  $pp->imei }}" data-row-id="{{ $pp->id }}" required>
+                                                                <div class="error-message d-none text-danger"></div>
+                                                            </div>
+                                                            @error('imei.')
                                                             <div class="text-danger">{{ $message }}</div>
                                                             @enderror
-                                                        @endforeach
+{{--                                                        <input type="hidden" class="record-id-input" name="recordIds[]" value="{{ $pp->id }}">--}}
                                                     </td>
-
                                                     <td><input type="text" class="form-control" name="color[]"
                                                             id="color" value="{{  $pp->color }}" required></td>
                                                     <td><input type="number" class="form-control" name="price[]"
@@ -283,6 +290,16 @@
                 $newRow.find('select').val('');
                 $newRow.find('input[name="tax[]"]').val(18);
 
+                // $newRow.find('.imei-input')
+                //     .val('')
+                //     .removeAttr('data-row-id');
+                // $newRow.find('.imei-input').val('').attr('data-row-id');
+                $newRow.find('.imei-input').val('').attr('data-row-id', '');
+
+
+
+                $newRow.appendTo('#rows-container');
+
                 // Show remove button
                 $newRow.find('.remove-row').removeClass('d-none');
 
@@ -422,7 +439,10 @@
                     $productSelect.html('<option value="">Select Product</option>');
                 }
             });
-
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }});
             // Form validation
             $("#purchaseForm").validate({
                 onfocusout: function(element) {
@@ -466,7 +486,9 @@
                         required: true
                     },
                     "imei[]": {
-                        required: true
+                        required: true,
+                        maxlength:15,
+                        minlength:5
                     },
                     "discount[]": {
                         required: true,
@@ -536,7 +558,9 @@
                         required: "Color is required"
                     },
                     "imei[]": {
-                        required: "IMEI is required"
+                        required: "IMEI is required",
+                        minlength: "IMEI must be 15 digits",
+                        maxlength: "IMEI must be 15 digits",
                     },
                     "discount[]": {
                         required: "Discount is required",
@@ -569,6 +593,118 @@
                         min: "Total must be zero or more"
                     }
                 },
+                {{--submitHandler: function (form) {--}}
+                {{--        let imeiNumbers = [];--}}
+
+                {{--        $('.imei-input').each(function () {--}}
+                {{--            let val = $(this).val().trim();--}}
+                {{--            if (val) imeiNumbers.push(val);--}}
+                {{--        });--}}
+
+                {{--        $.ajax({--}}
+                {{--            url: "{{ route('check.imei-numbers') }}",--}}
+                {{--            method: "POST",--}}
+                {{--            data: {--}}
+                {{--                imeiNumbers: imeiNumbers,--}}
+                {{--                recordId: "{{ $purchase->id ?? '' }}" // Uncomment if needed--}}
+                {{--            },--}}
+                {{--            success: function (response) {--}}
+                {{--                if (response.status === 200) {--}}
+                {{--                    form.submit(); // ✅ Submit the form if everything is valid--}}
+                {{--                } else if (response.status === 422) {--}}
+                {{--                    // const invalidNumbers = response.invalid_numbers.map(n => n.toString());--}}
+                {{--                    const invalidNumbers = Array.isArray(response.invalid_numbers)--}}
+                {{--                        ? response.invalid_numbers.map(n => n.toString())--}}
+                {{--                        : [];--}}
+                {{--                    $('.imei-input').each(function () {--}}
+                {{--                        const value = $(this).val().trim();--}}
+                {{--                        const wrapper = $(this).closest('.input-wrapper');--}}
+                {{--                        const errorDiv = wrapper.find('.error-message');--}}
+
+                {{--                        if (invalidNumbers.includes(value)) {--}}
+                {{--                            errorDiv--}}
+                {{--                                .text(`The IMEI ${value} is not allowed.`)--}}
+                {{--                                .removeClass('d-none')--}}
+                {{--                                .css('display', 'block');--}}
+                {{--                        } else {--}}
+                {{--                            errorDiv--}}
+                {{--                                .text('')--}}
+                {{--                                .addClass('d-none');--}}
+                {{--                        }--}}
+                {{--                    });--}}
+                {{--                } else {--}}
+                {{--                    alert('Something went wrong!');--}}
+                {{--                }--}}
+                {{--            },--}}
+                {{--            error: function (xhr) {--}}
+                {{--                console.error("Error:", xhr.responseText);--}}
+                {{--            }--}}
+                {{--        });--}}
+
+                {{--        // ✅ Prevent default form submission while AJAX is in progress--}}
+                {{--        return false;--}}
+                {{--    },--}}
+                submitHandler: function (form) {
+                    let imeiNumbers = [];
+                    let ignoreIds = [];
+
+                    $('.imei-input').each(function () {
+                        let val = $(this).val().trim();
+                        let rowId = $(this).attr('data-row-id'); // Make sure to set data-row-id attribute
+
+                        if (val) {
+                            imeiNumbers.push(val);
+                            // Push the ID only if it's present (i.e., an existing row being edited)
+                            if (rowId) {
+                                ignoreIds.push(rowId);
+                            }
+                        }
+                    });
+
+                    console.log({ 'imeiNumbers': imeiNumbers, 'ignoreIds': ignoreIds });
+
+                    $.ajax({
+                        url: "{{ route('check.imei-numbers.edit') }}", // Use your edit-specific route
+                        method: "POST",
+                        data: {
+                            imeiNumbers: imeiNumbers,
+                            ignoreIds: ignoreIds
+                        },
+                        success: function (response) {
+                            if (response.status === 200) {
+                                alert("Validation passed. Submitting form...");
+                                form.submit();
+                            } else if (response.status === 422) {
+                                const invalidNumbers = response.invalid_numbers.map(n => n.toString());
+
+                                $('.imei-input').each(function () {
+                                    const value = $(this).val().trim();
+                                    const wrapper = $(this).closest('.input-wrapper');
+                                    const errorDiv = wrapper.find('.error-message');
+
+                                    if (invalidNumbers.includes(value)) {
+                                        errorDiv
+                                            .text(`The IMEI ${value} is not allowed.`)
+                                            .removeClass('d-none')
+                                            .css('display', 'block');
+                                    } else {
+                                        errorDiv
+                                            .text('')
+                                            .addClass('d-none');
+                                    }
+                                });
+                            } else {
+                                alert('Something went wrong!');
+                            }
+                        },
+                        error: function (xhr) {
+                            console.error("Error:", xhr.responseText);
+                        }
+                    });
+                },
+
+
+
                 errorClass: "text-danger",
                 errorElement: "span",
                 highlight: function(element) {

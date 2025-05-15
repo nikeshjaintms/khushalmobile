@@ -574,7 +574,7 @@
                     },
                     "imei[]": {
                         required: true,
-                        minlength: 5,
+                        minlength: 15,
                         maxlength: 15,
                         uniqueIMEI: true,
                     },
@@ -739,9 +739,7 @@
                                                 .addClass('d-none');
                                         }
                                     });
-
                             }
-
 
                              else {
                                 alert('Something went wrong!');

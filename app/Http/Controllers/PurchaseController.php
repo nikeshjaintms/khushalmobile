@@ -36,12 +36,12 @@ class PurchaseController extends Controller
 
         return view('purchase_products.create', compact('dealers', 'brands'));
     }
-
+// create working
     public function checkIMEINumbers(Request $request)
     {
         $imeiNumbers = $request->post('imeiNumbers');
         $duplicates = collect($imeiNumbers)->duplicates();
-
+        $ignoreIds = $request->post('ignoreIds');
         if ($duplicates->isNotEmpty()) {
             return response()->json([
                 'status' => 422,
@@ -65,6 +65,97 @@ class PurchaseController extends Controller
             'message' => 'IMEIs are unique and not in the database.'
         ]);
     }
+    public function checkIMEINumbersForEdit(Request $request)
+    {
+        $imeiNumbers = $request->post('imeiNumbers'); // Array of IMEIs
+        $ignoreIds = $request->post('ignoreIds');     // Array of PurchaseProduct IDs to ignore
+
+        $duplicates = collect($imeiNumbers)->duplicates();
+
+        if ($duplicates->isNotEmpty()) {
+            return response()->json([
+                'status' => 422,
+                'message' => 'Duplicate IMEI numbers found in the form!',
+                'invalid_numbers' => $duplicates
+            ]);
+        }
+
+        // Query the database, excluding rows with IDs in $ignoreIds
+        //$existingImeis = PurchaseProduct::whereIn('imei', $imeiNumbers)
+        //    ->when(!empty($ignoreIds), function ($query) use ($ignoreIds) {
+        //        $query->whereNotIn('id', $ignoreIds);
+        //    })
+        //    ->pluck('imei');
+
+        $existingImeis = PurchaseProduct::whereNotIn('id', $ignoreIds)
+            ->whereIn('imei', $imeiNumbers)
+            ->pluck('imei');
+
+        if ($existingImeis->isNotEmpty()) {
+            return response()->json([
+                'status' => 422,
+                'message' => 'Some IMEI numbers already exist in the database!',
+                'invalid_numbers' => $existingImeis
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'IMEIs are unique and not in the database.'
+        ]);
+    }
+
+    //public function checkIMEINumbers(Request $request)
+    //{
+    //    dump("start");
+    //    $imeiNumbers = $request->post('imeiNumbers');
+    //    dump($imeiNumbers);
+    //    $recordIds = $request->post('recordIds', []);
+    //    dump($recordIds);
+    //
+    //    // Form-level duplicates
+    //    $duplicates = collect($imeiNumbers)->duplicates();
+    //    dump($duplicates);
+    //    if ($duplicates->isNotEmpty()) {
+    //        return response()->json([
+    //            'status' => 422,
+    //            'message' => 'Duplicate IMEI numbers found!',
+    //            'invalid_numbers' => $duplicates->values()
+    //        ]);
+    //    }
+    //    dd("stopp");
+    //    exit();
+    //    $filteredImeis = [];
+    //
+    //    foreach ($imeiNumbers as $index => $imei) {
+    //        $recordId = $recordIds[$index] ?? null;
+    //
+    //        if ($recordId) {
+    //            $existing = PurchaseProduct::find($recordId);
+    //            if ($existing && $existing->imei === $imei) {
+    //                continue; // This IMEI is unchanged
+    //            }
+    //        }
+    //
+    //        $filteredImeis[] = $imei;
+    //    }
+    //
+    //    // Check against DB
+    //    $existingImeis = PurchaseProduct::whereIn('imei', $filteredImeis)->pluck('imei');
+    //
+    //    if ($existingImeis->isNotEmpty()) {
+    //        return response()->json([
+    //            'status' => 422,
+    //            'message' => 'IMEI numbers already exist in the database!',
+    //            'invalid_numbers' => $existingImeis
+    //        ]);
+    //    }
+    //
+    //    return response()->json([
+    //        'status' => 200,
+    //        'message' => 'All IMEIs are unique.'
+    //    ]);
+    //}
 
 
 
@@ -193,92 +284,184 @@ class PurchaseController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    //public function update(Request $request, $id)
+    //{
+    //
+    //    $request->validate([
+    //        'imei' => 'required|array|min:1',
+    //        'imei.*' => [
+    //            'required',
+    //            'string',
+    //            'distinct',
+    //            Rule::unique('purchase_product', 'imei')->ignore($id),
+    //        ],
+    //    ], [
+    //        'imei.*.unique' => 'One or more IMEI numbers already exist in the system.',
+    //        'imei.*.distinct' => 'IMEI numbers must be unique within the form.',
+    //        'imei.*.required' => 'Each IMEI number is required.',
+    //    ]);
+    //
+    //
+    //    $purchase = Purchase::findOrFail($id);
+    //
+    //    // Update purchase main fields
+    //    $purchase->dealer_id = $request->post('dealer_id');
+    //    $purchase->po_no = $request->post('po_no');
+    //    $purchase->po_date = $request->post('po_date');
+    //    $purchase->sub_total = $request->post('sub_total');
+    //    $purchase->tax_type = $request->post('tax_type');
+    //    $purchase->total_tax_amount = $request->post('total_tax_amount');
+    //    $purchase->total = $request->post('total');
+    //    $purchase->save();
+    //
+    //    // Gather posted product data
+    //    $product_ids = $request->post('product_id');
+    //    $purchase_product_ids = $request->post('purchase_product_id'); // Hidden input in the form
+    //    $colors = $request->post('color');
+    //    $imeis = $request->post('imei');
+    //    $prices = $request->post('price');
+    //    $discounts = $request->post('discount');
+    //    $discountAmounts = $request->post('discount_amount');
+    //    $subtotals = $request->post('price_subtotal');
+    //    $taxes = $request->post('tax');
+    //    $taxAmounts = $request->post('tax_amount');
+    //    $totals = $request->post('product_total');
+    //
+    //    $received_ids = []; // Store all processed PurchaseProduct IDs
+    //
+    //    if (is_array($prices)) {
+    //        foreach ($prices as $index => $price) {
+    //            $pp_id = $purchase_product_ids[$index] ?? null;
+    //
+    //            $product = $pp_id ? PurchaseProduct::find($pp_id) : new PurchaseProduct();
+    //
+    //            if (!$product) {
+    //                $product = new PurchaseProduct();
+    //                $product->purchase_id = $purchase->id;
+    //            }
+    //
+    //            $product->purchase_id = $purchase->id;
+    //            $product->product_id = $product_ids[$index] ?? null;
+    //            $product->color = $colors[$index] ?? null;
+    //            $product->imei = $imeis[$index] ?? null;
+    //            $product->price = $price ?? 0;
+    //            $product->discount = $discounts[$index] ?? 0;
+    //            $product->discount_amount = $discountAmounts[$index] ?? 0;
+    //            $product->price_subtotal = $subtotals[$index] ?? 0;
+    //            $product->tax = $taxes[$index] ?? 0;
+    //            $product->tax_amount = $taxAmounts[$index] ?? 0;
+    //            $product->product_total = $totals[$index] ?? 0;
+    //            $product->save();
+    //
+    //            if ($pp_id) {
+    //                $received_ids[] = $pp_id;
+    //            } else {
+    //                $received_ids[] = $product->id;
+    //            }
+    //        }
+    //    }
+    //
+    //    // 💥 Delete removed products
+    //    PurchaseProduct::where('purchase_id', $purchase->id)
+    //        ->whereNotIn('id', $received_ids)
+    //        ->delete();
+    //
+    //    Session::flash('success', "Purchase Order updated!");
+    //    return redirect()->route('admin.purchase.index');
+    //}
+
+
+
+
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'imei' => 'required|array|min:1',
-            'imei.*' => [
-                'required',
-                'string',
-                'distinct',
-                Rule::unique('purchase_product', 'imei')->ignore($id),
-            ],
-        ], [
-            'imei.*.unique' => 'One or more IMEI numbers already exist in the system.',
-            'imei.*.distinct' => 'IMEI numbers must be unique within the form.',
-            'imei.*.required' => 'Each IMEI number is required.',
-        ]);
+        DB::beginTransaction();
 
+        try {
+            $purchase = Purchase::findOrFail($id);
 
-        $purchase = Purchase::findOrFail($id);
+            // Update purchase main fields
+            $purchase->dealer_id = $request->post('dealer_id');
+            $purchase->po_no = $request->post('po_no');
+            $purchase->po_date = $request->post('po_date');
+            $purchase->sub_total = $request->post('sub_total');
+            $purchase->tax_type = $request->post('tax_type');
+            $purchase->total_tax_amount = $request->post('total_tax_amount');
+            $purchase->total = $request->post('total');
+            $purchase->save();
 
-        // Update purchase main fields
-        $purchase->dealer_id = $request->post('dealer_id');
-        $purchase->po_no = $request->post('po_no');
-        $purchase->po_date = $request->post('po_date');
-        $purchase->sub_total = $request->post('sub_total');
-        $purchase->tax_type = $request->post('tax_type');
-        $purchase->total_tax_amount = $request->post('total_tax_amount');
-        $purchase->total = $request->post('total');
-        $purchase->save();
+            // Gather posted product data
+            $product_ids = $request->post('product_id');
+            $purchase_product_ids = $request->post('purchase_product_id'); // Hidden input in the form
+            $colors = $request->post('color');
+            $imeis = $request->post('imei');
+            $prices = $request->post('price');
+            $discounts = $request->post('discount');
+            $discountAmounts = $request->post('discount_amount');
+            $subtotals = $request->post('price_subtotal');
+            $taxes = $request->post('tax');
+            $taxAmounts = $request->post('tax_amount');
+            $totals = $request->post('product_total');
 
-        // Gather posted product data
-        $product_ids = $request->post('product_id');
-        $purchase_product_ids = $request->post('purchase_product_id'); // Hidden input in the form
-        $colors = $request->post('color');
-        $imeis = $request->post('imei');
-        $prices = $request->post('price');
-        $discounts = $request->post('discount');
-        $discountAmounts = $request->post('discount_amount');
-        $subtotals = $request->post('price_subtotal');
-        $taxes = $request->post('tax');
-        $taxAmounts = $request->post('tax_amount');
-        $totals = $request->post('product_total');
+            $received_ids = []; // Store all processed PurchaseProduct IDs
 
-        $received_ids = []; // Store all processed PurchaseProduct IDs
+            if (is_array($prices)) {
+                foreach ($prices as $index => $price) {
+                    $pp_id = $purchase_product_ids[$index] ?? null;
 
-        if (is_array($prices)) {
-            foreach ($prices as $index => $price) {
-                $pp_id = $purchase_product_ids[$index] ?? null;
+                    $product = $pp_id ? PurchaseProduct::find($pp_id) : new PurchaseProduct();
 
-                $product = $pp_id ? PurchaseProduct::find($pp_id) : new PurchaseProduct();
+                    if (!$product) {
+                        $product = new PurchaseProduct();
+                        $product->purchase_id = $purchase->id;
+                    }
 
-                if (!$product) {
-                    $product = new PurchaseProduct();
                     $product->purchase_id = $purchase->id;
-                }
+                    $product->product_id = $product_ids[$index] ?? null;
+                    $product->color = $colors[$index] ?? null;
+                    $product->imei = $imeis[$index] ?? null;
+                    $product->price = $price ?? 0;
+                    $product->discount = $discounts[$index] ?? 0;
+                    $product->discount_amount = $discountAmounts[$index] ?? 0;
+                    $product->price_subtotal = $subtotals[$index] ?? 0;
+                    $product->tax = $taxes[$index] ?? 0;
+                    $product->tax_amount = $taxAmounts[$index] ?? 0;
+                    $product->product_total = $totals[$index] ?? 0;
+                    $product->save();
 
-                $product->purchase_id = $purchase->id;
-                $product->product_id = $product_ids[$index] ?? null;
-                $product->color = $colors[$index] ?? null;
-                $product->imei = $imeis[$index] ?? null;
-                $product->price = $price ?? 0;
-                $product->discount = $discounts[$index] ?? 0;
-                $product->discount_amount = $discountAmounts[$index] ?? 0;
-                $product->price_subtotal = $subtotals[$index] ?? 0;
-                $product->tax = $taxes[$index] ?? 0;
-                $product->tax_amount = $taxAmounts[$index] ?? 0;
-                $product->product_total = $totals[$index] ?? 0;
-                $product->save();
-
-                if ($pp_id) {
-                    $received_ids[] = $pp_id;
-                } else {
-                    $received_ids[] = $product->id;
+                    if ($pp_id) {
+                        $received_ids[] = $pp_id;
+                    } else {
+                        $received_ids[] = $product->id;
+                    }
                 }
             }
+
+            // 💥 Delete removed products
+            PurchaseProduct::where('purchase_id', $purchase->id)
+                ->whereNotIn('id', $received_ids)
+                ->delete();
+
+            // Commit the transaction
+            DB::commit();
+
+            Session::flash('success', "Purchase Order updated!");
+            return redirect()->route('admin.purchase.index');
+        } catch (Exception $e) {
+            // Rollback the transaction on error
+            DB::rollBack();
+            dd($e);
+            // Log the exception message for debugging purposes
+            \Log::error("Error updating purchase: " . $e->getMessage());
+
+            // Return the error message
+            return redirect()->route('admin.purchase.index')->with('error', 'Failed to update Purchase Order. Please try again.');
         }
-
-        // 💥 Delete removed products
-        PurchaseProduct::where('purchase_id', $purchase->id)
-            ->whereNotIn('id', $received_ids)
-            ->delete();
-
-        Session::flash('success', "Purchase Order updated!");
-        return redirect()->route('admin.purchase.index');
     }
 
-    /**
+
+
+/**
      * Remove the specified resource from storage.
      */
     public function destroy(Purchase $purchase, $id)
