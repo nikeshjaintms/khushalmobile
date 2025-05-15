@@ -40,7 +40,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="#">Add Purchase</a>
+                        <a href="#">Edit Purchase</a>
                     </li>
                 </ul>
             </div>
