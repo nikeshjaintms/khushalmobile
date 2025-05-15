@@ -385,7 +385,6 @@
                                                     <select class="select2 form-control required" name="Finance"
                                                             id="Finance">
                                                         @foreach ($financeMaster as $item)
-                                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
                                                             <option value="{{ $item->id }}"
                                                                 {{ $selectedFinance->contains($item->id) ? 'selected' : '' }}>
                                                                 {{ $item->name }}</option>
