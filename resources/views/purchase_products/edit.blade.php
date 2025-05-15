@@ -48,7 +48,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">Add purchase</div>
+                            <div class="card-title">Edit purchase</div>
                         </div>
                         <form method="POST" action="{{ route('admin.purchase.update' ,$purchase->id ) }}" id="purchaseForm">
                             @csrf
