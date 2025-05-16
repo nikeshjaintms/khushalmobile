@@ -37,14 +37,13 @@
                                         <th>Sr No</th>
                                         <th>Payment Method</th>
                                         <th>Total Amount</th>
-
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @foreach ($totals as $index =>$total)
                                         <tr>
                                             <td>{{$index + 1}}</td>
-                                          <td>  {{ config('constants.database_enum.salesTransaction.payment_method.name')[$total->payment_mode] }} </td>
+                                            <td>{{ config('constants.database_enum.salesTransaction.payment_method.name')[$total->payment_mode] ?? $total->payment_mode }} </td>
                                             <td>{{ number_format($total->total_amount, 2) }}</td>
                                         </tr>
                                     @endforeach

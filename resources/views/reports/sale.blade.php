@@ -52,7 +52,7 @@
                                     @foreach ($sales as $sale)
                                         <tr>
                                             <td>{{$loop ->iteration}}</td>
-                                            <td>{{ $sale->invoice_date }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($sale->invoice_date)->format('d.m.y') }}</td>
                                             <td>{{$sale->customer->name}}</td>
                                             <td>{{$sale->customer->phone}}</td>
                                             <td>

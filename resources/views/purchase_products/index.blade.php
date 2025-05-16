@@ -59,7 +59,8 @@
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>{{ $item->po_no }}</td>
-                                                <td>{{ $item->po_date }}</td>
+                                                <td>{{ \Carbon\Carbon::parse( $item->po_date)->format('d.m.y') }}</td>
+
                                                 <td>{{ $item->name }}</td>
                                                 <td>
                                                     @can('show-purchase')

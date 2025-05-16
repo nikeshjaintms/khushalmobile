@@ -65,7 +65,8 @@
                                             <td>{{$row->remaining ?? '-'}}</td>
                                             <td>{{ $row->emi_value }}</td>
                                             <td>{{$row->emi_value_paid ?? '-'}}</td>
-                                            <td>{{ \Carbon\Carbon::parse( $row['paid_date'])->format('d.m.y') }}</td>
+                                            <td>{{ $row->created_at == $row->updated_at ? '-' : \Carbon\Carbon::parse( $row->updated_at )->format('d.m.y') }}
+                                            </td>
                                             <td>{{ config('constants.database_enum.deductions.payment_mode.name')[ (int) $row->payment_mode] ?? '-' }}</td>
                                             <td>
                                                 @if($row['status'] === 'paid')

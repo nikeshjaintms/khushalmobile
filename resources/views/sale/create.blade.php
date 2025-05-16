@@ -10,6 +10,8 @@
         .table>tbody>tr>th {
             padding: 16px 5px !important;
         }
+
+
     </style>
     <div class="container">
         <div class="page-inner">

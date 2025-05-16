@@ -158,11 +158,8 @@ class DeductionController extends Controller
             ->where('deductions.customer_id', $customerId)
             ->where('deductions.finance_id', $financeId)
             ->get();
-        foreach ($deductions as $deduction) {
-            $deduction->paid_date = $deduction->status === 'paid'
-                ? Carbon::now()->format('Y-m-d')
-                : null;
-        }
+
+
         return view('deduction.show', compact('deductions'));
     }
 
