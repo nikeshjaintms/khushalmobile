@@ -42,33 +42,50 @@
                             <tr>
                               <th>Sr No</th>
                               <th>Name</th>
+                                <th>Mobile Number</th>
+                                <th>City</th>
+                                <th>Total EMI</th>
+                                <th>Total Paid</th>
+                                <th>Remaining EMI</th>
+
                                 <th>Down Payment</th>
-                                <th>Finance Amount</th>
-                              <th>EMI</th>
-                              <th>Paid Amount</th>
-                                <th>Remaining value</th>
-                                <th>Total</th>
+{{--                                <th>Finance Amount</th>--}}
+                                 <th>EMI Amount</th>
+{{--                              <th>Paid Amount</th>--}}
+{{--                                <th>Remaining value</th>--}}
+{{--                                <th>Total</th>--}}
                               <th>Status</th>
 {{--                              <th>Action</th>--}}
 
                             </tr>
                           </thead>
                           <tbody>
-                            @forelse($deductions as $index => $item)
-                                @foreach($finances as $finance)
+{{--                            @forelse($deductions as $index => $item)--}}
+                                @foreach($finances as $index =>  $finance)
                             <tr>
                               <td>{{ $index + 1 }}</td>
-                              <td>{{$item->customer_name }}</td>
+                              <td>{{$finance->customer_name }}</td>
+                                <td>{{$finance->phone }}</td>
+                                <td>{{$finance->city }}</td>
+                                 <td>{{$finance->month_duration }}</td>
+                                <td>{{$finance->paid_emi_count}}</td>
+                                <td>{{$finance->remaining_emi_count}}</td>
                                 <td>{{$finance->downpayment}}</td>
-                                <td>{{$finance->finance_amount}}</td>
+{{--                                <td>{{$finance->finance_amount}}</td>--}}
                                 <td>{{$finance->emi_value }}</td>
-                                <td>{{$item->emi_value_paid }}</td>
-                                <td>{{$item->remaining }}</td>
-                                <td>{{$item->total }}</td>
+{{--                                <td>{{$finance->emi_value_paid }}</td>--}}
+{{--                                <td>{{$finance->remaining }}</td>--}}
+{{--                                <td>{{$finance->total }}</td>--}}
                                 <td>
+                                    @if($finance->status == 'paid')
                                     <span class="badge badge-success">
-                                        {{ Str::upper($item->status) }}
+                                        {{ Str::upper($finance->status) }}
                                     </span>
+                                    @else
+                                        <span class="badge badge-danger">
+                                        {{ Str::upper($finance->status) }}
+                                    </span>
+                                    @endif
 
 
                                 </td>
@@ -78,11 +95,11 @@
                                 </i></a> --}}
 {{--                              </td>--}}
                             </tr>
-                            @empty
-                            <tr>
-                              <td colspan="6" class="text-center">No data available</td>
-                            </tr>
-                            @endforelse
+{{--                            @empty--}}
+{{--                            <tr>--}}
+{{--                              <td colspan="6" class="text-center">No data available</td>--}}
+{{--                            </tr>--}}
+{{--                            @endforelse--}}
                                 @endforeach
                           </tbody>
                         </table>

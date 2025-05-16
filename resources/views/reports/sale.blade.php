@@ -35,28 +35,58 @@
                                     <thead>
                                     <tr>
                                         <th>Sr No</th>
-                                        <th>Payment Method</th>
-                                        <th>Invoice No</th>
                                         <th>Sale Date</th>
                                         <th>Customer</th>
+                                        <th>Mobile Number</th>
+                                        <th>Brand Name</th>
+                                        <th>Product Name</th>
                                         <th>Price</th>
-                                        <th>Discount</th>
-                                        <th>Total</th>
+                                        <th>Payment Method</th>
+
+{{--                                        <th>Invoice No</th>--}}
+{{--                                        <th>Discount</th>--}}
+{{--                                        <th>Total</th>--}}
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @foreach ($sales as $sale)
                                         <tr>
                                             <td>{{$loop ->iteration}}</td>
-                                            <td>{{ config('constants.database_enum.sales.payment_method.name') [$sale->payment_method] }}</td>
-                                            <td>{{ $sale->invoice_no }}</td>
                                             <td>{{ $sale->invoice_date }}</td>
                                             <td>{{$sale->customer->name}}</td>
-                                            @foreach ($sale->saleProducts as $product)
-                                                <td>{{ $product->price }}</td>
-                                                <td>{{ $product->discount_amount}}</td>
-                                                <td>{{ $product->price_total }}</td>
+                                            <td>{{$sale->customer->phone}}</td>
+                                            <td>
+                                                @foreach ($sale->saleProducts as $index => $product)
+                                                    {{ $product->product->brand->name ?? '-' }}@if (!$loop->last)
+                                                        ,
+                                                    @else
+
+                                                    @endif
+                                                @endforeach
+                                            </td>
+                                            <td>
+                                                @foreach ($sale->saleProducts as $index => $product)
+                                                    {{ $product->product->product_name ?? '-' }}@if (!$loop->last)
+                                                        ,
+                                                    @else
+
+                                                    @endif
+                                                @endforeach
+                                            </td>
+                                            <td>
+                                        @foreach ($sale->saleProducts as $product)
+                                                {{ $product->price ?? '-' }}@if (!$loop->last)
+                                                    ,
+                                                @else
+
+                                                @endif
+{{--                                                <td>{{ $product->price }}</td>--}}
+                                                {{--                                                <td>{{ $product->discount_amount}}</td>--}}
+                                                {{--                                                <td>{{ $product->price_total }}</td>--}}
                                             @endforeach
+                                            </td>
+                                            <td>{{ config('constants.database_enum.sales.payment_method.name') [$sale->payment_method] }}</td>
+{{--                                            <td>{{ $sale->invoice_no }}</td>--}}
                                         </tr>
                                     @endforeach
 {{--                                   <th scope="row" colspan="7">Final Total</th>--}}

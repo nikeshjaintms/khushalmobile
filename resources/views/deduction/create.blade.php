@@ -283,30 +283,24 @@
                         html += `
                         <tr>
                             <td>${index + 1}</td>
-                            <td>${item.customer_name ?? 'N/A'}</td>
-                            <td>${item.phone ?? 'N/A'}</td>
-                            <td>${item.city ?? 'N/A'}</td>
+                            <td>${item.customer_name ?? '-'}</td>
+                            <td>${item.phone ?? '-'}</td>
+                            <td>${item.city ?? '-'}</td>
                             <td>${item.file_no ?? '-'}</td>
-                            <td>${item.dedication_date ?? 'N/A'}</td>
-                            <td>${item.brand_name ?? 'N/A'}</td>
-                            <td>${item.product_name ?? 'N/A'}</td>
-                             <td>${item.month_duration ?? 'N/A'}</td>
+                            <td>${item.dedication_date ?? '-'}</td>
+                            <td>${item.brand_name ?? '-'}</td>
+                            <td>${item.product_name ?? '-'}</td>
+                             <td>${item.month_duration ?? '-'}</td>
                           <td>
                             ${item.status === 'pending'
                             ? '<span class="badge bg-success">Running</span>'
                             : '<span class="badge bg-danger">NIl</span>'
                             }
                          </td>
-                   
                         <td>
-                                 ${item.status === 'paid'
-                            ? `<a href="${url}" class="btn btn-sm btn-success" disabled style="pointer-events: none; opacity: 0.6;">
+                              <a href="${url}" class="btn btn-sm btn-success">
                                 View EMI Details
-                                </a>`
-                            : `<a href="${url}" class="btn btn-sm btn-success">
-                           View EMI Details
-                                    </a>`
-                                 }
+                                 </a>
                            </td>
 
                     </tr>`;

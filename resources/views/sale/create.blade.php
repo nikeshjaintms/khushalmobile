@@ -396,23 +396,23 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label> Processing Fee </label>
-                                                <input type="text" name="Processing" id="Processing"
+                                                <input type="number" name="Processing" id="Processing"
                                                        class="form-control  Processingfee required" placeholder="--Processing Fee--"
                                                        onkeyup="SetFinanceAmount()" ;>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label> Security / Insurance Charge </label>
-                                                <input type="text" name="mobile_security_charges" id="mobile_security_charges"
-                                                       class="form-control required" placeholder="--Security/Insurance Charge--"
+                                                <label> Security Charge </label>
+                                                <input type="number" name="mobile_security_charges" id="mobile_security_charges"
+                                                       class="form-control required" placeholder="--Security Charge--"
                                                        onkeyup="SetFinanceAmount()" ;>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label> Per Month EMI Charge </label>
-                                                <input type="text" name="EMICharge" id="EMICharge"
+                                                <input type="number" name="EMICharge" id="EMICharge"
                                                        class="form-control emicharge required" placeholder="--Per Month EMI Charge--"
                                                        value='0' onkeyup="SetMonthDuration()" ;>
                                             </div>
@@ -420,7 +420,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label> Down Payment </label>
-                                                <input type="text" name="DownPayment" id="DownPayment"
+                                                <input type="number" name="DownPayment" id="DownPayment"
                                                        class="form-control DownPayment required" placeholder="--Down Payment--"
                                                        onkeyup="SetFinanceAmount()" ;>
                                             </div>
@@ -429,7 +429,7 @@
 
                                             <div class="form-group">
                                                 <label> Payable Amount </label>
-                                                <input type="text" name="FinanceAmount" id="FinanceAmount"
+                                                <input type="number" name="FinanceAmount" id="FinanceAmount"
                                                        class="form-control FinanceAmount required" placeholder="--Payable Amount--"
                                                        readonly>
                                             </div>
@@ -437,7 +437,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label> Month Duration </label>
-                                                <input type="text" name="MonthDuration" id="MonthDuration"
+                                                <input type="number" name="MonthDuration" id="MonthDuration"
                                                        class="form-control MonthDuration required" placeholder="--Month Duration--"
                                                        onkeyup="SetMonthDuration()" ;>
                                             </div>
@@ -447,16 +447,20 @@
                                                 <label> Deduction Date </label>
                                                 <select class="form-control  required" name="DeductionDate"
                                                         id="DeductionDate">
-                                                    @for ($i = 1; $i <= 28; $i++)
-                                                        <option value="{{ $i }}" >{{ $i }}</option>
-                                                    @endfor
+{{--                                                    @for ($i = 1; $i <= 28; $i++)--}}
+{{--                                                        <option value="{{ $i }}" >{{ $i }}</option>--}}
+{{--                                                    @endfor--}}
+                                                    @foreach ([1, 5, 10, 15, 20] as $day)
+                                                        <option value="{{ $day }}">{{ $day }}</option>
+                                                    @endforeach
+
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label> Penalty Charges </label>
-                                                <input type="text" name="Penalty" id="Penalty"
+                                                <input type="number" name="Penalty" id="Penalty"
                                                        class="form-control Penalty required" placeholder="--Penalty Charges--">
                                             </div>
                                         </div>
@@ -895,6 +899,9 @@
                 regex: "^[a-zA-Z ]*$",
                 placeholder: ''
             });
+
+            $('input[name="ref_mobile_no"]').mask('0000000000');
+
             $('#saleForm').validate({
                 rules: {
                     customer_id: {

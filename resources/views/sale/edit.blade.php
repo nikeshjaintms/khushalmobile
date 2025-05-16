@@ -389,7 +389,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label> Ref Number </label>
+                                                    <label> Ref Mobile Number </label>
                                                     <input type="number" name="finance[ref_mobile_no]" id="ref_mobile_no"
                                                            class="form-control  ref_mobile_no required" value="{{ $selectfinance->ref_mobile_no ?? '' }}" placeholder="Ref Mobile Number"
                                                     >
@@ -433,7 +433,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Processing Fee</label>
-                                                    <input type="text" name="finance[processing_fee]" id="Processing"
+                                                    <input type="number" name="finance[processing_fee]" id="Processing"
                                                            class="form-control required" placeholder="--Processing Fee--"
                                                            value="{{ $selectfinance->processing_fee ?? '' }}" onkeyup="SetFinanceAmount()">
                                                 </div>
@@ -441,9 +441,9 @@
 
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label> Security / Insurance Charge </label>
-                                                    <input type="text" name="finance[mobile_security_charges]" id="mobile_security_charges"
-                                                           class="form-control required" placeholder="--Security/Insurance Charge--"
+                                                    <label> Security Charge </label>
+                                                    <input type="number" name="finance[mobile_security_charges]" id="mobile_security_charges"
+                                                           class="form-control required" placeholder="--Security Charge--"
                                                            value="{{ $selectfinance->mobile_security_charges ?? '' }}"
                                                            onkeyup="SetFinanceAmount()" ;>
                                                 </div>
@@ -452,7 +452,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Per Month EMI Charge</label>
-                                                    <input type="text" name="finance[emi_charger]" id="EMICharge"
+                                                    <input type="number" name="finance[emi_charger]" id="EMICharge"
                                                            class="form-control required" placeholder="--EMI Charge--"
                                                            value="{{ $selectfinance->emi_charger ?? '' }}" onkeyup="SetMonthDuration()">
                                                 </div>
@@ -461,7 +461,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Down Payment</label>
-                                                    <input type="text" name="finance[downpayment]" id="DownPayment"
+                                                    <input type="number" name="finance[downpayment]" id="DownPayment"
                                                            class="form-control required" placeholder="--Down Payment--"
                                                            value="{{ $selectfinance->downpayment ?? '' }}" onkeyup="SetFinanceAmount()">
                                                 </div>
@@ -470,7 +470,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Payable Amount</label>
-                                                    <input type="text" name="finance[finance_amount]" id="FinanceAmount"
+                                                    <input type="number" name="finance[finance_amount]" id="FinanceAmount"
                                                            class="form-control required" placeholder="--Payable Amount--"
                                                            value="{{ $selectfinance->finance_amount ?? '' }}" readonly>
                                                 </div>
@@ -479,7 +479,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Month Duration</label>
-                                                    <input type="text" name="finance[month_duration]" id="MonthDuration"
+                                                    <input type="number" name="finance[month_duration]" id="MonthDuration"
                                                            class="form-control required" placeholder="--Month Duration--"
                                                            value="{{ $selectfinance->month_duration ?? '' }}" onkeyup="SetMonthDuration()">
                                                 </div>
@@ -489,11 +489,19 @@
                                                 <div class="form-group">
                                                     <label>Deduction Date</label>
                                                     <select class="form-control required" name="finance[deduction_date]" id="DeductionDate">
-                                                        @for ($i = 1; $i <= 28; $i++)
+{{--                                                        @for ($i = 1; $i <= 28; $i++)--}}
+{{--                                                            <option value="{{ $i }}" {{ $i == $selectfinance->deduction_date ? 'selected' : '' }}>--}}
+{{--                                                                {{ $i }}--}}
+{{--                                                            </option>--}}
+{{--                                                        @endfor--}}
+                                                        @foreach ([1, 5, 10, 15, 20] as $i)
                                                             <option value="{{ $i }}" {{ $i == $selectfinance->deduction_date ? 'selected' : '' }}>
                                                                 {{ $i }}
                                                             </option>
-                                                        @endfor
+                                                        @endforeach
+
+
+
                                                     </select>
                                                 </div>
                                             </div>
@@ -501,7 +509,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Penalty Charges</label>
-                                                    <input type="text" name="finance[penalty]" id="Penalty"
+                                                    <input type="number" name="finance[penalty]" id="Penalty"
                                                            class="form-control required" placeholder="--Penalty Charges--"
                                                            value="{{ $selectfinance->penalty ?? '' }}">
                                                 </div>
@@ -977,10 +985,12 @@
                 updateIMEIDropdowns();
             });
 
-            $('.tax, .discount, .total,.amount,.reference_no , .Processingfee,.emicharge , .DownPayment,.FinanceAmount,.MonthDuration,.DeductionDate , .Penalty').inputmask({
-                regex: "^[0-9.]*$",
-                placeholder: ''
-            });
+            // $('.tax, .discount, .total,.amount,.reference_no , .Processingfee,.emicharge , .DownPayment,.FinanceAmount,.MonthDuration,.DeductionDate , .Penalty').inputmask({
+            //     regex: "^[0-9.]*$",
+            //     placeholder: ''
+            // });
+
+            $('input[name="ref_mobile_no"]').mask('0000000000');
 
             $('#name, #city').inputmask({
                 regex: "^[a-zA-Z ]*$",

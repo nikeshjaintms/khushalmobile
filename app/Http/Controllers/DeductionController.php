@@ -7,6 +7,7 @@ use App\Models\Deduction;
 use App\Models\Finance;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class DeductionController extends Controller
@@ -16,17 +17,60 @@ class DeductionController extends Controller
      */
     public function index()
     {
-        $deductions = Deduction::leftjoin('customers', 'deductions.customer_id', '=', 'customers.id')
-            ->select('deductions.*', 'customers.name as customer_name')
-            ->where('deductions.status', 'paid')
-            ->get();
-        $finances = Finance::join('customers', 'finances.customer_id', '=', 'customers.id')
-            ->select('finances.*', 'customers.name as customer_name')
-            ->where('finances.status', 'paid')
+        //$deductions = Deduction::leftjoin('customers', 'deductions.customer_id', '=', 'customers.id')
+        //    ->select('deductions.*', 'customers.name as customer_name')
+        //    ->where('deductions.status', 'paid')
+        //    ->get();
+        //$finances = Finance::join('customers', 'finances.customer_id', '=', 'customers.id')
+        //    ->leftJoin('deductions', 'finances.id', '=', 'deductions.finance_id')
+        //    ->select('finances.*', 'customers.name as customer_name', 'customers.phone as phone', 'customers.city as city','deductions.emi_value_paid','deductions.emi_value_paid','deductions.remaining','deductions.total','finances.month_duration','finances.emi_value')
+        //    ->distinct('finances.id')
+        //    ->get();
+
+        $finances = DB::table('finances')
+            ->join('customers', 'finances.customer_id', '=', 'customers.id')
+            ->leftJoin('deductions', function ($join) {
+                $join->on('finances.id', '=', 'deductions.finance_id')
+                    ->where('deductions.status', '=', 'paid');
+            })
+            ->select(
+                'finances.id',
+                'finances.invoice_id',
+                'finances.customer_id',
+                'finances.month_duration',
+                'finances.emi_value',
+                'finances.downpayment',
+                'finances.status',
+                'deductions.total',
+                'finances.finance_amount',
+                'customers.name as customer_name',
+                'customers.phone',
+                'customers.city',
+
+                DB::raw('COUNT(deductions.id) as paid_emi_count'),
+                DB::raw('finances.month_duration - COUNT(deductions.id) as remaining_emi_count')
+            )
+            ->groupBy(
+                'finances.id',
+                'finances.invoice_id',
+                'finances.customer_id',
+                'finances.month_duration',
+                'finances.emi_value',
+                'finances.downpayment',
+                'finances.status',
+                'finances.finance_amount',
+                'deductions.total',
+                'customers.name',
+                'customers.phone',
+                'customers.city'
+            )
             ->get();
 
 
-        return view('deduction.index', compact('deductions', 'finances'));
+        //dd($finances);
+
+
+        return view('deduction.index', compact( 'finances'));
     }
 
 
@@ -113,14 +157,12 @@ class DeductionController extends Controller
             ->select('deductions.*', 'finances.downpayment', 'finances.dedication_date', 'finances.month_duration', 'finances.emi_value', 'customers.name as customer_name', 'customers.phone', 'customers.city', 'sales.invoice_no')
             ->where('deductions.customer_id', $customerId)
             ->where('deductions.finance_id', $financeId)
-            ->where('finances.status', 'pending')
             ->get();
         foreach ($deductions as $deduction) {
             $deduction->paid_date = $deduction->status === 'paid'
                 ? Carbon::now()->format('Y-m-d')
                 : null;
         }
-
         return view('deduction.show', compact('deductions'));
     }
 

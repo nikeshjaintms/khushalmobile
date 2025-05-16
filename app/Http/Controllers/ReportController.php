@@ -60,7 +60,7 @@ class ReportController extends Controller
 
     public function saleReport()
     {
-        $sales = Sale::with('saleProducts','customer')->get();
+        $sales = Sale::with(['customer', 'saleProducts.brand', 'saleProducts.product', 'saleProducts'])->get();
         $totalAmount = Sale::where('total_amount','>',0)->sum('total_amount');
         return view('reports.sale',compact('sales','totalAmount'));
     }
