@@ -139,6 +139,7 @@
                                                         <div class="input-wrapper">
                                                             <input type="text" class="form-control imei-input" name="imei[]" value="{{ old('imei.' . $index, $imei) }}" required>
                                                             <div class="error-message d-none"></div>
+                                                            <div id="productReturned" style="margin-top: 10px; font-weight: bold; display: none;"></div>
                                                         </div>
                                                         @if ($errors->has("imei.$index"))
                                                             <div class="text-danger" >{{ $errors->first("imei.$index") }}</div>
@@ -159,7 +160,7 @@
                                                         @enderror
                                                     </td>
                                                     <td><input type="number" class="form-control" name="discount[]"
-                                                            id="discount" required>
+                                                            id="discount" value="0" required>
                                                         @error('discount[]')
                                                             <div class="text-red-500">{{ $message }}</div>
                                                         @enderror
@@ -235,13 +236,36 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+{{--                                    <div class="col-md-3">--}}
+{{--                                        <div class="form-group">--}}
+{{--                                            <label for="">Total Amount<span class="text-danger">*</span></label>--}}
+{{--                                            <input type="number" readonly name="total" id=""--}}
+{{--                                                class="form-control" required>--}}
+{{--                                                @error('total')--}}
+{{--                                                <div class="text-red-500">{{ $message }}</div>--}}
+{{--                                            @enderror--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+
+                                    <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="">Total Amount<span class="text-danger">*</span></label>
-                                            <input type="number" readonly name="total" id=""
-                                                class="form-control" required>
-                                                @error('total')
-                                                <div class="text-red-500">{{ $message }}</div>
+                                            <label for="">Rounded Amount<span style="color: red">*</span></label>
+                                            <input type="number" class="form-control  total round_diff"
+                                                   name="total_rounded" id="total" placeholder="Enter Total  Amount"
+                                                   readonly required />
+                                            @error('total_amount')
+                                            <p style="color: red;">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="">Total Amount <span style="color: red">*</span></label>
+                                            <input type="number" class="form-control total_rounded"
+                                                   name="total" id="total_rounded" placeholder="Enter Total  Amount rounded"
+                                                   readonly required />
+                                            @error('total_rounded')
+                                            <p style="color: red;">{{ $message }}</p>
                                             @enderror
                                         </div>
                                     </div>
@@ -345,6 +369,17 @@
                 $('input[name="sub_total"]').val(subtotalSum.toFixed(2));
                 $('input[name="total_tax_amount"]').val(taxSum.toFixed(2));
                 $('input[name="total"]').val(totalSum.toFixed(2));
+
+                const roundedTotal = (totalSum - Math.floor(totalSum) >= 0.5)
+                    ? Math.ceil(totalSum)
+                    : Math.floor(totalSum);
+
+                $('.total_rounded').val(roundedTotal.toFixed(2));
+
+                const diff = roundedTotal - totalSum;
+                $('.round_diff').val(diff.toFixed(2));
+
+
             }
             $(document).on('input', 'input[name="price[]"], input[name="discount[]"], input[name="tax[]"]',
                 function() {
@@ -694,74 +729,72 @@
                         if (val) imeiNumbers.push(val);
                     });
 
+
                     $.ajax({
                         url: "{{ route('check.imei-numbers') }}",
                         method: "POST",
                         data: {
-                            imeiNumbers: imeiNumbers
+                            imeiNumbers: imeiNumbers,
+                            _token: $('meta[name="csrf-token"]').attr('content') // Make sure CSRF token is included
                         },
                         success: function (response) {
+                            const $productReturned = $('#productReturned'); // Your message container
+
                             if (response.status === 200) {
-                                form.submit();
-                            }
-                            else if (response.status === 422) {
+                                $productReturned
+                                    .text(response.message)
+                                    .css('color', 'green')
+                                    .show();
 
-                                // $('.imei-input').each(function () {
-                                //     const value = parseInt($(this).val(), 10);
-                                //     const errorDiv = $(this).siblings('.error-message');
-                                //     if (response.invalid_numbers.includes(value)) {
-                                //         errorDiv.text(`The value ${value} is not allowed.`);
-                                //     } else {
-                                //         errorDiv.text('');
-                                //     }
-                                // });
-                                // console.log("Error div length:", $(this).siblings('.error-message').length);
+                                $('.error-message').text('').addClass('d-none').hide();
+                                form.submit(); // Assuming `form` is your form element
+                            } else if (response.status === 422) {
+                                // let mainMessage = 'IMEI validation error';
+                                let mainMessage ;
+                                if (response.message) {
+                                    mainMessage = response.message;
+                                }
 
-                                    //
-                                const invalidNumbers = Array.isArray(response.invalid_numbers)
-                                    ? response.invalid_numbers.map(n => n.toString())
-                                    : [];
-                                const imeiCounts = {};
+                                $productReturned
+                                    .text(mainMessage)
+                                    .addClass('text-danger')
+                                    .show();
+
+                                // .css('color', 'red')
+
+                                // Show field-level error messages
                                 $('.imei-input').each(function () {
                                     const value = $(this).val().trim();
-                                    imeiCounts[value] = (imeiCounts[value] || 0) + 1;
+                                    const wrapper = $(this).closest('.input-wrapper');
+                                    const errorDiv = wrapper.find('.error-message');
+
+                                    const issues = response.invalid_numbers[value];
+
+                                    if (Array.isArray(issues) && issues.length > 0) {
+                                        const messages = [];
+                                        if (issues.includes('duplicate')) messages.push(`Duplicate IMEI ${value} found.`);
+                                        if (issues.includes('return')) messages.push(`IMEI ${value} is a returned product.`);
+                                        if (issues.includes('sold')) messages.push(`IMEI ${value} already exists in stock.`);
+
+                                        errorDiv
+                                            .html(messages.join('<br>'))
+                                            .removeClass('d-none')
+                                            .css('display', 'block');
+                                    } else {
+                                        errorDiv.text('').addClass('d-none').hide();
+                                    }
                                 });
-
-                                    $('.imei-input').each(function () {
-                                        const value = $(this).val().trim(); // keep as string for comparison
-                                        const wrapper = $(this).closest('.input-wrapper');
-                                        const errorDiv = wrapper.find('.error-message');
-
-
-                                        if (invalidNumbers.includes(value)) {
-                                            console.log("Invalid IMEI found:", value);
-                                            errorDiv
-                                                .text(`The IMEI ${value} is not allowed.`)
-                                                .removeClass('d-none')
-                                                .css('display', 'block');
-
-                                        }  else if (imeiCounts[value] > 1) {
-                                            errorDiv
-                                                .text(`Duplicate IMEI ${value} found.`)
-                                                .removeClass('d-none')
-                                                .css('display', 'block');
-                                        }else {
-                                            errorDiv
-                                                .text('')
-                                                .addClass('d-none');
-                                        }
-                                    });
-                            }
-
-                             else {
+                            } else {
                                 alert('Something went wrong!');
                             }
                         },
-
                         error: function (xhr) {
                             console.error("Error:", xhr.responseText);
                         }
                     });
+
+
+
                 },
                 errorClass: "text-danger",
                 errorElement: "span",

@@ -280,17 +280,41 @@
                                         </div>
                                     </div>
 
+{{--                                    <div class="col-md-4">--}}
+{{--                                        <div class="form-group">--}}
+{{--                                            <label for="">Total Amount<span style="color: red">*</span></label>--}}
+{{--                                            <input type="number" class="form-control finalTotalAmount"--}}
+{{--                                                   name="total_amount" id="total_amount" placeholder="Enter Total  Amount"--}}
+{{--                                                   readonly required />--}}
+{{--                                            @error('total_amount')--}}
+{{--                                            <p style="color: red;">{{ $message }}</p>--}}
+{{--                                            @enderror--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="">Total Amount<span style="color: red">*</span></label>
-                                            <input type="number" class="form-control finalTotalAmount"
-                                                   name="total_amount" id="total_amount" placeholder="Enter Total  Amount"
+                                            <label for="">Rounded Amount<span style="color: red">*</span></label>
+                                            <input type="number" class="form-control finalTotalAmount round_diff"
+                                                   name="total_amount_rounded" id="total_amount" placeholder="Enter Total  Amount"
                                                    readonly required />
                                             @error('total_amount')
                                             <p style="color: red;">{{ $message }}</p>
                                             @enderror
                                         </div>
                                     </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="">Total Amount <span style="color: red">*</span></label>
+                                            <input type="number" class="form-control total_amount_rounded"
+                                                   name="total_amount" id="total_amount_rounded" placeholder="Enter Total  Amount rounded"
+                                                   readonly required />
+                                            @error('total_amount_rounded')
+                                            <p style="color: red;">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    </div>
+
 
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -350,14 +374,14 @@
                                             <div class="form-group">
                                                 <label> Ref Name </label>
                                                 <input type="text" name="ref_name" id="ref_name"
-                                                       class="form-control  ref_name required" placeholder="Ref Name">
+                                                       class="form-control  ref_name" placeholder="Ref Name">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label> Ref Mobile Number </label>
                                                 <input type="number" name="ref_mobile_no" id="ref_mobile_no"
-                                                       class="form-control  ref_mobile_no required" placeholder="Ref Mobile Number"
+                                                       class="form-control  ref_mobile_no " placeholder="Ref Mobile Number"
                                                       >
                                             </div>
                                         </div>
@@ -366,7 +390,7 @@
                                             <div class="form-group">
                                                 <label> Ref City </label>
                                                 <input type="text" name="ref_city" id="ref_city"
-                                                       class="form-control  ref_city required" placeholder="Ref city"
+                                                       class="form-control  ref_city " placeholder="Ref city"
                                                 >
                                             </div>
                                         </div>
@@ -590,6 +614,14 @@
                 $('.subTotal').val(subtotalSum.toFixed(2));
                 $('.totalTaxAmount').val(taxSum.toFixed(2));
                 $('.finalTotalAmount').val(totalSum.toFixed(2));
+
+                const roundedTotal = (totalSum - Math.floor(totalSum) >= 0.5)
+                    ? Math.ceil(totalSum)
+                    : Math.floor(totalSum);
+                $('.total_amount_rounded').val(roundedTotal.toFixed(2));
+
+                const diff = roundedTotal - totalSum;
+                $('.round_diff').val(diff.toFixed(2));
             }
 
             // Input event: price, discount, tax
@@ -685,7 +717,7 @@
             var DownPayment = $("#DownPayment").val();
             var Processing = $("#Processing").val();
             var EMICharge = $("#EMICharge").val();
-            var Price = $("#total_amount").val();
+            var Price = $("#total_amount_rounded").val();
             var MonthDuration = $("#MonthDuration").val();
             var SecurityDeposit = $("#mobile_security_charges").val();
             total = (parseInt(Price) + parseInt(Processing) + parseInt(SecurityDeposit)) - DownPayment;
@@ -709,7 +741,7 @@
             var FinanceAmount = $("#FinanceAmount").val();
             var MonthDuration = $("#MonthDuration").val();
             var EMICharge = $("#EMICharge").val();
-            var Price = $("#total_amount").val();
+            var Price = $("#total_amount_rounded").val();
             var Processing = $("#Processing").val();
             var DownPayment = $("#DownPayment").val();
             var SecurityDeposit = $("#mobile_security_charges").val();
@@ -915,15 +947,6 @@
                     invoice_date: {
                         required: true
                     },
-                    ref_no:{
-                        required: true
-                    },
-                    ref_city:{
-                        required: true
-                    },
-                    ref_name:{
-                        required: true
-                    },
                     file_no:{
                         required: true
                     },
@@ -974,15 +997,6 @@
                     },
                     invoice_date: {
                         required: "Please select date"
-                    },
-                    ref_no:{
-                        required: "Please enter a reference number",
-                    },
-                    ref_city:{
-                        required: "Please enter a reference city",
-                    },
-                    ref_name:{
-                        required: "Please enter a reference name",
                     },
                     file_no:{
                         required: "Please enter a file Number",

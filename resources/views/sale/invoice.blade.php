@@ -67,26 +67,53 @@
         @endforeach
             <tr>
                 <td colspan="6" style="text-align: right">Sub Total</td>
-                <td style="text-align: right">{{$sale->sub_total}}</td>
+                <td style="text-align: right">{{$sale->sub_total ?? '-'}}</td>
             </tr>
+        @php
+            $taxPercent     = optional($sale->saleProducts->first())->tax; // assume same tax % for all lines
+        @endphp
             @if($sale->tax_type === '1')
                 <tr>
-                    <td colspan="6" style="text-align: right">CGST</td>
+                    <td colspan="6" style="text-align: right">CGST({{$taxPercent/2}}%)</td>
                     <td style="text-align: right">{{ number_format($product->tax_amount / 2, 2) }}</td>
                 </tr>
                 <tr>
-                    <td colspan="6" style="text-align: right">SGST</td>
+                    <td colspan="6" style="text-align: right">SGST({{$taxPercent/2}}%)</td>
                     <td style="text-align: right">{{ number_format($product->tax_amount / 2, 2) }}</td>
                 </tr>
             @elseif($sale->tax_type === '2')
                 <tr>
-                    <td colspan="6" style="text-align: right">IGST</td>
+                    <td colspan="6" style="text-align: right">IGST({{$taxPercent}}%)</td>
                     <td style="text-align: right">{{ number_format($product->tax_amount, 2) }}</td>
                 </tr>
             @endif
+            @php
+                $rounded = round($sale->total_amount);
+                $difference = $sale->total_amount - $rounded;
+            @endphp
+
+            @if($difference != 0)
+            <tr style="text-align: right">
+                <td colspan="6">
+                    @if($difference < 0)
+                    Round Up by
+                    @elseif($difference > 0)
+                    Rounded Down by
+                    @endif
+                </td>
+                <td>
+                    @if($difference < 0)
+                       {{ number_format(abs($difference), 2) }}
+                    @elseif($difference > 0)
+                        {{ number_format($difference, 2) }}
+                    @endif
+                </td>
+
+            </tr>
+            @endif
 
             <th colspan="6" style="text-align: right">Grand Total</th>
-            <th style="text-align: right">{{$sale->total_amount}}</th>
+            <th style="text-align: right">{{ number_format($rounded, 2) }}</th>
     </table>
 </div>
 

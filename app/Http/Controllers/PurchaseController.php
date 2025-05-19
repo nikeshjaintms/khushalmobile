@@ -36,27 +36,53 @@ class PurchaseController extends Controller
 
         return view('purchase_products.create', compact('dealers', 'brands'));
     }
+
+
+    public function returnProduct($id)
+    {
+        $purchaseProduct = PurchaseProduct::findOrFail($id);
+        $purchaseProduct->status = 'return';
+        $purchaseProduct->invoice_id = null;
+        $purchaseProduct->save();
+
+        return response()->json(['message' => 'Product returned successfully.']);
+    }
+
 // create working
     public function checkIMEINumbers(Request $request)
     {
         $imeiNumbers = $request->post('imeiNumbers');
+
+        $errors = [];
+
+        // Check duplicates in input
         $duplicates = collect($imeiNumbers)->duplicates();
-        $ignoreIds = $request->post('ignoreIds');
-        if ($duplicates->isNotEmpty()) {
-            return response()->json([
-                'status' => 422,
-                'message' => 'Duplicate IMEI numbers found!',
-                'invalid_numbers' => $duplicates
-            ]);
+        foreach ($duplicates as $imei) {
+            $errors[$imei][] = 'duplicate';
         }
 
-        $existingImeis = PurchaseProduct::whereIn('imei', $imeiNumbers)->pluck('imei');
+        // Check existing IMEIs in DB
+        $existingImeis = PurchaseProduct::whereIn('imei', $imeiNumbers)->get();
 
-        if ($existingImeis->isNotEmpty()) {
+        foreach ($existingImeis as $product) {
+            $imei = $product->imei;
+            if ($product->status === 'return') {
+                $errors[$imei][] = 'return';
+            } elseif ($product->status === 'sold') {
+                $errors[$imei][] = 'sold';
+            }
+        }
+
+        if (!empty($errors)) {
+            // Flatten message by error priority (optional)
+            //$message = 'IMEI validation error';
+            $message= "" ;
+
             return response()->json([
                 'status' => 422,
-                'message' => 'IMEI numbers already exists!',
-                'invalid_numbers' => $existingImeis
+                'message' => $message,
+                'invalid_numbers' => $errors,
+                'type' => 'multiple'  // generalized type
             ]);
         }
 
@@ -65,29 +91,44 @@ class PurchaseController extends Controller
             'message' => 'IMEIs are unique and not in the database.'
         ]);
     }
+
+
+
     public function checkIMEINumbersForEdit(Request $request)
     {
         $imeiNumbers = $request->post('imeiNumbers'); // Array of IMEIs
         $ignoreIds = $request->post('ignoreIds');     // Array of PurchaseProduct IDs to ignore
-        $duplicates = collect($imeiNumbers)->duplicates();
 
-        if ($duplicates->isNotEmpty()) {
-            return response()->json([
-                'status' => 422,
-                'message' => 'Duplicate IMEI numbers found in the form!',
-                'invalid_numbers' => $duplicates
-            ]);
+        $errors = [];
+
+        // Find duplicate IMEIs within the form input
+        $duplicates = collect($imeiNumbers)->duplicates();
+        foreach ($duplicates as $imei) {
+            $errors[$imei][] = 'duplicate';
         }
 
-        $existingImeis = PurchaseProduct::whereNotIn('id', $ignoreIds)
+        // Check existing IMEIs in DB, excluding ignored ones (from this edit)
+        $existingProducts = PurchaseProduct::whereNotIn('id', $ignoreIds)
             ->whereIn('imei', $imeiNumbers)
-            ->pluck('imei');
+            ->get();
 
-        if ($existingImeis->isNotEmpty()) {
+        foreach ($existingProducts as $product) {
+            $imei = $product->imei;
+            if ($product->status === 'return') {
+                $errors[$imei][] = 'return';
+            } elseif ($product->status === 'sold') {
+                $errors[$imei][] = 'sold';
+            } else {
+                $errors[$imei][] = 'exists';
+            }
+        }
+
+        if (!empty($errors)) {
             return response()->json([
                 'status' => 422,
-                'message' => 'Some IMEI numbers already exist in the database!',
-                'invalid_numbers' => $existingImeis
+                'message' => 'Some IMEI numbers have issues.',
+                'invalid_numbers' => $errors,
+                'type' => 'multiple'
             ]);
         }
 
@@ -96,6 +137,9 @@ class PurchaseController extends Controller
             'message' => 'IMEIs are unique and not in the database.'
         ]);
     }
+
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -123,6 +167,7 @@ class PurchaseController extends Controller
             $add->tax_type = $request->post('tax_type');
             $add->total_tax_amount = $request->post('total_tax_amount');
             $add->total = $request->post('total');
+            $add->total_rounded = $request->post('total_rounded');
             $add->save();
 
             $prices = $request->post('price');
@@ -166,9 +211,6 @@ class PurchaseController extends Controller
             }
             DB::commit();
             Session::flash('success', "Purchase Order saved! ");
-
-
-
             return redirect()->route('admin.purchase.index');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -324,6 +366,8 @@ class PurchaseController extends Controller
             $purchase->tax_type = $request->post('tax_type');
             $purchase->total_tax_amount = $request->post('total_tax_amount');
             $purchase->total = $request->post('total');
+            $purchase->total_rounded = $request->post('total_rounded');
+
             $purchase->save();
 
             // Gather posted product data

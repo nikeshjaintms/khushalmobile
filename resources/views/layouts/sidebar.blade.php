@@ -167,6 +167,13 @@
                         </li>
                     @endcan
                     <li class="nav-item">
+                        <a href="{{ route('admin.return.index') }}">
+                            <i class="fas fa-sticky-note"></i>
+                            <p>Return</p>
+
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a data-bs-toggle="collapse" href="#tables">
                             <i class="fas fa-table"></i>
                             <p>Reports</p>
@@ -194,6 +201,7 @@
                                         <span class="sub-item">Payment Report</span>
                                     </a>
                                 </li>
+
                             </ul>
                         </div>
                     </li>

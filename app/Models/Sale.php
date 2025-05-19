@@ -19,6 +19,7 @@ class Sale extends Model
         'tax_amount',
         'total_tax_amount',
         'total_amount',
+        'total_amount_rounded',
         'payment_method',
     ];
 

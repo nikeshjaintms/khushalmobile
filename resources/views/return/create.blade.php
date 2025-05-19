@@ -5,12 +5,10 @@
 {{-- @endif --}}
 
 @section('content-page')
-    <link rel="stylesheet" href="{{ asset('backend/assets/css/select2.min.css')}}" />
-
     <div class="container">
         <div class="page-inner">
             <div class="page-header">
-                <h3 class="fw-bold mb-3">Deductation</h3>
+                <h3 class="fw-bold mb-3">Return</h3>
                 <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
                         <a href="{{ route('dashboard') }}">
@@ -21,13 +19,13 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.deduction.index') }}">Deductation</a>
+                        <a href="{{ route('admin.return.index') }}">Return</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="#">Add Deductation</a>
+                        <a href="#">Add Return</a>
                     </li>
                 </ul>
             </div>
@@ -35,68 +33,35 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">Deductation</div>
+                            <div class="card-title">Return</div>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="">Customer<span style="color: red">*</span></label>
-                                        <select name="customer_id" class="form-control customerSelect2" id="customerID">
-                                            <option value="">Select Customer</option>
-                                            @foreach ($customers as $customer)
-                                                <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                                        <label for="">Product<span style="color: red">*</span></label>
+                                        <select name="brand_id" class="form-control" id="">
+                                            <option value="">Select Brand</option>
+                                            @foreach ($brands as $brand)
+                                                <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                                             @endforeach
                                         </select>
-
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="">Mobile Number<span style="color: red">*</span></label>
-                                        <select name="customer_id" class="form-control mobileSelect2" id="phoneId">
-                                            <option value="">Select Customer mobile number</option>
-                                            @foreach ($customers as $customer)
-                                                <option value="{{ $customer->id }}">{{ $customer->phone }}</option>
-                                            @endforeach
-                                        </select>
-
-                                    </div>
-                                </div>
-{{--                                <div class="col-md-4">--}}
-{{--                                    <div class="form-group">--}}
-{{--                                        <label for="">Imei Number<span style="color: red">*</span></label>--}}
-{{--                                        <select name="purchase_id" class="form-control imeiSelect2" id="imeiID">--}}
-{{--                                            <option value="">Select Imei Number</option>--}}
-{{--                                            @foreach ($purchase_product as $purchase)--}}
-{{--                                                <option value="{{ $purchase->purchase_id }}">{{ $purchase->imei }}</option>--}}
-{{--                                            @endforeach--}}
-{{--                                        </select>--}}
-
-{{--                                    </div>--}}
-{{--                                </div>--}}
                             </div>
                             <div class="table-responsive">
                                 <table id="basic-datatables" class="display table table-striped table-hover">
                                     <thead>
                                     <tr>
                                         <th>Sr No</th>
-                                        <th>Customer</th>
-                                        <th>Phone</th>
-                                        <th>City</th>
-                                        <th>File Number</th>
-                                        <th>Purchase Date</th>
-                                        <th>Brand Name</th>
                                         <th>Product Name</th>
-                                        <th>Imei Number</th>
-                                        <th>Total Emi</th>
-                                        <th>status</th>
+                                        <th>Emi Number</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
                                     <tbody id="financeDetails">
                                     <tr>
-                                        <td colspan="11" class="text-center">No data available</td>
+                                        <td colspan="4" class="text-center">No data available</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -197,17 +162,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
-    <script src="{{ asset('backend/assets/js/select2.min.js')}}"></script>
-
     <script>
-        // In your Javascript (external .js resource or <script> tag)
-        $(document).ready(function() {
-            // $('.js-example-basic-single').select2();
-            $('.customerSelect2').select2();
-            $('.imeiSelect2').select2();
-            $('.mobileSelect2').select2();
-        });
         function updateCalculations() {
             const emiValue = parseFloat($('#EmiValue').val()) || 0;
             const paidValue = parseFloat($('#modalAmount').val()) || 0;
@@ -291,69 +246,74 @@
 
         $('#modalAmount').on('input', updateCalculations);
 
-        $('select[name="customer_id"]').on('change', function () {
-            const customerId = $(this).val();
-            if (!customerId) {
+        $('select[name="brand_id"]').on('change', function () {
+            const brandId = $(this).val();
+            if (!brandId) {
                 $('#financeDetails').html('');
                 return;
             }
-           // function fetchFinanceDetails() {
+
             $.ajax({
-                url: '{{ route('admin.customer.finance.details') }}',
+                url: '{{ route('admin.return.details') }}',
                 method: 'POST',
                 data: {
-                    customer_id: customerId,
-                    // purchase_id: purchaseId,
+                    brand_id: brandId,
                     _token: '{{ csrf_token() }}'
                 },
                 success: function (response) {
-                    const finance = response.finance;
-                    if (finance.length === 0) {
+                    const purchase_products = response.purchase_products;
+                    if (purchase_products.length === 0) {
                         $('#financeDetails').html(
                             '<tr><td colspan="5" class="text-center">No finance data found</td></tr>'
                         );
                         return;
                     }
+
                     let html = '';
-                    finance.forEach((item, index) => {
-                        let url = `show/${item.customer_id}/${item.id}`;
+                    purchase_products.forEach((item, index) => {
                         html += `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${item.customer_name ?? '-'}</td>
-                            <td>${item.phone ?? '-'}</td>
-                            <td>${item.city ?? '-'}</td>
-                            <td>${item.file_no ?? '-'}</td>
-                              <td>${item.invoice_date ? dayjs(item.invoice_date).format('DD.MM.YYYY') : '-'}</td>
-
-                            <td>${item.brand_name ?? '-'}</td>
-                            <td>${item.product_name ?? '-'}</td>
-                            <td>${item.imei ?? '-'}</td>
-                             <td>${item.month_duration ?? '-'}</td>
-                          <td>
-                            ${item.status === 'pending'
-                            ? '<span class="badge bg-success">Running</span>'
-                            : '<span class="badge bg-danger">NIl</span>'
-                            }
-                         </td>
-                        <td>
-                              <a href="${url}" class="btn btn-sm btn-success">
-                                View EMI Details
-                                 </a>
-                           </td>
-
-                    </tr>`;
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.product_name ?? '-'}</td>
+                    <td>${item.imei ?? '-'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-success btn-return" data-id="${item.id}">
+                            Return
+                        </button>
+                    </td>
+                </tr>`;
                     });
 
                     $('#financeDetails').html(html);
-
-
                 },
                 error: function (xhr) {
                     $('#financeDetails').html(
-                        '<div class="alert alert-danger">Unable to fetch finance details.</div>');
+                        '<div class="alert alert-danger">Unable to fetch Return details.</div>'
+                    );
                 }
             });
+
+            $(document).on('click', '.btn-return', function () {
+                const id = $(this).data('id');
+                if (!confirm('Are you sure you want to return this product?')) return;
+
+                $.ajax({
+                    // url: 'admin/purchase/return/' + id,
+                    url: '{{ route("purchase-product.return", ":id") }}'.replace(':id', id),
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function (response) {
+                        alert(response.message);
+                        location.reload();
+                    },
+                    error: function (xhr) {
+                        alert('Error returning the product.');
+                    }
+                });
+            });
+
         });
     </script>
     <script>

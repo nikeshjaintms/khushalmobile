@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\Deduction;
 use App\Models\Finance;
+use App\Models\PurchaseProduct;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,6 +35,7 @@ class DeductionController extends Controller
                     ->where('deductions.status', '=', 'paid');
             })
             ->select(
+
                 'finances.id',
                 'finances.invoice_id',
                 'finances.customer_id',
@@ -51,6 +53,7 @@ class DeductionController extends Controller
                 DB::raw('finances.month_duration - COUNT(deductions.id) as remaining_emi_count')
             )
             ->groupBy(
+
                 'finances.id',
                 'finances.invoice_id',
                 'finances.customer_id',
@@ -77,26 +80,81 @@ class DeductionController extends Controller
     public function create()
     {
         $customers = Customer::get();
-        return view('deduction.create', compact('customers'));
+
+        $purchase_product = PurchaseProduct::where('status','sold')->get();
+
+
+        return view('deduction.create', compact('customers','purchase_product'));
     }
 
+    //public function getFinanceDetails(Request $request)
+    //{
+    //    $query = Finance::leftjoin('customers', 'finances.customer_id', '=', 'customers.id')
+    //        ->leftjoin('sales', 'finances.invoice_id', '=', 'sales.id')
+    //        ->leftjoin('products', 'finances.product_id', '=', 'products.id')
+    //        ->leftjoin('brands', 'products.brand_id', '=', 'brands.id')
+    //        ->leftjoin('purchase_product', 'finances.id', '=', 'purchase_product.purchase_id')
+    //        ->select('finances.*', 'customers.name as customer_name', 'customers.phone', 'customers.city', 'sales.invoice_no','brands.name as brand_name','products.product_name','sales.invoice_date','purchase_product.imei')
+    //        ->where('finances.customer_id', $request->customer_id)
+    //        ->get();
+    //
+    //    //if (!$finance) {
+    //    //    return response()->json(['error' => 'Customer not found'], 404);
+    //    //}
+    //    if ($request->filled('customer_id')) {
+    //        $query->where('finances.customer_id', $request->customer_id);
+    //    } elseif ($request->filled('phone')) {
+    //        $query->where('customers.phone', $request->phone);
+    //    } elseif ($request->filled('imei')) {
+    //        $query->where('purchase_product.imei', $request->imei);
+    //    } else {
+    //        return response()->json(['error' => 'No valid filter provided'], 400);
+    //    }
+    //
+    //    $finance = $query->get();
+    //
+    //    return response()->json([
+    //        'finance' => $finance // or whatever structure you have
+    //    ]);
+    //}
     public function getFinanceDetails(Request $request)
     {
-        $finance = Finance::leftjoin('customers', 'finances.customer_id', '=', 'customers.id')
-            ->leftjoin('sales', 'finances.invoice_id', '=', 'sales.id')
-            ->leftjoin('products', 'finances.product_id', '=', 'products.id')
-            ->leftjoin('brands', 'products.brand_id', '=', 'brands.id')
-            ->select('finances.*', 'customers.name as customer_name', 'customers.phone', 'customers.city', 'sales.invoice_no','brands.name as brand_name','products.product_name')
-            ->where('finances.customer_id', $request->customer_id)
-            ->get();
 
-        if (!$finance) {
-            return response()->json(['error' => 'Customer not found'], 404);
-        }
+            $query = Finance::leftJoin('customers', 'finances.customer_id', '=', 'customers.id')
+                ->leftJoin('sales', 'finances.invoice_id', '=', 'sales.id')
+                ->leftJoin('sales_products', 'sales_products.sales_id', '=', 'sales.id')
+                ->leftJoin('products', 'finances.product_id', '=', 'products.id')
+                ->leftJoin('brands', 'products.brand_id', '=', 'brands.id')
+                ->leftJoin('purchase_product', 'sales_products.imei_id', '=', 'purchase_product.id')
+                ->select(
+                    'finances.*',
+                    'customers.name as customer_name',
+                    'customers.phone',
+                    'customers.city',
+                    'sales.invoice_no',
+                    'sales.invoice_date',
+                    'brands.name as brand_name',
+                    'products.product_name',
+                    'purchase_product.imei',
+                    'purchase_product.id as purchase_id'
+                );
+            if ($request->filled('customer_id')) {
+                $query->where('finances.customer_id', $request->customer_id);
+            } elseif ($request->filled('phone')) {
+                $query->where('customers.phone', $request->phone);
+            } elseif($request->filled('purchase_id')) {
+                $query->where('purchase_product.id', $request->purchase_id);
+            }
+            else {
+                return response()->json(['error' => 'No valid filter provided'], 400);
+            }
 
-        return response()->json([
-            'finance' => $finance // or whatever structure you have
-        ]);
+
+        // Only now execute the query
+        $finance = $query->get();
+
+            //dd($finance);
+        return response()->json(['finance' => $finance]);
     }
 
     public function getDeductions(Request $request)
@@ -157,6 +215,7 @@ class DeductionController extends Controller
             ->select('deductions.*', 'finances.downpayment', 'finances.dedication_date', 'finances.month_duration', 'finances.emi_value', 'customers.name as customer_name', 'customers.phone', 'customers.city', 'sales.invoice_no')
             ->where('deductions.customer_id', $customerId)
             ->where('deductions.finance_id', $financeId)
+
             ->get();
 
 

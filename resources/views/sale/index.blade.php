@@ -60,6 +60,7 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $item->customer->name }}</td>
                                             <td>{{ $item->invoice_no }}</td>
+
                                             <td>
                                                 @foreach ($item->saleProducts as $index => $product)
                                                     {{ $product->product->product_name ?? '-' }}@if (!$loop->last)
@@ -70,7 +71,7 @@
                                                 @endforeach
                                             </td>
                                             <td>{{ $product->purchaseProduct->imei ?? '-' }}</td>
-                                            <td>{{ $item->total_amount }}</td>
+                                            <td>{{ $item->total_amount}}</td>
                                             <td>
                                                     <a href="{{ route('admin.invoice.index', $item->id) }}">
                                                         <i class="btn btn-link btn-danger">

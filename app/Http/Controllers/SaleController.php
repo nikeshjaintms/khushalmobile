@@ -30,10 +30,21 @@ class SaleController extends Controller
 
     public function getImeis($product_id)
     {
+
+       //$imeis= PurchaseProduct::where('product_id', $product_id)
+       //     ->where(function ($query) {
+       //         $query->whereNull('status')
+       //             ->orWhere('status', 'return');
+       //     })
+       //     ->whereNull('invoice_id')
+       //     ->update(['status' => 'sold']); // or any other status you want
         $imeis = PurchaseProduct::where('product_id', $product_id)
-            ->where('status', null)
-            ->where('invoice_id', null) // Optional: filter only available
-            ->pluck('imei', 'id'); // Assuming 'imei' is the column for IMEI number
+            ->where(function ($query) {
+                $query->whereNull('status')
+                    ->orWhere('status', 'return');
+            })
+            ->whereNull('invoice_id') // Optional: filter only available
+            ->pluck('imei', 'id');
 
         return response()->json($imeis);
     }
@@ -88,6 +99,7 @@ class SaleController extends Controller
             'tax_type' => 'required',
             'total_tax_amount' => 'required',
             'total_amount' => 'required',
+            'total_amount_rounded' => 'required',
             'payment_method' => 'required',
             'products' => 'required|array|min:1',
             'products.*.product_id' => 'required|exists:products,id',
@@ -103,16 +115,19 @@ class SaleController extends Controller
         DB::beginTransaction();
 
         try {
+
             $sale = Sale::create([
-                'customer_id' => $request->customer_id,
-                'invoice_no' => $request->invoice_no,
-                'invoice_date' => $request->invoice_date,
-                'sub_total' => $request->sub_total,
-                'tax_type' => $request->tax_type,
-                'total_tax_amount' => $request->total_tax_amount,
-                'total_amount' => $request->total_amount,
-                'payment_method' => $request->payment_method,
+                'customer_id'          => $request->customer_id,
+                'invoice_no'           => $request->invoice_no,
+                'invoice_date'         => $request->invoice_date,
+                'sub_total'            => $request->sub_total,
+                'tax_type'             => $request->tax_type,
+                'total_tax_amount'     => $request->total_tax_amount,
+                'total_amount'         => $request->total_amount,
+                'total_amount_rounded' => $request->total_amount_rounded,
+                'payment_method'       => $request->payment_method,
             ]);
+
             $finance = null;
             if ($request->payment_method == '2') {
                 $finance = Finance::create([
@@ -262,17 +277,20 @@ class SaleController extends Controller
         //dd($request->all());
         DB::beginTransaction();
         try {
-            $data = Sale::all()->find($id);
+
+            $data = Sale::findOrFail($id);
             $data->update([
-                'customer_id' => $request->customer_id,
-                'invoice_no' => $request->invoice_no,
-                'invoice_date' => $request->invoice_date,
-                'sub_total' => $request->sub_total,
-                'tax_type' => $request->tax_type,
-                'total_tax_amount' => $request->total_tax_amount,
-                'total_amount' => $request->total_amount,
-                'payment_method' => $request->payment_method,
+                'customer_id'          => $request->customer_id,
+                'invoice_no'           => $request->invoice_no,
+                'invoice_date'         => $request->invoice_date,
+                'sub_total'            => $request->sub_total,
+                'tax_type'             => $request->tax_type,
+                'total_tax_amount'     => $request->total_tax_amount,
+                'total_amount'         => $request->total_amount,
+                'total_amount_rounded' => $request->total_amount_rounded,
+                'payment_method'       => $request->payment_method,
             ]);
+
 
             foreach ($request->products as $product) {
                 $data->saleProducts()->update([

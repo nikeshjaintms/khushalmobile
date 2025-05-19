@@ -9,6 +9,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TransctionController;
 use App\Http\Controllers\DashboardController;
@@ -132,11 +133,10 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('edit/{id}', 'edit')->name('admin.purchase.edit')->middleware('permission:edit-purchase');
         Route::put('update/{id}', 'update')->name('admin.purchase.update');
         Route::delete('delete/{id}', 'destroy')->name('admin.purchase.delete')->middleware('permission:delete-purchase');
+        Route::post('check-imei-numbers',  'checkIMEINumbers')->name('check.imei-numbers');
+        Route::post('check-imei-numbers-edit', 'checkIMEINumbersForEdit')->name('check.imei-numbers.edit');
+        Route::post('/return/{id}', 'returnProduct')->name('purchase-product.return');
     });
-
-
-    Route::post('check-imei-numbers', [PurchaseController::class, 'checkIMEINumbers'])->name('check.imei-numbers');
-    Route::post('check-imei-numbers-edit', [PurchaseController::class, 'checkIMEINumbersForEdit'])->name('check.imei-numbers.edit');
 
 
     Route::prefix('transaction')->controller(TransctionController::class)->group(function () {
@@ -202,6 +202,16 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('sale', 'saleReport')->name('admin.report.sale');
         Route::get('payment', 'paymentReport')->name('admin.report.payment');
         Route::get('/{id}', 'StockReportView')->name('admin.stock.show');
+
+    });
+
+    Route::prefix('return')->controller(ReturnController::class)->group(function () {
+        Route::get('/', 'index')->name('admin.return.index');
+        Route::post('return-details', 'getReturnDetails')->name('admin.return.details');
+        Route::get('create', 'create')->name('admin.return.create');
+        Route::get('show/{brandId}', 'show')->name('admin.return.show');
+
+
 
     });
 });

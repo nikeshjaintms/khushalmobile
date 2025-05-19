@@ -10,7 +10,7 @@ class Purchase extends Model
 {
     protected $table = 'purchases';
     protected $primaryKey = 'id';
-    protected $fillable = ['dealer_id','po_no','po_date','sub_total','tax_type','total_tax_amount','total'];
+    protected $fillable = ['dealer_id','po_no','po_date','sub_total','tax_type','total_tax_amount','total' ,'total_rounded'];
     use HasFactory, SoftDeletes;
 
     public function dealer(){

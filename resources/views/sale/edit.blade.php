@@ -301,22 +301,70 @@
                                         </div>
                                     </div>
 
+{{--                                    <div class="col-md-4">--}}
+{{--                                        <div class="form-group">--}}
+{{--                                            <div>--}}
+{{--                                                <label for="">Total Amount<span--}}
+{{--                                                        style="color: red">*</span></label>--}}
+{{--                                                <input type="number" class="form-control finalTotalAmount"--}}
+{{--                                                       name="total_amount" id="total_amount"--}}
+{{--                                                       placeholder="Enter Total  Amount" value="{{ $data->total_amount }}"--}}
+{{--                                                       readonly required />--}}
+{{--                                                @error('total_amount')--}}
+{{--                                                <p style="color: red;">{{ $message }}</p>--}}
+{{--                                                @enderror--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="col-md-4">--}}
+{{--                                        <div class="form-group">--}}
+{{--                                            <label for="">Rounded Amount<span style="color: red">*</span></label>--}}
+{{--                                            <input type="number" class="form-control finalTotalAmount round_diff"--}}
+{{--                                                   name="total_amount" id="total_amount" placeholder="Enter Total  Amount"--}}
+{{--                                                   value="{{ $data->total_amount_rounded }}"--}}
+{{--                                                   readonly required />--}}
+{{--                                            @error('total_amount')--}}
+{{--                                            <p style="color: red;">{{ $message }}</p>--}}
+{{--                                            @enderror--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+
+{{--                                    <div class="col-md-4">--}}
+{{--                                        <div class="form-group">--}}
+{{--                                            <label for="">Total Amount<span style="color: red">*</span></label>--}}
+{{--                                            <input type="number" class="form-control total_amount_rounded"--}}
+{{--                                                   name="total_amount_rounded" id="total_amount_rounded" placeholder="Enter Total  Amount rounded" value="{{ $data->total }}"--}}
+{{--                                                   readonly required />--}}
+{{--                                            @error('total_amount_rounded')--}}
+{{--                                            <p style="color: red;">{{ $message }}</p>--}}
+{{--                                            @enderror--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <div>
-                                                <label for="">Total Amount<span
-                                                        style="color: red">*</span></label>
-                                                <input type="number" class="form-control finalTotalAmount"
-                                                       name="total_amount" id="total_amount"
-                                                       placeholder="Enter Total  Amount" value="{{ $data->total_amount }}"
-                                                       readonly required />
-                                                @error('total_amount')
-                                                <p style="color: red;">{{ $message }}</p>
-                                                @enderror
-                                            </div>
+                                            <label for="">Rounded Amount<span style="color: red">*</span></label>
+                                            <input type="number" class="form-control finalTotalAmount round_diff"
+                                                   name="total_amount_rounded" id="total_amount" placeholder="Enter Total  Amount"
+                                                   value="{{$data->total_amount_rounded}}"
+                                                   readonly required />
+                                            @error('total_amount')
+                                            <p style="color: red;">{{ $message }}</p>
+                                            @enderror
                                         </div>
                                     </div>
-
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="">Total Amount <span style="color: red">*</span></label>
+                                            <input type="number" class="form-control total_amount_rounded"
+                                                   name="total_amount" id="total_amount_rounded" placeholder="Enter Total  Amount rounded"
+                                                   value="{{$data->total_amount}}"
+                                                   readonly required />
+                                            @error('total_amount_rounded')
+                                            <p style="color: red;">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <div>
@@ -384,14 +432,14 @@
                                                 <div class="form-group">
                                                     <label> Ref Name </label>
                                                     <input type="text"  name="finance[ref_name]" id="ref_name"
-                                                           class="form-control  ref_name required"  value="{{ $selectfinance->ref_name ?? '' }}" placeholder="Ref Name">
+                                                           class="form-control  ref_name "  value="{{ $selectfinance->ref_name ?? '' }}" placeholder="Ref Name">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label> Ref Mobile Number </label>
                                                     <input type="number" name="finance[ref_mobile_no]" id="ref_mobile_no"
-                                                           class="form-control  ref_mobile_no required" value="{{ $selectfinance->ref_mobile_no ?? '' }}" placeholder="Ref Mobile Number"
+                                                           class="form-control  ref_mobile_no " value="{{ $selectfinance->ref_mobile_no ?? '' }}" placeholder="Ref Mobile Number"
                                                     >
                                                 </div>
                                             </div>
@@ -400,7 +448,7 @@
                                                 <div class="form-group">
                                                     <label> Ref City </label>
                                                     <input type="text" name="finance[ref_city]" id="ref_city"
-                                                           class="form-control  ref_city required" placeholder="Ref city"
+                                                           class="form-control  ref_city " placeholder="Ref city"
                                                            value="{{ $selectfinance->ref_city ?? '' }}"
                                                     >
                                                 </div>
@@ -646,6 +694,14 @@
                 $('.subTotal').val(subtotalSum.toFixed(2));
                 $('.totalTaxAmount').val(taxSum.toFixed(2));
                 $('.finalTotalAmount').val(totalSum.toFixed(2));
+
+                const roundedTotal = (totalSum - Math.floor(totalSum) >= 0.5)
+                    ? Math.ceil(totalSum)
+                    : Math.floor(totalSum);
+
+                $('.total_amount_rounded').val(roundedTotal.toFixed(2));
+                const diff = roundedTotal - totalSum;
+                $('.round_diff').val(diff.toFixed(2));
             }
 
             // Input event: price, discount, tax
@@ -756,7 +812,7 @@
             var DownPayment = parseFloat($("#DownPayment").val()) || 0;
             var Processing = parseFloat($("#Processing").val()) || 0;
             var EMICharge = parseFloat($("#EMICharge").val()) || 0; // unused?
-            var Price = parseFloat($("#total_amount").val()) || 0;
+            var Price = parseFloat($("#total_amount_rounded").val()) || 0;
             var MonthDuration = parseFloat($("#MonthDuration").val()) || 0; // optional
             var SecurityDeposit = parseFloat($("#mobile_security_charges").val()) || 0;
             total = (parseInt(Price) + parseInt(Processing) + parseInt(SecurityDeposit)) - DownPayment;
@@ -783,7 +839,7 @@
             var FinanceAmount = $("#FinanceAmount").val();
             var MonthDuration = $("#MonthDuration").val();
             var EMICharge = $("#EMICharge").val();
-            var Price = $("#total_amount").val();
+            var Price = $("#total_amount_rounded").val();
             var Processing = $("#Processing").val();
             var DownPayment = $("#DownPayment").val();
             var SecurityDeposit = $("#mobile_security_charges").val();
@@ -1008,15 +1064,6 @@
                     invoice_date: {
                         required: true
                     },
-                    ref_no:{
-                        required: true
-                    },
-                    ref_city:{
-                        required: true
-                    },
-                    ref_name:{
-                        required: true
-                    },
                     file_no:{
                         required: true
                     },
@@ -1068,17 +1115,8 @@
                     invoice_date: {
                         required: "Please select date"
                     },
-                    ref_no:{
-                        required: "Please enter a reference number",
-                    },
-                    ref_name:{
-                        required: "Please enter a reference name",
-                    },
                     file_no:{
                         required: "Please enter a file Number",
-                    },
-                    ref_city:{
-                        required: "Please enter a reference city",
                     },
                     sub_total: {
                         required: "Please enter sub type"
