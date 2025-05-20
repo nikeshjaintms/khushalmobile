@@ -68,7 +68,7 @@
                             </div>
                             <div class="card-action">
                                 <button class="btn btn-success" type="submit">Submit</button>
-                                <a href="{{ route('admin.brand.index') }}" class="btn btn-danger">Cancel</a>
+                                <a href="{{ route('admin.transaction.index') }}" class="btn btn-danger">Cancel</a>
                             </div>
                         </form>
                     </div>

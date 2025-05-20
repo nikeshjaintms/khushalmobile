@@ -212,30 +212,46 @@ class DeductionController extends Controller
         $deductions = Deduction::leftjoin('finances', 'deductions.finance_id', '=', 'finances.id')
             ->leftjoin('sales', 'finances.invoice_id', '=', 'sales.id')
             ->leftjoin('customers', 'deductions.customer_id', '=', 'customers.id')
-            ->select('deductions.*', 'finances.downpayment', 'finances.dedication_date', 'finances.month_duration', 'finances.emi_value', 'customers.name as customer_name', 'customers.phone', 'customers.city', 'sales.invoice_no')
+            ->select('deductions.*', 'finances.downpayment', 'finances.dedication_date', 'finances.month_duration', 'finances.emi_value', 'finances.penalty','customers.name as customer_name', 'customers.phone', 'customers.city', 'sales.invoice_no')
             ->where('deductions.customer_id', $customerId)
             ->where('deductions.finance_id', $financeId)
 
             ->get();
-
-
         return view('deduction.show', compact('deductions'));
     }
 
-    public function pay(Request $request)
+    public function payDeduction(Request $request)
     {
-        //dd($request->all());
-        $deduction = Deduction::findOrFail($request->id);
-        $deduction->update([
-            'emi_value_paid' => $request->emi_value_paid,
-            'payment_mode' => $request->payment_mode,
-            'refernce_no' => $request->refernce_no ?? '',
-            'penalty' => $request->penalty,
-            'remaining' => $request->remaining,
-            'total' => $request->total,
-            'status' => 'paid',
-            //'emi_date' => now(),
-        ]);
+        if ($request->filled('id')) {
+            // Update existing deduction
+            $deduction = Deduction::findOrFail($request->id);
+            $deduction->update([
+                'customer_id' => $request->customer_id,
+                'finance_id' => $request->finance_id,
+                'emi_value_paid' => $request->emi_value_paid,
+                'payment_mode' => $request->payment_mode,
+                'refernce_no' => $request->refernce_no ?? '',
+                'penalty' => $request->penalty,
+                'remaining' => $request->remaining,
+                'total' => $request->total,
+                'status' => 'paid',
+                //'emi_date' => now(),
+            ]);
+        } else {
+            // Create new deduction
+            $deduction = Deduction::create([
+                'customer_id' => $request->customer_id,
+                'finance_id' => $request->finance_id,
+                'emi_value_paid' => $request->emi_value_paid,
+                'payment_mode' => $request->payment_mode,
+                'refernce_no' => $request->refernce_no ?? '',
+                'penalty' => $request->penalty,
+                'remaining' => $request->remaining,
+                'total' => $request->total,
+                'status' => 'paid',
+                //'emi_date' => now(),
+            ]);
+        }
 
         $finance = Finance::withSum('deductions as total_paid', 'total')->find($deduction->finance_id);
         if ($finance && $finance->total_paid >= $finance->finance_amount && $finance->status !== 'paid') {

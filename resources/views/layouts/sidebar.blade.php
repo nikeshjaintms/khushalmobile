@@ -121,6 +121,12 @@
                             </a>
                         </li>
                     @endcan
+                    <li class="nav-item">
+                        <a href="{{ route('admin.stock.index') }}">
+                            <i class="fas fa-shopping-bag"></i>
+                            <p>Stock</p>
+                        </a>
+                    </li>
                     @can('sidebar-sale')
                         <li class="nav-item">
                             <a href="{{ route('admin.sale.index') }}">

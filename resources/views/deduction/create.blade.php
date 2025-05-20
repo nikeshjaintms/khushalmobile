@@ -96,7 +96,7 @@
                                     </thead>
                                     <tbody id="financeDetails">
                                     <tr>
-                                        <td colspan="11" class="text-center">No data available</td>
+                                        <td colspan="12" class="text-center">No data available</td>
                                     </tr>
                                     </tbody>
                                 </table>

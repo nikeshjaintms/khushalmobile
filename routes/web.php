@@ -35,7 +35,6 @@ Route::get('/', function () {
 })->name('login');
 
 
-
 Route::post('/login', [UserController::class, 'login'])->name('admin.login.post');
 
 Route::prefix('admin')->middleware('auth')->group(function () {
@@ -120,12 +119,15 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('create', 'create')->name('admin.dealer.create')->middleware('permission:create-dealer');
         Route::post('store', 'store')->name('admin.dealer.store');
         Route::get('edit/{id}', 'edit')->name('admin.dealer.edit');
-            //->middleware('permission:edit-dealer');
+        //->middleware('permission:edit-dealer');
         Route::put('update/{id}', 'update')->name('admin.dealer.update');
         Route::delete('delete/{id}', 'destroy')->name('admin.dealer.delete')->middleware('permission:delete-dealer');
     });
 
     Route::prefix('purchase')->controller(PurchaseController::class)->group(function () {
+        Route::get('createStock', 'createStock')->name('admin.stock.create');
+        Route::get('indexStock', 'indexStock')->name('admin.stock.index');
+        Route::post('storeStock', 'storeStock')->name('admin.stock.store');
         Route::get('/', 'index')->name('admin.purchase.index')->middleware('permission:index-purchase');
         Route::get('create', 'create')->name('admin.purchase.create')->middleware('permission:create-purchase');
         Route::post('store', 'store')->name('admin.purchase.store');
@@ -133,9 +135,10 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('edit/{id}', 'edit')->name('admin.purchase.edit')->middleware('permission:edit-purchase');
         Route::put('update/{id}', 'update')->name('admin.purchase.update');
         Route::delete('delete/{id}', 'destroy')->name('admin.purchase.delete')->middleware('permission:delete-purchase');
-        Route::post('check-imei-numbers',  'checkIMEINumbers')->name('check.imei-numbers');
+        Route::post('check-imei-numbers', 'checkIMEINumbers')->name('check.imei-numbers');
         Route::post('check-imei-numbers-edit', 'checkIMEINumbersForEdit')->name('check.imei-numbers.edit');
         Route::post('/return/{id}', 'returnProduct')->name('purchase-product.return');
+
     });
 
 
@@ -178,7 +181,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('show/{customerId}/{financeId}', 'showByCustomer')->name('admin.deduction.show');
 
         Route::post('store', 'store')->name('admin.deduction.store');
-        Route::post('pay',  'pay')->name('deduction.pay');
+        Route::post('pay', 'payDeduction')->name('deduction.pay');
 
         Route::get('edit/{id}', 'edit')->name('admin.deduction.edit')->middleware('permission:edit-deduction');
         Route::put('update/{id}', 'update')->name('admin.deduction.update');
@@ -210,7 +213,6 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::post('return-details', 'getReturnDetails')->name('admin.return.details');
         Route::get('create', 'create')->name('admin.return.create');
         Route::get('show/{brandId}', 'show')->name('admin.return.show');
-
 
 
     });

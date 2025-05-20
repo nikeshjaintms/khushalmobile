@@ -14,6 +14,96 @@ use Illuminate\Validation\Rule;
 
 class PurchaseController extends Controller
 {
+    public function createStock(Request $request)
+    {
+        $dealers = Dealer::get();
+        $brands = Brand::get();
+       return view('stock.create', compact('dealers', 'brands'));
+    }
+
+    public function storeStock(Request $request){
+
+        $request->validate([
+            'imei' => 'required|array|min:1',
+            'imei.*' => 'required|string|distinct|unique:purchase_product,imei',
+        ], [
+            'imei.*.unique' => 'One or more IMEI numbers already exist in the system.',
+            'imei.*.distinct' => 'IMEI numbers must be unique within the form.',
+            'imei.*.required' => 'Each IMEI number is required.',
+        ]);
+        DB::beginTransaction();
+
+        try {
+
+            $add = new Purchase();
+            $add->dealer_id = $request->post('dealer_id');
+            $add->po_no = $request->post('po_no');
+            $add->po_date = $request->post('po_date');
+            $add->sub_total = $request->post('sub_total');
+            $add->tax_type = $request->post('tax_type');
+            $add->total_tax_amount = $request->post('total_tax_amount');
+            $add->total = $request->post('total');
+            $add->total_rounded = $request->post('total_rounded');
+            $add->save();
+
+            $prices = $request->post('price');
+            $colors = $request->post('color'); // <-- Add this line
+            $imeis = $request->post('imei');
+
+            //foreach ($imeis as $imei) {
+            //    if (PurchaseProduct::where('imei', $imei)->exists()) {
+            //        return redirect()->back()->withInput()->withErrors([
+            //            'imei' => "The IMEI '$imei' already exists in the system.",
+            //        ]);
+            //    }
+            //}
+
+            $discounts = $request->post('discount');
+            $discountAmounts = $request->post('discount_amount');
+            $subtotals = $request->post('price_subtotal');
+            $taxes = $request->post('tax');
+            $taxAmounts = $request->post('tax_amount');
+            $totals = $request->post('product_total');
+
+            // Optional: If you also get product_id or name
+            $product_ids = $request->post('product_id'); // if available
+
+            if ($prices && is_array($prices)) {
+                foreach ($prices as $index => $price) {
+                    $product = new PurchaseProduct();
+                    $product->purchase_id = $add->id;
+                    $product->product_id = $product_ids[$index] ?? null;
+                    $product->color = $colors[$index] ?? null;
+                    $product->imei = $imeis[$index] ?? null;
+                    $product->price = $price;
+                    $product->discount = $discounts[$index] ?? 0;
+                    $product->discount_amount = $discountAmounts[$index] ?? 0;
+                    $product->price_subtotal = $subtotals[$index] ?? 0;
+                    $product->tax = $taxes[$index] ?? 0;
+                    $product->tax_amount = $taxAmounts[$index] ?? 0;
+                    $product->product_total = $totals[$index] ?? 0;
+                    $product->save();
+                }
+            }
+            DB::commit();
+            Session::flash('success', "Purchase Order saved! ");
+            return redirect()->route('admin.stock.index');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Optionally log the error for debugging
+            // dd("Error saving purchase: " . $e->getMessage());
+
+            //Session::flash('error', "Something went wrong while saving the purchase order.");
+            //return redirect()->back()->withInput();
+        }
+    }
+
+    public function indexStock()
+    {
+        $purchases = PurchaseProduct::with('purchase','product')->get();
+        return view('stock.index', compact('purchases'));
+    }
+
     /**
      * Display a listing of the resource.
      */
