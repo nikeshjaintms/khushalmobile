@@ -283,14 +283,13 @@
                 <td>-</td>
                 <td> <button
                                                          class="btn btn-sm btn-success btn-pay"
-
-                                                            data-invoice="{{ $row->invoice_no }}"
-                                                            data-finance-id="{{ $row->finance_id }}"
-                                                            data-down-payment="{{ $row->downpayment ?? '' }}"
-                                                            data-customer="{{ $row->customer_name ?? '' }}"
-                                                            data-customer-id="{{ $row->customer_id ?? '' }}"
-                                                            data-month-duration="{{ $row->month_duration ?? '' }}"
-                                                            data-penalty="{{ $row->penalty ?? '' }}"
+                                                            data-invoice="${$lastRow.invoice_no ?? ''}"
+                                                            data-finance-id="${$lastRow.finance_id ?? ''}"
+                                                            data-down-payment="${$lastRow.downpayment ?? ''}"
+                                                            data-customer="${$lastRow.customer_name ?? ''}"
+                                                            data-customer-id="${$lastRow.customer_id ?? ''}"
+                                                            data-month-duration="${$lastRow.month_duration ?? ''}"
+                                                            data-penalty="${$lastRow.penalty ?? ''}"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#paymentModal"
                                                     >Pay
