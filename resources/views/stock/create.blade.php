@@ -56,41 +56,7 @@
                             @csrf
                             <div class="card-body">
                                 <div class="row">
-{{--                                    <div class="col-md-4">--}}
-{{--                                        <div class="form-group">--}}
-{{--                                            <label for="dealer_id">Dealer<span style="color: red">*</span></label>--}}
-{{--                                            <select name="dealer_id" id="dealer_id" class="form-control" required>--}}
-{{--                                                <option value="">Select Dealer</option>--}}
-{{--                                                @foreach ($dealers as $dealer)--}}
-{{--                                                    <option value="{{ $dealer->id }}">{{ $dealer->name }}</option>--}}
-{{--                                                @endforeach--}}
-{{--                                            </select>--}}
-{{--                                            @error('dealer_id')--}}
-{{--                                            <div class="text-red-500">{{ $message }}</div>--}}
-{{--                                            @enderror--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-{{--                                    <div class="col-md-4">--}}
-{{--                                        <div class="form-group">--}}
-{{--                                            <label for="po_no">Purchase No<span style="color: red">*</span></label>--}}
-{{--                                            <input type="text" class="form-control" name="po_no" id="po_no"--}}
-{{--                                                   placeholder="Enter purchase no"  required />--}}
-{{--                                            @error('po_no')--}}
-{{--                                            <div class="text-red-500">{{ $message }}</div>--}}
-{{--                                            @enderror--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-                                    <div class="col-md-4" style="display: none">
-                                        <div class="form-group">
-                                            <label for="purchase_date">Purchase Date<span
-                                                    style="color: red">*</span></label>
-                                            <input type="date" class="form-control" name="po_date"  id="po_date"
-                                                   placeholder=" " required />
-                                            @error('po_date')
-                                            <div class="text-red-500">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
+
                                     <div class="col-md-12">
                                         <table id="product-table" class="display table table-striped table-hover">
                                             <thead>
@@ -154,7 +120,7 @@
                                                         @enderror
                                                     </td>
                                                     <td><input type="number" class="form-control" name="price[]"
-                                                               id="price" required>
+                                                               id="price" value="0">
                                                         @error('price[]')
                                                         <div class="text-red-500">{{ $message }}</div>
                                                         @enderror
@@ -168,7 +134,7 @@
                                                     <input type="hidden" class="form-control" readonly
                                                            name="discount_amount[]" id="discount_amount">
                                                     <td><input type="text" class="form-control" readonly
-                                                               name="price_subtotal[]" id="price_subtotal" required>
+                                                               name="price_subtotal[]" id="price_subtotal" value="0">
                                                         @error('price_subtotal[]')
                                                         <div class="text-red-500">{{ $message }}</div>
                                                         @enderror
@@ -182,7 +148,7 @@
                                                     <input type="hidden" class="form-control" readonly
                                                            name="tax_amount[]" id="tax_amount" required>
                                                     <td><input type="number" class="form-control" readonly
-                                                               name="product_total[]" id="product_total" >
+                                                               name="product_total[]" id="product_total" value="0">
                                                         @error('product_total[]')
                                                         <div class="text-red-500">{{ $message }}</div>
                                                         @enderror
@@ -201,74 +167,6 @@
                                             @endforeach
                                         </table>
                                     </div>
-{{--                                    <div class="col-md-3">--}}
-{{--                                        <div class="form-group">--}}
-{{--                                            <label for="">Sub Total Amount<span--}}
-{{--                                                    class="text-danger">*</span></label>--}}
-{{--                                            <input type="number" readonly name="sub_total" id=""--}}
-{{--                                                   class="form-control" required>--}}
-{{--                                            @error('sub_total')--}}
-{{--                                            <div class="text-red-500">{{ $message }}</div>--}}
-{{--                                            @enderror--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-{{--                                    <div class="col-md-3">--}}
-{{--                                        <div class="form-group">--}}
-{{--                                            <label for="">Tax Type<span class="text-danger">*</span></label>--}}
-{{--                                            <select name="tax_type" id="" class="form-control" required>--}}
-{{--                                                <option value="">Select GST</option>--}}
-{{--                                                <option value="cgst/sgst" selected>CGST/SGST</option>--}}
-{{--                                                <option value="cgst/sgst">IGST</option>--}}
-{{--                                            </select>--}}
-{{--                                            @error('tax_type')--}}
-{{--                                            <div class="text-red-500">{{ $message }}</div>--}}
-{{--                                            @enderror--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-{{--                                    <div class="col-md-3">--}}
-{{--                                        <div class="form-group">--}}
-{{--                                            <label for="">Total Tax Amount<span--}}
-{{--                                                    class="text-danger">*</span></label>--}}
-{{--                                            <input type="number" readonly name="total_tax_amount" id=""--}}
-{{--                                                   class="form-control" required>--}}
-{{--                                            @error('total_tax_amount')--}}
-{{--                                            <div class="text-red-500">{{ $message }}</div>--}}
-{{--                                            @enderror--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-                                    {{--                                    <div class="col-md-3">--}}
-                                    {{--                                        <div class="form-group">--}}
-                                    {{--                                            <label for="">Total Amount<span class="text-danger">*</span></label>--}}
-                                    {{--                                            <input type="number" readonly name="total" id=""--}}
-                                    {{--                                                class="form-control" required>--}}
-                                    {{--                                                @error('total')--}}
-                                    {{--                                                <div class="text-red-500">{{ $message }}</div>--}}
-                                    {{--                                            @enderror--}}
-                                    {{--                                        </div>--}}
-                                    {{--                                    </div>--}}
-
-{{--                                    <div class="col-md-4">--}}
-{{--                                        <div class="form-group">--}}
-{{--                                            <label for="">Rounded Amount<span style="color: red">*</span></label>--}}
-{{--                                            <input type="number" class="form-control  total round_diff"--}}
-{{--                                                   name="total_rounded" id="total" placeholder="Enter Total  Amount"--}}
-{{--                                                   readonly required />--}}
-{{--                                            @error('total_amount')--}}
-{{--                                            <p style="color: red;">{{ $message }}</p>--}}
-{{--                                            @enderror--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-{{--                                    <div class="col-md-4">--}}
-{{--                                        <div class="form-group">--}}
-{{--                                            <label for="">Total Amount <span style="color: red">*</span></label>--}}
-{{--                                            <input type="number" class="form-control total_rounded"--}}
-{{--                                                   name="total" id="total_rounded" placeholder="Enter Total  Amount rounded"--}}
-{{--                                                   readonly required />--}}
-{{--                                            @error('total_rounded')--}}
-{{--                                            <p style="color: red;">{{ $message }}</p>--}}
-{{--                                            @enderror--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
                                 </div>
                             </div>
                             <div class="card-action">
@@ -316,7 +214,7 @@
             const month = String(today.getMonth() + 1).padStart(2, '0');
             const day = String(today.getDate()).padStart(2, '0');
             const formattedDate = `${year}-${month}-${day}`;
-            document.getElementById("po_date").value = formattedDate;
+            //document.getElementById("po_date").value = formattedDate;
 
             function resetActionButtons() {
                 const $rows = $('#product-table tbody tr');
@@ -571,37 +469,9 @@
                 },
                 onkeyup: false,
                 rules: {
-                    dealer_id: {
-                        required: true
-                    },
-                    po_no: {
-                        required: true,
-                        minlength: 3,
-                        maxlength: 50
-                    },
-                    po_date: {
-                        required: true
-                    },
-                    sub_total: {
-                        required: true,
-                        number: true,
-                        min: 1
-                    },
-                    tax_type: {
-                        required: true
-                    },
-                    total_tax_amount: {
-                        required: true,
-                        number: true
-                    },
-                    total: {
-                        required: true,
-                        number: true
-                    },
                     "price[]": {
-                        required: true,
                         number: true,
-                        min: 1
+                        min: 0
                     },
                     "color[]": {
                         required: true
@@ -613,17 +483,14 @@
                         uniqueIMEI: true,
                     },
                     "discount[]": {
-                        required: true,
                         number: true,
                         min: 0
                     },
                     "discount_amount[]": {
-                        required: true,
                         number: true,
                         min: 0
                     },
                     "price_subtotal[]": {
-                        required: true,
                         number: true,
                         min: 0
                     },
@@ -633,46 +500,17 @@
                         min: 0
                     },
                     "tax_amount[]": {
-                        required: true,
                         number: true,
                         min: 0
                     },
                     "product_total[]": {
-                        required: true,
                         number: true,
                         min: 0
                     },
                 },
                 messages: {
-                    dealer_id: {
-                        required: "Please select a dealer"
-                    },
-                    po_no: {
-                        required: "Purchase order number is required",
-                        minlength: "Minimum 3 characters required",
-                        maxlength: "Maximum 50 characters allowed"
-                    },
-                    po_date: {
-                        required: "Please select a purchase date"
-                    },
-                    sub_total: {
-                        required: "Subtotal is required",
-                        number: "Please enter a valid number",
-                        min: "Value must be greater than 0"
-                    },
-                    tax_type: {
-                        required: "Please select a tax type"
-                    },
-                    total_tax_amount: {
-                        required: "Tax amount is required",
-                        number: "Enter a valid number"
-                    },
-                    total: {
-                        required: "Total is required",
-                        number: "Enter a valid number"
-                    },
+
                     "price[]": {
-                        required: "Price is required",
                         number: "Please enter a valid number",
                         min: "Price must be greater than 0"
                     },
@@ -684,23 +522,15 @@
                         minlength: "IMEI must be 15 digits",
                         maxlength: "IMEI must be 15 digits",
                     },
-                    "quantity[]": {
-                        required: "Quantity is required",
-                        number: "Please enter a valid number",
-                        min: "Quantity must be greater than 0"
-                    },
                     "discount[]": {
-                        required: "Discount is required",
                         number: "Please enter a valid number",
                         min: "Discount cannot be negative"
                     },
                     "discount_amount[]": {
-                        required: "Discount amount is required",
                         number: "Please enter a valid number",
                         min: "Discount amount cannot be negative"
                     },
                     "price_subtotal[]": {
-                        required: "Price subtotal is required",
                         number: "Enter a valid number",
                         min: "Subtotal must be zero or more"
                     },

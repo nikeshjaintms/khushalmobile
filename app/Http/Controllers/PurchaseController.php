@@ -35,16 +35,7 @@ class PurchaseController extends Controller
 
         try {
 
-            $add = new Purchase();
-            $add->dealer_id = $request->post('dealer_id');
-            $add->po_no = $request->post('po_no');
-            $add->po_date = $request->post('po_date');
-            $add->sub_total = $request->post('sub_total');
-            $add->tax_type = $request->post('tax_type');
-            $add->total_tax_amount = $request->post('total_tax_amount');
-            $add->total = $request->post('total');
-            $add->total_rounded = $request->post('total_rounded');
-            $add->save();
+
 
             $prices = $request->post('price');
             $colors = $request->post('color'); // <-- Add this line
@@ -71,7 +62,6 @@ class PurchaseController extends Controller
             if ($prices && is_array($prices)) {
                 foreach ($prices as $index => $price) {
                     $product = new PurchaseProduct();
-                    $product->purchase_id = $add->id;
                     $product->product_id = $product_ids[$index] ?? null;
                     $product->color = $colors[$index] ?? null;
                     $product->imei = $imeis[$index] ?? null;
@@ -91,7 +81,7 @@ class PurchaseController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             // Optionally log the error for debugging
-            // dd("Error saving purchase: " . $e->getMessage());
+            dd("Error saving purchase: " . $e->getMessage());
 
             //Session::flash('error', "Something went wrong while saving the purchase order.");
             //return redirect()->back()->withInput();
