@@ -3,6 +3,7 @@
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DealerController;
+use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\financeMasterController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PermissionController;
@@ -128,6 +129,11 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('createStock', 'createStock')->name('admin.stock.create');
         Route::get('indexStock', 'indexStock')->name('admin.stock.index');
         Route::post('storeStock', 'storeStock')->name('admin.stock.store');
+        Route::get('editStock/{id}', 'editStock')->name('admin.stock.edit');
+        Route::put('updateStock/{id}', 'updateStock')->name('admin.stock.update');
+        Route::delete('deleteStock/{id}', 'destroyStock')->name('admin.stock.delete');
+
+
         Route::get('/', 'index')->name('admin.purchase.index')->middleware('permission:index-purchase');
         Route::get('create', 'create')->name('admin.purchase.create')->middleware('permission:create-purchase');
         Route::post('store', 'store')->name('admin.purchase.store');
@@ -197,6 +203,15 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('edit/{id}', 'edit')->name('admin.financeMaster.edit');
         Route::put('update/{id}', 'update')->name('admin.financeMaster.update');
         Route::delete('delete/{id}', 'destroy')->name('admin.financeMaster.delete');
+    });
+
+    Route::prefix('finance')->controller(FinanceController::class)->group(function () {
+        Route::get('/', 'index')->name('admin.finance.index');
+        Route::get('create', 'create')->name('admin.finance.create');
+        Route::post('store', 'store')->name('admin.finance.store');
+        Route::get('edit/{id}', 'edit')->name('admin.finance.edit');
+        Route::put('update/{id}', 'update')->name('admin.finance.update');
+        Route::delete('delete/{id}', 'destroy')->name('admin.finance.delete');
     });
 
     Route::prefix('report')->controller(ReportController::class)->group(function () {

@@ -15,8 +15,12 @@ protected $table = 'finances_masters';
         'name',
     ];
 
-    public function finance()
+    //public function finance()
+    //{
+    //    return $this->belongsTo(Finance::class,'finances_master_id');
+    //}
+    public function finances()
     {
-        return $this->belongsTo(Finance::class, 'finances_master_id');
+        return $this->hasMany(Finance::class, 'finances_master_id');
     }
 }

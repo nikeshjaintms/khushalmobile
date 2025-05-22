@@ -339,6 +339,20 @@ class PurchaseController extends Controller
         //
     }
 
+    public function editStock(Purchase $purchase,$id)
+    {
+        //dd($id);
+
+        $purchase_product = PurchaseProduct::join('products', 'purchase_product.product_id', '=', 'products.id')
+            ->select('purchase_product.*', 'products.brand_id')
+            ->where('purchase_product.id', $id)->findOrFail($id);
+        $brands = Brand::get();
+        $products = Product::get();
+        return view('stock.edit',compact('products',  'purchase_product', 'brands'));
+
+    }
+
+
     /**
      * Update the specified resource in storage.
      */
@@ -429,8 +443,6 @@ class PurchaseController extends Controller
     //}
 
 
-
-
     public function update(Request $request, $id)
     {
         DB::beginTransaction();
@@ -510,7 +522,7 @@ class PurchaseController extends Controller
         } catch (Exception $e) {
             // Rollback the transaction on error
             DB::rollBack();
-            dd($e);
+            //dd($e);
             // Log the exception message for debugging purposes
             \Log::error("Error updating purchase: " . $e->getMessage());
 
@@ -518,6 +530,42 @@ class PurchaseController extends Controller
             return redirect()->route('admin.purchase.index')->with('error', 'Failed to update Purchase Order. Please try again.');
         }
     }
+
+    public function updateStock(Request $request, $id)
+    {
+
+        $purchase_product = PurchaseProduct::findOrFail($id);
+        $purchase_product->update([
+            'brand_id' => $request->post('brand_id'),
+            'product_id' => $request->post('product_id'),
+            'color' => $request->post('color'),
+            'imei' => $request->post('imei'),
+            'price' => $request->post('price'),
+            'discount' => $request->post('discount'),
+            'discount_amount' => $request->post('discount_amount'),
+            'price_subtotal' => $request->post('price_subtotal'),
+            'tax' => $request->post('tax'),
+            'tax_amount' => $request->post('tax_amount'),
+            'product_total' => $request->post('product_total'),
+
+        ]);
+            // Return the error message
+        return redirect()->route('admin.stock.index')->with('Success', ' Update Stock Order. Please try again.');
+
+    }
+
+public function destroyStock(Purchase $purchase, $id)
+{
+    $purchase = Purchase::find($id);
+    if (!$purchase) {
+        return response()->json(['error' => 'Not Found Any Puchase Order'], 400);
+    }
+    PurchaseProduct::where('purchase_id', $id)->delete();
+
+    $purchase->delete();
+
+    return response()->json(['status' => 'success', 'message' => "Deleted Successfully "], 200);
+}
 
 
 

@@ -212,7 +212,7 @@ class SaleController extends Controller
             return redirect()->route('admin.sale.index')->with('success', 'Sale created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e->getMessage());
+            //dd($e->getMessage());
             return redirect()->route('admin.sale.index')->with('error', 'Something went wrong. Please try again.');
         }
         // Sale::create();

@@ -32,9 +32,14 @@ class Finance extends Model
         'finance_year',
         'status'
     ];
-    public function FinanceMaster()
+    //public function FinanceMaster()
+    //{
+    //    return $this->hasMany(financeMaster::class,'finances_master_id');
+    //}
+
+    public function financeMaster()
     {
-        return $this->hasMany(financeMaster::class, 'finances_master_id');
+        return $this->belongsTo(FinanceMaster::class, 'finances_master_id');
     }
 
     public function customers(){

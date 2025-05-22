@@ -163,6 +163,13 @@
                             </a>
                         </li>
                     @endcan
+                    <li class="nav-item">
+                        <a href="{{ route('admin.finance.index') }}">
+                            <i class="fas fa-wallet"></i>
+                            <p>Finance</p>
+
+                        </a>
+                    </li>
                     @can('sidebar-notes')
                         <li class="nav-item">
                             <a href="{{ route('admin.daily-notes.index') }}">
