@@ -56,13 +56,13 @@
         @foreach($sale->saleProducts as $index => $product)
             <tr>
                 <td style="text-align: right">{{ $index + 1 }}</td>
-                <td>{{$product->product->brand->name ?? ''}}</td>
-                <td>{{$product->product->product_name ?? '' }}</td>
-                <td>{{$product->purchaseProduct->color ?? ''}}</td>
+                <td>{{$product->product->brand->name}}</td>
+                <td>{{$product->product->product_name }}</td>
+                <td>{{$product->purchaseProduct->color}}</td>
                 <td style="text-align: right">{{$product->purchaseProduct->imei}}</td>
 {{--                <td style="text-align: right">{{ $product->price }}</td>--}}
-                <td style="text-align: right">{{ $product->discount ?? '' }}</td>
-                <td style="text-align: right">{{ $product->price_subtotal ?? '' }}</td>
+                <td style="text-align: right">{{ $product->discount }}</td>
+                <td style="text-align: right">{{ $product->price_subtotal }}</td>
             </tr>
         @endforeach
             <tr>
@@ -75,16 +75,16 @@
             @if($sale->tax_type === '1')
                 <tr>
                     <td colspan="6" style="text-align: right">CGST({{$taxPercent/2}}%)</td>
-                    <td style="text-align: right">{{ number_format($product->tax_amount / 2, 2) }}</td>
+                    <td style="text-align: right">{{ number_format($product->tax_amount / 2, 2) ?? ''}}</td>
                 </tr>
                 <tr>
                     <td colspan="6" style="text-align: right">SGST({{$taxPercent/2}}%)</td>
-                    <td style="text-align: right">{{ number_format($product->tax_amount / 2, 2) }}</td>
+                    <td style="text-align: right">{{ number_format($product->tax_amount / 2, 2) ?? ''}}</td>
                 </tr>
             @elseif($sale->tax_type === '2')
                 <tr>
                     <td colspan="6" style="text-align: right">IGST({{$taxPercent}}%)</td>
-                    <td style="text-align: right">{{ number_format($product->tax_amount, 2) }}</td>
+                    <td style="text-align: right">{{ number_format($product->tax_amount, 2) ?? ''}}</td>
                 </tr>
             @endif
             @php
@@ -103,9 +103,9 @@
                 </td>
                 <td>
                     @if($difference < 0)
-                       {{ number_format(abs($difference), 2) ?? '' }}
+                       {{ number_format(abs($difference), 2) }}
                     @elseif($difference > 0)
-                        {{ number_format($difference, 2) ?? '' }}
+                        {{ number_format($difference, 2) }}
                     @endif
                 </td>
 
@@ -142,8 +142,8 @@
         @foreach($deductions as $row)
             <tr>
                 <td style="text-align: right">{{$loop->iteration}}</td>
-                <td style="text-align: center">{{ \Carbon\Carbon::parse($row->emi_date)->format('d.m.y') }}</td>
-                <td style="text-align: center">{{ \Illuminate\Support\Str::studly($row->status) }}</td>
+                <td style="text-align: center">{{ \Carbon\Carbon::parse($row->emi_date)->format('d.m.y') ?? '' }}</td>
+                <td style="text-align: center">{{ \Illuminate\Support\Str::studly($row->status) ?? '' }}</td>
                 <td style="text-align: right">{{$row->remaining ?? ''}}</td>
                 <td style="text-align: right">{{$row->finance->emi_value ?? ''}}</td>
                 <td style="text-align: right">{{$row->emi_value_paid ?? ''}}</td>
