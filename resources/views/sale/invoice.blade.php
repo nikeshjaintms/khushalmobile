@@ -56,9 +56,9 @@
         @foreach($sale->saleProducts as $index => $product)
             <tr>
                 <td style="text-align: right">{{ $index + 1 }}</td>
-                <td>{{$product->product->brand->name}}</td>
-                <td>{{$product->product->product_name }}</td>
-                <td>{{$product->purchaseProduct->color}}</td>
+                <td>{{$product->product->brand->name ?? ''}}</td>
+                <td>{{$product->product->product_name ?? '' }}</td>
+                <td>{{$product->purchaseProduct->color ?? ''}}</td>
                 <td style="text-align: right">{{$product->purchaseProduct->imei}}</td>
 {{--                <td style="text-align: right">{{ $product->price }}</td>--}}
                 <td style="text-align: right">{{ $product->discount ?? '' }}</td>
