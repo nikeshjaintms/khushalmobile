@@ -65,7 +65,7 @@
                                                 <th>Brand</th>
                                                 <th>Product</th>
                                                 <th>IMEI</th>
-                                                <th>Color</th>
+{{--                                                <th>Color</th>--}}
                                                 <th>Price</th>
                                                 <th>Discount</th>
                                                 {{-- <th>Discount Amount</th> --}}
@@ -109,8 +109,9 @@
                                                         @enderror
                                                         {{--                                                        <input type="hidden" class="record-id-input" name="recordIds[]" value="{{ $purchase_product->id }}">--}}
                                                     </td>
-                                                    <td><input type="text" class="form-control" name="color"
-                                                               id="color" value="{{  $purchase_product->color }}" required></td>
+{{--                                                    <td><input type="text" class="form-control" name="color"--}}
+{{--                                                               id="color" value="{{  $purchase_product->color }}" required></td>--}}
+
                                                     <td><input type="number" class="form-control" name="price"
                                                                id="price" value="{{  $purchase_product->price }}" ></td>
                                                     <td><input type="number" value="{{  $purchase_product->discount }}" class="form-control" name="discount"

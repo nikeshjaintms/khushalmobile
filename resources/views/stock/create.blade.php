@@ -64,7 +64,7 @@
                                                 <th>Brand</th>
                                                 <th>Product</th>
                                                 <th>IMEI</th>
-                                                <th>Color</th>
+{{--                                                <th>Color</th>--}}
                                                 <th>Price</th>
                                                 <th>Discount</th>
                                                 {{-- <th>Discount Amount</th> --}}
@@ -113,12 +113,12 @@
                                                         <span id="imei-error-id" class="text-danger d-none">One or more IMEI numbers already exist in the system.</span>
                                                     </td>
 
-                                                    <td><input type="text" class="form-control" name="color[]"
-                                                               id="color" value="{{old('color[]')}}" required>
-                                                        @error('color[]')
-                                                        <div class="text-red-500">{{ $message }}</div>
-                                                        @enderror
-                                                    </td>
+{{--                                                    <td><input type="text" class="form-control" name="color[]"--}}
+{{--                                                               id="color" value="{{old('color[]')}}" required>--}}
+{{--                                                        @error('color[]')--}}
+{{--                                                        <div class="text-red-500">{{ $message }}</div>--}}
+{{--                                                        @enderror--}}
+{{--                                                    </td>--}}
                                                     <td><input type="number" class="form-control" name="price[]"
                                                                id="price" value="0">
                                                         @error('price[]')
@@ -323,15 +323,24 @@
                 $dupRow.find('input').val('');
                 $dupRow.find('input[name="tax[]"]').val(18);
 
-
                 let selectedBrand = $row.find('.brand-select').val();
                 let selectedProduct = $row.find('.product-select').val();
 
+                let priceValue = $row.find('input[name="price[]"]').val();
+                let discountValue = $row.find('input[name="discount[]"]').val();
+                let taxValue = $row.find('input[name="tax[]"]').val();
+                let taxAmountValue = $row.find('input[ name="tax_amount[]"]').val();
+                let priceSubTotalValue = $row.find('input[  name="price_subtotal[]"]').val();
+                let productTotalValue = $row.find('input[ name="product_total[]"]').val();
+
                 $dupRow.find('.brand-select').val(selectedBrand);
+                $dupRow.find('input[name="price[]"]').val(priceValue);
+                $dupRow.find('input[name="discount[]"]').val(discountValue);
+                $dupRow.find('input[name="tax[]"]').val(taxValue);
+                $dupRow.find('input[ name="tax_amount[]"]').val(taxAmountValue);
+                $dupRow.find('input[ name="product_total[]"]').val(productTotalValue);
+                $dupRow.find('input[  name="price_subtotal[]"]').val(priceSubTotalValue);
                 $dupRow.find('.remove-row').removeClass('d-none');
-
-
-
 
                 // Append duplicated row
                 $row.closest('tbody').append($dupRow);

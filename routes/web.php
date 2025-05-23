@@ -196,7 +196,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::post('/admin/finance/deductions', 'getDeductions')->name('admin.finance.deductions');
     });
 
-    Route::prefix('financeMaster')->controller(financeMasterController::class)->group(function () {
+    Route::prefix('financeMaster')->controller(FinanceMasterController::class)->group(function () {
         Route::get('/', 'index')->name('admin.financeMaster.index')->middleware('permission:index-finance-master');
         Route::get('create', 'create')->name('admin.financeMaster.create');
         Route::post('store', 'store')->name('admin.financeMaster.store');

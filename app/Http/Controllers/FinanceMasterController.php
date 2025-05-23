@@ -6,7 +6,7 @@ use App\Models\Customer;
 use App\Models\financeMaster;
 use Illuminate\Http\Request;
 
-class financeMasterController extends Controller
+class FinanceMasterController extends Controller
 {
     /**
      * Display a listing of the resource.

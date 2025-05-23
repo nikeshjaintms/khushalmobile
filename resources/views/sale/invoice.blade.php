@@ -61,8 +61,8 @@
                 <td>{{$product->purchaseProduct->color}}</td>
                 <td style="text-align: right">{{$product->purchaseProduct->imei}}</td>
 {{--                <td style="text-align: right">{{ $product->price }}</td>--}}
-                <td style="text-align: right">{{ $product->discount }}</td>
-                <td style="text-align: right">{{ $product->price_subtotal }}</td>
+                <td style="text-align: right">{{ $product->discount ?? '' }}</td>
+                <td style="text-align: right">{{ $product->price_subtotal ?? '' }}</td>
             </tr>
         @endforeach
             <tr>
@@ -103,9 +103,9 @@
                 </td>
                 <td>
                     @if($difference < 0)
-                       {{ number_format(abs($difference), 2) }}
+                       {{ number_format(abs($difference), 2) ?? '' }}
                     @elseif($difference > 0)
-                        {{ number_format($difference, 2) }}
+                        {{ number_format($difference, 2) ?? '' }}
                     @endif
                 </td>
 
@@ -113,7 +113,7 @@
             @endif
 
             <th colspan="6" style="text-align: right">Grand Total</th>
-            <th style="text-align: right">{{ number_format($rounded, 2) }}</th>
+            <th style="text-align: right">{{ number_format($rounded, 2) ?? ''}}</th>
     </table>
 </div>
 
@@ -144,12 +144,12 @@
                 <td style="text-align: right">{{$loop->iteration}}</td>
                 <td style="text-align: center">{{ \Carbon\Carbon::parse($row->emi_date)->format('d.m.y') }}</td>
                 <td style="text-align: center">{{ \Illuminate\Support\Str::studly($row->status) }}</td>
-                <td style="text-align: right">{{$row->remaining}}</td>
-                <td style="text-align: right">{{$row->finance->emi_value}}</td>
-                <td style="text-align: right">{{$row->emi_value_paid}}</td>
+                <td style="text-align: right">{{$row->remaining ?? ''}}</td>
+                <td style="text-align: right">{{$row->finance->emi_value ?? ''}}</td>
+                <td style="text-align: right">{{$row->emi_value_paid ?? ''}}</td>
                 <td style="text-align: center">{{ \Carbon\Carbon::parse( $row['paid_date'])->format('d.m.y') ?? '-' }}</td>
                 <td style="text-align: center">{{ config('constants.database_enum.deductions.payment_mode.name') [(int)$row->payment_mode] ?? '-'}}</td>
-                <td style="text-align: right">{{$row->refernce_no }}  </td>
+                <td style="text-align: right">{{$row->refernce_no ?? '' }}  </td>
             </tr>
         @endforeach
         </tbody>

@@ -34,9 +34,6 @@ class PurchaseController extends Controller
         DB::beginTransaction();
 
         try {
-
-
-
             $prices = $request->post('price');
             $colors = $request->post('color'); // <-- Add this line
             $imeis = $request->post('imei');
@@ -76,12 +73,12 @@ class PurchaseController extends Controller
                 }
             }
             DB::commit();
-            Session::flash('success', "Purchase Order saved! ");
+            Session::flash('success', "Stock Order saved! ");
             return redirect()->route('admin.stock.index');
         } catch (\Exception $e) {
             DB::rollBack();
             // Optionally log the error for debugging
-            dd("Error saving purchase: " . $e->getMessage());
+           // dd("Error saving Stock: " . $e->getMessage());
 
             //Session::flash('error', "Something went wrong while saving the purchase order.");
             //return redirect()->back()->withInput();
@@ -558,7 +555,7 @@ public function destroyStock(Purchase $purchase, $id)
 {
     $purchase = Purchase::find($id);
     if (!$purchase) {
-        return response()->json(['error' => 'Not Found Any Puchase Order'], 400);
+        return response()->json(['error' => 'Not Found Any Stock '], 400);
     }
     PurchaseProduct::where('purchase_id', $id)->delete();
 
