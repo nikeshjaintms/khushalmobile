@@ -20,9 +20,9 @@
     <table border="1" style="width:100%; border-collapse: collapse; font-size: 15px; margin: auto;">
         <tr>
             <td><span class="bold">Invoice No:</span>
-                {{$sale->invoice_no}}</td>
+                {{$sale->invoice_no ?? ''}}</td>
             <td><span class="bold">Invoice Date:</span>
-                {{$sale->invoice_date}}</td>
+                {{$sale->invoice_date ?? ''}}</td>
             <td>GSTIN No: 27AEIPJ3158A1ZT</td>
         </tr>
 
@@ -31,10 +31,10 @@
     <table border="1" style="width:100%; border-collapse: collapse; font-size: 15px; margin: auto;">
         <tr>
             <td>
-                <div><span class="bold">Customer Name: {{$sale->customer->name}}</span></div>
-                <div><span class="bold">Address: {{$sale->customer->city}}</span></div>
-                <div><span class="bold">Phone: {{$sale->customer->phone}}</span></div>
-            <td><span class="bold">Payment Type:</span>  {{ config('constants.database_enum.sales.payment_method.name')[$sale->payment_method] }}</td>
+                <div><span class="bold">Customer Name: {{$sale->customer->name ?? ''}}</span></div>
+                <div><span class="bold">Address: {{$sale->customer->city ?? ''}}</span></div>
+                <div><span class="bold">Phone: {{$sale->customer->phone ?? ''}}</span></div>
+            <td><span class="bold">Payment Type:</span>  {{ config('constants.database_enum.sales.payment_method.name')[$sale->payment_method] ?? ''}}</td>
         </tr>
     </table>
 
@@ -56,13 +56,13 @@
         @foreach($sale->saleProducts as $index => $product)
             <tr>
                 <td style="text-align: right">{{ $index + 1 }}</td>
-                <td>{{$product->product->brand->name}}</td>
-                <td>{{$product->product->product_name }}</td>
-                <td>{{$product->purchaseProduct->color}}</td>
-                <td style="text-align: right">{{$product->purchaseProduct->imei}}</td>
+                <td>{{$product->product->brand->name ?? ''}}</td>
+                <td>{{$product->product->product_name ?? '' }}</td>
+                <td>{{$product->purchaseProduct->color ?? ''}}</td>
+                <td style="text-align: right">{{$product->purchaseProduct->imei ?? ''}}</td>
 {{--                <td style="text-align: right">{{ $product->price }}</td>--}}
-                <td style="text-align: right">{{ $product->discount }}</td>
-                <td style="text-align: right">{{ $product->price_subtotal }}</td>
+                <td style="text-align: right">{{ $product->discount ?? ''}}</td>
+                <td style="text-align: right">{{ $product->price_subtotal ?? ''}}</td>
             </tr>
         @endforeach
             <tr>
