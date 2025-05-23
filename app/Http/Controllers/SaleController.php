@@ -6,7 +6,7 @@ use App\Models\Brand;
 use App\Models\Customer;
 use App\Models\Deduction;
 use App\Models\Finance;
-use App\Models\financeMaster;
+use App\Models\FinanceMaster;
 use App\Models\Product;
 use App\Models\PurchaseProduct;
 use App\Models\Sale;
@@ -260,7 +260,7 @@ class SaleController extends Controller
 
         $sale = Sale::with(['customer', 'saleProducts', 'saleProducts.product.brand', 'saleProducts.product', 'saleProducts.purchaseProduct'])->where('id', $id)->first();
 
-        $financeMaster = financeMaster::all();
+        $financeMaster = FinanceMaster::all();
 
         $selectfinance = Finance::where('customer_id', $sale->customer_id)->where('invoice_id', $id)->first();
 

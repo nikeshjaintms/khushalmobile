@@ -6,7 +6,7 @@ use App\Models\Brand;
 use App\Models\Customer;
 use App\Models\Deduction;
 use App\Models\Finance;
-use App\Models\financeMaster;
+use App\Models\FinanceMaster;
 use App\Models\Product;
 use App\Models\PurchaseProduct;
 use App\Models\Sale;
@@ -142,7 +142,7 @@ class FinanceController extends Controller
     public function edit(Finance $finance, $id)
     {
         $finances = Finance::with('financeMaster','customers')->findOrFail($id);
-        $financeMaster = financeMaster::all();
+        $financeMaster = FinanceMaster::all();
         $customers = Customer::all();
         return view('finance.edit', compact( 'finances','financeMaster','customers'));
     }

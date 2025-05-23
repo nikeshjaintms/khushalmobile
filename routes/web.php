@@ -4,7 +4,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DealerController;
 use App\Http\Controllers\FinanceController;
-use App\Http\Controllers\financeMasterController;
+use App\Http\Controllers\FinanceMasterController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProductController;

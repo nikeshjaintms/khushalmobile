@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
-use App\Models\financeMaster;
+use App\Models\FinanceMaster;
 use Illuminate\Http\Request;
 
 class FinanceMasterController extends Controller
@@ -13,7 +13,7 @@ class FinanceMasterController extends Controller
      */
     public function index()
     {
-        $financeMasters = financeMaster::all();
+        $financeMasters = FinanceMaster::all();
         return view('finance_master.index', compact('financeMasters'));
     }
 
@@ -34,14 +34,14 @@ class FinanceMasterController extends Controller
             'name' => 'required',
 
         ]);
-        financeMaster::create($validatedData);
+        FinanceMaster::create($validatedData);
         return redirect()->route('admin.financeMaster.index')->with('success', 'finance name created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(financeMaster $financeMaster)
+    public function show(FinanceMaster $financeMaster)
     {
         //
     }
@@ -49,23 +49,23 @@ class FinanceMasterController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(financeMaster $financeMaster, $id)
+    public function edit(FinanceMaster $financeMaster, $id)
     {
-        $data = financeMaster::find($id);
+        $data = FinanceMaster::find($id);
         return view('finance_master.edit', compact('data'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, financeMaster $financeMaster, $id)
+    public function update(Request $request, FinanceMaster $financeMaster, $id)
     {
         $validatedData=   $request->validate([
             'name' => 'required',
 
         ]);
 
-        $data = financeMaster::findOrFail($id);
+        $data = FinanceMaster::findOrFail($id);
         $data->update($validatedData);
 
         return redirect()->route('admin.financeMaster.index')->with('success', 'finance name updated successfully.');
@@ -74,9 +74,9 @@ class FinanceMasterController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(financeMaster $financeMaster, $id)
+    public function destroy(FinanceMaster $financeMaster, $id)
     {
-        $data = financeMaster::findOrFail($id);
+        $data = FinanceMaster::findOrFail($id);
         $data->delete();
 
         return response()->json(
