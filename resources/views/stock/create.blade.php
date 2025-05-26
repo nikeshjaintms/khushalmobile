@@ -5,6 +5,7 @@
 {{-- @endif --}}
 
 @section('content-page')
+    <link rel="stylesheet" href="{{ asset('backend/assets/css/select2.min.css')}}" />
     <style>
         .table>tbody>tr>td,
         .table>tbody>tr>th {
@@ -91,7 +92,7 @@
                                                         @enderror
 
                                                     </td>
-                                                    <td><select name="product_id[]" class="form-control product-select"
+                                                    <td><select name="product_id[]" class="form-control product-select product-select2 select2"
                                                                 id="product_id"  required>
                                                             <option value="" >Select Product</option>
                                                         </select>
@@ -185,9 +186,11 @@
 
 @section('footer-script')
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-
+    <script src="{{ asset('backend/assets/js/select2.min.js')}}"></script>
     <script>
-
+        $(document).ready(function() {
+            $('.product-select2').select2();
+        });
         $(document).ready(function() {
 
             document.querySelectorAll(".imei-input").forEach(input => {

@@ -34,11 +34,11 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            @can('create-purchase')
+
                                 <a href="{{ route('admin.stock.create') }}"
                                    class=" float-end btn btn-sm btn-rounded btn-primary"><i class="fas fa-plus"></i>
-                                    Stock</a>
-                            @endcan
+                                    Add Stock</a>
+
                             <h4 class="card-title">Stocks</h4>
                         </div>
                         <div class="card-body">

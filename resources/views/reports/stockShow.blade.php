@@ -38,6 +38,7 @@
                                 <table class="table table-striped table-hover">
                                     <thead>
                                     <tr>
+                                        <th>Sr No</th>
                                         <th>Dealer Name</th>
                                         <th>Purchase No</th>
                                         <th>Purchase Date</th>
@@ -45,12 +46,19 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @forelse($stockData as $item)
+                                    @forelse($stockData as $index=> $item)
                                         <tr>
+                                            <td>{{$index+1}}</td>
                                             <td>{{ $item->purchase->dealer->name ?? 'N/A' }}</td>
-                                            <td>{{ $item->purchase->po_no }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($item->purchase->po_date)->format('d-m-Y') }}</td>
-                                            <td>{{ $item->imei }}</td>
+                                            <td>{{ $item->purchase->po_no ?? 'N/A'}}</td>
+{{--                                            <td>{{ \Carbon\Carbon::parse($item->purchase->po_date)->format('d-m-Y') ?? '-'}}</td>--}}
+                                            <td>
+                                                {{ optional($item->purchase)->po_date
+                                                    ? \Carbon\Carbon::parse($item->purchase->po_date)->format('d-m-Y')
+                                                    : 'N/A' }}
+                                            </td>
+
+                                            <td>{{ $item->imei ?? 'N/A' }}</td>
                                         </tr>
                                     @empty
                                         <tr>
@@ -59,52 +67,7 @@
                                     @endforelse
                                     </tbody>
                                 </table>
-{{--                                <table class="table table-striped table-hover">--}}
-{{--                                    <thead>--}}
-{{--                                    <tr>--}}
-{{--                                        <th>Brand</th>--}}
-{{--                                        <th>Product</th>--}}
-{{--                                        <th>Color</th>--}}
-{{--                                        <th>IMEI</th>--}}
-{{--                                        <th>Price</th>--}}
-{{--                                        <th>Discount</th>--}}
-{{--                                        <th>SubTotal</th>--}}
-{{--                                        <th>Tax</th>--}}
-{{--                                        <th>Total</th>--}}
-{{--                                    </tr>--}}
-{{--                                    </thead>--}}
-{{--                                    <tbody>--}}
-{{--                                    @foreach ($product as $item)--}}
-{{--                                        <tr>--}}
-{{--                                            <td>{{ $item->brand }}</td>--}}
-{{--                                            <td>{{ $item->product_name }}</td>--}}
-{{--                                            <td>{{ $item->color }}</td>--}}
-{{--                                            <td>{{ $item->imei }}</td>--}}
-{{--                                            <td>{{ $item->price }}</td>--}}
-{{--                                            <td>{{ $item->discount }}</td>--}}
-{{--                                            <td>{{ $item->price_subtotal }}</td>--}}
-{{--                                            <td>{{ $item->tax }}</td>--}}
-{{--                                            <td>{{ $item->product_total }}</td>--}}
-{{--                                        </tr>--}}
-{{--                                    @endforeach--}}
 
-{{--                                    <tr>--}}
-{{--                                        <th colspan="8" style="text-align: right">Sub Total</th>--}}
-{{--                                        <td>{{ $purchases->sub_total }}</td>--}}
-{{--                                    </tr>--}}
-{{--                                    <tr>--}}
-{{--                                        <th colspan="8" style="text-align: right">GST </th>--}}
-{{--                                        <td>{{ Str::upper($purchases->tax_type) }}</td>--}}
-{{--                                    </tr>--}}
-{{--                                    <tr>--}}
-{{--                                        <th colspan="8" style="text-align: right">Total Tax Amount</th>--}}
-{{--                                        <td>{{ $purchases->total_tax_amount }}</td>--}}
-{{--                                    </tr>--}}
-{{--                                    <tr>--}}
-{{--                                        <th colspan="8" style="text-align: right">Grand Total</th>--}}
-{{--                                        <td>{{ $purchases->total }}</td>--}}
-{{--                                    </tr>--}}
-{{--                                </table>--}}
                             </div>
                         </div>
                     </div>
