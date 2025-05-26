@@ -131,7 +131,7 @@
                             if (response.status == 'success') {
                                 Swal.fire(
                                     'Deleted!',
-                                    'Brand has been deleted.',
+                                    'Purchase  has been deleted.',
                                     'success'
                                 ).then(() => {
                                     window.location.reload();
@@ -139,7 +139,7 @@
                             } else {
                                 Swal.fire(
                                     'Failed!',
-                                    'Failed to delete Brand.',
+                                    'Failed to delete Purchase.',
                                     'error'
                                 );
                             }
