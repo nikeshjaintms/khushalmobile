@@ -50,7 +50,7 @@
                         <h4 class="text-section">Modules</h4>
                     </li>
 
-                    <li class="nav-item">
+                    <li class="nav-item {{ request()->segment(2) == 'user' || request()->segment(2) == 'role' || request()->segment(2) == 'brand' || request()->segment(2) == 'product' || request()->segment(2) == 'dealer' || request()->segment(2) == 'customer' || request()->segment(1) == 'financeMaster' ? 'active' : '' }}">
                         <a data-bs-toggle="collapse" href="#masters">
                             <i class="fas fa-table"></i>
                             <p>Masters</p>
@@ -204,7 +204,7 @@
 
                         </a>
                     </li>
-                    <li class="nav-item {{ request()->segment(2) == 'reports' ? 'active' : '' }}">
+                    <li class="nav-item {{ request()->segment(2) == 'report' ? 'active' : '' }}">
                         <a data-bs-toggle="collapse" href="#tables">
                             <i class="fas fa-table"></i>
                             <p>Reports</p>
