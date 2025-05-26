@@ -46,7 +46,6 @@
                                                 <option value=""> Select Mode</option>
                                                 <option value="1">Cash</option>
                                                 <option value="2">Online</option>
-                                                <option value="3">Finance</option>
                                             </select>
                                             @error('payment_mode')
                                             <div class="text-danger">{{ $message }}</div>

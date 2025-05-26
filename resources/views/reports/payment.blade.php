@@ -40,11 +40,11 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach ($totals as $index =>$total)
+                                  @foreach ($totals as $payment_mode => $amount)
                                         <tr>
-                                            <td>{{$index + 1}}</td>
-                                            <td>{{ config('constants.database_enum.salesTransaction.payment_method.name')[$total->payment_mode] ?? $total->payment_mode }} </td>
-                                            <td>{{ number_format($total->total_amount, 2) }}</td>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ ucfirst($payment_mode) }}</td>
+                                            <td>{{ number_format($amount, 2) }}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>

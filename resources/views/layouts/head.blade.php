@@ -36,4 +36,5 @@
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link rel="stylesheet" href="{{ asset('backend/assets/css/demo.css') }}" />
+    <script src="{{ asset('backend/assets/js/core/jquery-3.7.1.min.js')}}"></script>
 </head>

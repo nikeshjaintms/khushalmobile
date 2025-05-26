@@ -36,13 +36,13 @@ class TransctionController extends Controller
         //     'amount' => 'required',
         //     'type' => 'required',
         // ]);
-         $request->validate([
-             'payment_mode' => 'required',
-             'amount' => 'required',
-             'type' => 'required',
-         ]);
+        //  $request->validate([
+        //      'payment_mode' => 'required',
+        //      'amount' => 'required',
+        //      'type' => 'required',
+        //  ]);
         Transction::create([
-            'payment_mode' => $request->payement_mode,
+            'payment_mode' => $request->payment_mode,
             'amount' => $request->amount,
             'type' => $request->type,
             'remark' => $request->remark ?? NULL,

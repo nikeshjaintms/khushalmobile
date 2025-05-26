@@ -65,12 +65,43 @@ class ReportController extends Controller
         return view('reports.sale',compact('sales','totalAmount'));
     }
 
-    public function paymentReport()
-    {
-        $totals = SaleTransaction::select('payment_mode', DB::raw('SUM(amount) as total_amount'))
-            ->groupBy('payment_mode')
-            ->get();
+    // public function paymentReport()
+    // {
+    //     $totals = SaleTransaction::select('payment_mode', DB::raw('SUM(amount) as total_amount'))
+    //         ->groupBy('payment_mode')
+    //         ->get();
 
-        return view('reports.payment', compact('totals'));
+    //     return view('reports.payment', compact('totals'));
+    // }
+
+
+     public function paymentReport()
+{
+    $transactions = SaleTransaction::leftjoin('sales', 'sales_transactions.invoice_id', '=', 'sales.id')
+        ->select('sales_transactions.payment_mode', 'sales_transactions.amount', 'sales.payment_method','sales.total_amount')
+        ->get();
+
+    $totals = [
+        'finance' => 0,
+        'cash' => 0,
+        'online' => 0,
+    ];
+
+    foreach ($transactions as $tx) {
+        if ($tx->payment_method == 2) {
+            // Finance sale: all its transactions are counted as Finance
+            $totals['finance'] += $tx->total_amount;
+        } else {
+            // Non-finance sale: determine by payment_mode
+            $mode = strtolower($tx->payment_mode);
+            if ($mode === '1') {
+                $totals['cash'] += $tx->amount;
+            } elseif ($mode === '2') {
+                $totals['online'] += $tx->amount;
+            }
+        }
     }
+
+    return view('reports.payment', compact('totals'));
+}
 }

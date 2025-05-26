@@ -95,8 +95,8 @@
                                 </div>
                                 <div class="col col-stats ms-3 ms-sm-0">
                                     <div class="numbers">
-                                        <p class="card-category">Sales</p>
-                                        <h4 id="sales">0</h4>
+                                        <p class="card-category">Today's Sales</p>
+                                        <h4 id="sales">₹0</h4>
                                     </div>
                                 </div>
                             </div>
@@ -142,9 +142,77 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <strong><h4 style="text-align: center;margin-top: .5rem;">Today's Transactions (IN)</h4></strong>
+                        <div class="card-body" style="height: 20em; overflow-y: scroll;">
+                            <table class="table table-striped" >
+
+                                <thead>
+                                    <tr>
+                                        <th>Sr no</th>
+                                        <th>Amount</th>
+                                        <th>Payment Mode</th>
+                                        <th>Reference</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactionListIn" >
+                                    <!-- Notes will be dynamically added here -->
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <strong><h4 style="text-align: center;margin-top: .5rem;">Today's Transactions (OUT)</h4></strong>
+                        <div class="card-body" style="height: 20em; overflow-y: scroll;">
+                            <table class="table table-striped"  >
+
+                                <thead>
+                                    <tr>
+                                        <th>Sr no</th>
+                                        <th>Amount</th>
+                                        <th>Payment Mode</th>
+                                        <th>Reference</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactionListOut" >
+                                    <!-- Notes will be dynamically added here -->
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card">
+                        <strong><h4 style="text-align: center;margin-top: .5rem;">Sales Transactions</h4></strong>
+                        <div class="card-body" style="height: 20em; overflow-y: scroll;">
+                            <table class="table table-striped" >
+
+                                <thead>
+                                    <tr>
+                                        <th>Sr no</th>
+                                        <th>Amount</th>
+                                        <th>Payment Mode</th>
+                                        <th>Reference</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="salesTransactionList" >
+                                    <!-- Notes will be dynamically added here -->
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             {{-- Notes Section --}}
-            <form id="noteForm">
+            {{-- <form id="noteForm">
                 @csrf
                 <div class="note-card collapsed" id="noteCard">
                     <input type="text" name="title" placeholder="Add title" class="note-title" id="noteTitle">
@@ -154,155 +222,133 @@
                         <button type="button" onclick="closeNote()">Close</button>
                     </div>
                 </div>
-            </form>
+            </form> --}}
         </div>
     </div>
 
     <script>
-        const noteCard = document.getElementById('noteCard');
-        const noteDescription = document.getElementById('noteDescription');
-        const noteTitle = document.getElementById('noteTitle');
+    $(document).ready(function () {
+        function fetchTransactionsIn() {
+            $.ajax({
+                url: "{{ route('transcation.display') }}",
+                method: "GET",
+                success: function (response) {
+                    if (response.success) {
+                        var transactionsIn = response.transactionsIn;
+                        var tbody = $("#transactionListIn");
 
-        // Expand card on focus
-        noteDescription.addEventListener('focus', () => {
-            noteCard.classList.remove('collapsed');
-        });
+                        tbody.empty();
 
-        // Load existing notes on page load
-        window.addEventListener('DOMContentLoaded', fetchNotes);
-
-        // Handle form submission
-        document.getElementById('noteForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            submitNote();
-        });
-
-        function fetchNotes() {
-            fetch("{{ route('notes.index') }}")
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        const notesList = document.getElementById('notesList');
-                        notesList.innerHTML = '';
-                        data.notes.forEach(note => addNoteToList(note));
-                    }
-                })
-                .catch(error => console.error('Error fetching notes:', error));
-        }
-
-        function submitNote() {
-            const title = noteTitle.value.trim();
-            const description = noteDescription.value.trim();
-
-            if (!title && !description) return;
-
-            fetch("{{ route('notes.store') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        title,
-                        description
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        fetchNotes(); // Or use: addNoteToList(data.note);
-                        closeNote();
-                    } else {
-                        alert("Something went wrong!");
-                    }
-                })
-                .catch(error => console.error('Error submitting note:', error));
-        }
-
-        function closeNote() {
-            noteTitle.value = '';
-            noteDescription.value = '';
-            noteCard.classList.add('collapsed');
-        }
-
-        function addNoteToList(note) {
-            const notesList = document.getElementById('notesList');
-
-            const col = document.createElement('div');
-            col.className = 'col-sm-2 mb-3'; // 4 notes per row
-            col.setAttribute('data-id', note.id);
-
-            const card = document.createElement('div');
-            card.className = 'card h-100';
-
-            card.innerHTML = `
-        <div class="card-body" >
-            <h5 class="card-title note-toggle" style="cursor: pointer;">${note.title || '(No Title)'}</h5>
-            <p class="card-text note-description" style="display: none;">${note.description}</p>
-            <button class="btn btn-sm btn-danger delete-note mt-3" style="display: none;">Delete</button>
-            </div>
-    `;
-
-            card.querySelector('.note-toggle').addEventListener('click', function() {
-                const description = card.querySelector('.note-description');
-                const deleteBtn = card.querySelector('.delete-note');
-                const isVisible = description.style.display === 'block';
-
-                description.style.display = isVisible ? 'none' : 'block';
-                deleteBtn.style.display = isVisible ? 'none' : 'inline-block';
-            });
-
-            card.querySelector('.delete-note').addEventListener('click', function() {
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const noteId = note.id;
-
-                        fetch(`admin/notes/destroy/${noteId}`, {
-                                method: 'DELETE',
-                                headers: {
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                        .getAttribute('content')
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    notesList.removeChild(col); // Remove the note card from UI
-                                    Swal.fire(
-                                        'Deleted!',
-                                        'Your note has been deleted.',
-                                        'success'
-                                    );
-                                } else {
-                                    Swal.fire(
-                                        'Error!',
-                                        'An error occurred while deleting.',
-                                        'error'
-                                    );
-                                }
-                            })
-                            .catch(error => {
-                                console.error("Delete error:", error);
-                                Swal.fire(
-                                    'Error!',
-                                    'An error occurred while deleting.',
-                                    'error'
-                                );
+                        if (transactionsIn.length === 0) {
+                            tbody.append("<tr><td colspan='4' class='text-center'>No transactions found</td></tr>");
+                        } else {
+                            $.each(transactionsIn, function (index, transaction) {
+                                tbody.append(`
+                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td>${transaction.amount ?? '-'}</td>
+                                        <td>${getPaymentModeName(transaction.payment_mode)}</td>
+                                        <td>${transaction.reference ?? '-'}</td>
+                                    </tr>
+                                `);
                             });
+                        }
                     }
-                });
+                },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                }
             });
-
-            col.appendChild(card);
-            notesList.prepend(col);
         }
-    </script>
+
+        function fetchTransactionsOut() {
+            $.ajax({
+                url: "{{ route('transcation.display') }}",
+                method: "GET",
+                success: function (response) {
+                    if (response.success) {
+                        var transactionsOut = response.transactionsOut;
+                        var tbody = $("#transactionListOut");
+
+                        tbody.empty();
+
+                        if (transactionsOut.length === 0) {
+                            tbody.append("<tr><td colspan='4' class='text-center'>No transactions found</td></tr>");
+                        } else {
+                            $.each(transactionsOut, function (index, transaction) {
+                                tbody.append(`
+                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td>${transaction.amount ?? '-'}</td>
+                                        <td>${getPaymentModeName(transaction.payment_mode)}</td>
+                                        <td>${transaction.reference ?? '-'}</td>
+                                    </tr>
+                                `);
+                            });
+                        }
+                    }
+                },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+
+
+         function fetchSalesTransactions() {
+            $.ajax({
+                url: "{{ route('transcation.display') }}",
+                method: "GET",
+                success: function (response) {
+                    if (response.success) {
+                        var sales_transactions = response.sales_transactions;
+                        var tbody = $("#salesTransactionList");
+
+                        tbody.empty();
+
+                        if (sales_transactions.length === 0) {
+                            tbody.append("<tr><td colspan='4' class='text-center'>No transactions found</td></tr>");
+                        } else {
+                            $.each(sales_transactions, function (index, transaction) {
+                                tbody.append(`
+                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td>${transaction.amount ?? '-'}</td>
+                                        <td>${getPaymentModeName(transaction.payment_mode)}</td>
+                                        <td>${transaction.reference ?? '-'}</td>
+                                    </tr>
+                                `);
+                            });
+                        }
+                    }
+                },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+
+
+        function getPaymentModeName(mode) {
+            switch (parseInt(mode)) {
+                case 1:
+                    return "Cash";
+                case 2:
+                    return "Online";
+                default:
+                    return "Unknown";
+            }
+        }
+
+        // Run once immediately
+        fetchTransactionsIn();
+        fetchTransactionsOut();
+        fetchSalesTransactions();
+
+        // Then run every 10 seconds
+        setInterval(fetchTransactionsIn, 10000); // 10000 ms = 10 sec
+        setInterval(fetchTransactionsOut, 10000); // 10000 ms = 10 sec
+        setInterval(fetchSalesTransactions, 10000); // 10000 ms = 10 sec
+    });
+</script>
 @endsection

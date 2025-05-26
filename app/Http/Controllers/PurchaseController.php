@@ -78,7 +78,7 @@ class PurchaseController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             // Optionally log the error for debugging
-           // dd("Error saving Stock: " . $e->getMessage());
+        //    dd("Error saving Stock: " . $e->getMessage());
 
             //Session::flash('error', "Something went wrong while saving the purchase order.");
             //return redirect()->back()->withInput();

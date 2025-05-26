@@ -7,8 +7,10 @@ use App\Models\DailyNote;
 use App\Models\Product;
 use App\Models\Transction;
 use App\Models\Sale;
+use App\Models\SaleTransaction;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -21,9 +23,8 @@ class DashboardController extends Controller
 
         $customerCount = Customer::count();
 
-        $sales = Sale::whereMonth('created_at', $currentMonth)
-            ->whereYear('created_at', $currentYear)
-            ->count();
+        $sales = Sale::whereDate('created_at', Carbon::today())
+            ->sum('total_amount') ?? 0.00;
 
         $transactionIn = Transction::where('type', 'in')->whereDate('created_at', Carbon::today())->sum('amount') ?? 0.00;
         $transactionOut = Transction::where('type', 'out')->whereDate('created_at', Carbon::today())->sum('amount') ?? 0.00;
@@ -34,6 +35,23 @@ class DashboardController extends Controller
             'sales' => $sales,
             'transactionin' => $transactionIn,
             'transactionout' => $transactionOut,
+        ]);
+    }
+
+    public function displayTransactions()
+    {
+        $transactionsIn = Transction::latest()->where('type', 'in')->orderBy('id', 'desc')->get();
+        $transactionsOut = Transction::latest()->where('type', 'out')->orderBy('id', 'desc')->get();
+
+        $sales_transactions = SaleTransaction::latest()->orderBy('id', 'desc')->get();
+        return response()->json([
+            'success' => true,
+            'transactionsIn' => $transactionsIn,
+            'transactionsOut' => $transactionsOut,
+            'transactions_count' => $transactionsIn->count(),
+            'transactions_out_count' => $transactionsOut->count(),
+            'sales_transactions' => $sales_transactions,
+            'sales_transactions_count' => $sales_transactions->count(),
         ]);
     }
 

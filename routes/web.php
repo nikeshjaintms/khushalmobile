@@ -79,6 +79,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::post('/notes', 'store')->name('notes.store');
         Route::delete('/notes/destroy/{id}', 'destroy')->name('notes.destroy');
         Route::get('/dashboard-data', 'index')->name('dashboard.data');
+        Route::get('/transcation-display', 'displayTransactions')->name('transcation.display');
         Route::get('/daily-notes', 'display')->name('daily-notes.index');
         Route::post('/daily-notes', 'store')->name('daily-note.store');
     });

@@ -1,4 +1,4 @@
-<script src="{{ asset('backend/assets/js/core/jquery-3.7.1.min.js')}}"></script>
+
 <script src="{{ asset('backend/assets/js/core/popper.min.js')}}"></script>
 <script src="{{ asset('backend/assets/js/core/bootstrap.min.js')}}"></script>
 
@@ -43,7 +43,7 @@
                 $('#customerCount').text(response.customer_count);
                 $('#transactionin').text('₹'+response.transactionin);
                 $('#transactionout').text('₹'+response.transactionout);
-                $('#sales').text(response.sales);
+                $('#sales').text('₹'+response.sales);
             },
             error: function () {
                 console.error("Failed to fetch dashboard data.");
