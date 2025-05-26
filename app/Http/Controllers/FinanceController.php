@@ -43,29 +43,7 @@ class FinanceController extends Controller
         $finances = Finance::all();
         $financeMasters = FinanceMaster::all();
         $customers = Customer::all();
-        //$currentYear = date('Y');
-        //$nextYear = $currentYear + 1;
-        //$previousYear = $currentYear - 1;
-        //
-        //// Determine if the fiscal year should be previous year - current year or current year - next year
-        //if (date('m') < 4) {
-        //    // Before April 1st, use the previous fiscal year
-        //    $fiscalYear = ($previousYear % 100) . '-' . ($currentYear % 100);
-        //} else {
-        //    // From April 1st onwards, use the current fiscal year
-        //    $fiscalYear = ($currentYear % 100) . '-' . ($nextYear % 100);
-        //}
-        //$latestInvoice = Sale::where('invoice_no', 'LIKE', "%/$fiscalYear/%")->latest()->first();
-        //
-        //// Extract and increment the last number, reset if new fiscal year
-        //if ($latestInvoice) {
-        //    $lastNumber = intval(explode('/', $latestInvoice->invoice_no)[2]);
-        //    $nextNumber = $lastNumber + 1;
-        //} else {
-        //    $nextNumber = 1; // Reset if no invoice exists for this fiscal year
-        //}
-        //
-        //$invoiceNo = 'INV/' . $fiscalYear . '/' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);;
+
         return view('finance.create', compact( 'financeMasters','finances','customers'));
 
     }
@@ -76,20 +54,20 @@ class FinanceController extends Controller
     public function store(Request $request)
     {
 
-        $validatedData = $request->validate([
-            'file_no' => 'required|string',
-            'customer_id' => 'required|exists:customers,id',
-            'mobile_security_charges' => 'required|numeric',
-            'finance_year' => 'required|integer',
-            'dedication_date' => 'required|date',
-            'penalty' => 'required|numeric',
-            'month_duration' => 'required|integer|min:1',
-            'emi_value' => 'required|numeric',
-            'finance_amount' => 'required|numeric',
-            'emi_charger' => 'required|numeric',
-            'processing_fee' => 'required|numeric',
-            'downpayment' => 'required|numeric',
-        ]);
+        //$validatedData = $request->validate([
+        //    'file_no' => 'required|string',
+        //    'customer_id' => 'required|exists:customers,id',
+        //    'mobile_security_charges' => 'required|numeric',
+        //    'finance_year' => 'required|integer',
+        //    'dedication_date' => 'required|date',
+        //    'penalty' => 'required|numeric',
+        //    'month_duration' => 'required|integer|min:1',
+        //    'emi_value' => 'required|numeric',
+        //    'finance_amount' => 'required|numeric',
+        //    'emi_charger' => 'required|numeric',
+        //    'processing_fee' => 'required|numeric',
+        //    'downpayment' => 'required|numeric',
+        //]);
 
         $finance=Finance::create([
            'ref_mobile_no' => $request->ref_mobile_no,
@@ -154,13 +132,12 @@ class FinanceController extends Controller
     {
 
         $finance = Finance::findOrFail($id);
-       $finance->update([
-
+        $finance->update([
             'ref_mobile_no' => $request->ref_mobile_no,
             'ref_city'=> $request->ref_city,
             'ref_name' => $request->ref_name,
             'file_no' => $request->file_no,
-           'customer_id' => $request->customer_id,
+            'customer_id' => $request->customer_id,
             'mobile_security_charges' => $request->mobile_security_charges,
             'finances_master_id' => $request->finances_master_id,
             'downpayment' => $request->downpayment,
@@ -173,13 +150,25 @@ class FinanceController extends Controller
             'dedication_date' => $request->deduction_date,
             'finance_year' => $request->finance_year ?? date('Y')
 
-        ]);
 
-            return redirect()->route('admin.finance.index')->with('success', 'Finance updated successfully.');
+        ]);
+// Now update associated Deduction
+        $deduction = $finance->deduction; // if hasOne
+
+        if ($deduction) {
+            $deduction->update([
+                'customer_id' => $finance->customer_id,
+                'finance_id' => $finance->id,
+                'status' => 'Unpaid',
+                //'emi_date' => $dueDate->format('Y-m-d'),
+                'emi_value' => $request->permonthvalue,
+                //'created_at' => $dueDate,
+                //'updated_at' => $dueDate,
+            ]);
+        }
+       return redirect()->route('admin.finance.index')->with('success', 'Finance updated successfully.');
 
     }
-
-
     /**
      * Remove the specified resource from storage.
      */

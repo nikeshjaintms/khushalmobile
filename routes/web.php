@@ -127,6 +127,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     });
 
     Route::prefix('purchase')->controller(PurchaseController::class)->group(function () {
+
         Route::get('createStock', 'createStock')->name('admin.stock.create');
         Route::get('indexStock', 'indexStock')->name('admin.stock.index');
         Route::post('storeStock', 'storeStock')->name('admin.stock.store');
@@ -148,6 +149,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     });
 
+
+    Route::get('/get-products-by-brand/{brandId}', [ReportController::class, 'getProductsByBrand']);
 
     Route::prefix('transaction')->controller(TransctionController::class)->group(function () {
         Route::get('/', 'index')->name('admin.transaction.index')->middleware('permission:index-transaction');
@@ -172,6 +175,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     });
 
     Route::get('invoice-pdf/{id}', [InvoiceController::class, 'generatePDF'])->name('admin.invoice.index');
+    Route::get('StockInvoice-pdf', [InvoiceController::class, 'generatePdfStock'])->name('admin.stock.invoice');
+
 
     Route::prefix('daily-notes')->controller(DailyNoteController::class)->group(function () {
         Route::get('/', 'index')->name('admin.daily-notes.index')->middleware('permission:index-notes');

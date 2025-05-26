@@ -5,6 +5,7 @@
 {{-- @endif --}}
 
 @section('content-page')
+    <link rel="stylesheet" href="{{ asset('backend/assets/css/select2.min.css')}}" />
     <style>
         .table>tbody>tr>td,
         .table>tbody>tr>th {
@@ -90,7 +91,7 @@
                                                                 </option>
                                                             @endforeach
                                                         </select></td>
-                                                    <td><select name="product_id" class="form-control product-select" id="product_id_{{ $purchase_product->id }}">
+                                                    <td><select name="product_id" class="form-control product-select product-select2 select2" id="product_id_{{ $purchase_product->id }}">
                                                             @foreach ($products->where('brand_id', $purchase_product->brand_id) as $product)
                                                                 <option value="{{ $product->id }}" {{ $product->id == $purchase_product->product_id ? 'selected' : '' }}>
                                                                     {{ $product->product_name }}
@@ -149,8 +150,14 @@
 
 @section('footer-script')
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-
+    <script src="{{ asset('backend/assets/js/select2.min.js')}}"></script>
     <script>
+
+        $(document).ready(function() {
+            // $('.js-example-basic-single').select2();
+            $('.product-select2').select2();
+
+        });
         $(document).ready(function() {
 
             // Function to get next serial number

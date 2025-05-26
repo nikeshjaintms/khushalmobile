@@ -48,7 +48,6 @@
                                                 <option value="{{ $customer->id }}">{{ $customer->name }}</option>
                                             @endforeach
                                         </select>
-
                                     </div>
                                 </div>
                                 <div class="col-md-6">

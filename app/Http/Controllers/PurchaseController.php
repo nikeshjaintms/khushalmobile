@@ -35,7 +35,7 @@ class PurchaseController extends Controller
 
         try {
             $prices = $request->post('price');
-            $colors = $request->post('color'); // <-- Add this line
+            //$colors = $request->post('color'); // <-- Add this line
             $imeis = $request->post('imei');
 
             //foreach ($imeis as $imei) {
@@ -78,7 +78,7 @@ class PurchaseController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             // Optionally log the error for debugging
-        //    dd("Error saving Stock: " . $e->getMessage());
+            dd("Error saving Stock: " . $e->getMessage());
 
             //Session::flash('error', "Something went wrong while saving the purchase order.");
             //return redirect()->back()->withInput();
@@ -353,92 +353,6 @@ class PurchaseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    //public function update(Request $request, $id)
-    //{
-    //
-    //    $request->validate([
-    //        'imei' => 'required|array|min:1',
-    //        'imei.*' => [
-    //            'required',
-    //            'string',
-    //            'distinct',
-    //            Rule::unique('purchase_product', 'imei')->ignore($id),
-    //        ],
-    //    ], [
-    //        'imei.*.unique' => 'One or more IMEI numbers already exist in the system.',
-    //        'imei.*.distinct' => 'IMEI numbers must be unique within the form.',
-    //        'imei.*.required' => 'Each IMEI number is required.',
-    //    ]);
-    //
-    //
-    //    $purchase = Purchase::findOrFail($id);
-    //
-    //    // Update purchase main fields
-    //    $purchase->dealer_id = $request->post('dealer_id');
-    //    $purchase->po_no = $request->post('po_no');
-    //    $purchase->po_date = $request->post('po_date');
-    //    $purchase->sub_total = $request->post('sub_total');
-    //    $purchase->tax_type = $request->post('tax_type');
-    //    $purchase->total_tax_amount = $request->post('total_tax_amount');
-    //    $purchase->total = $request->post('total');
-    //    $purchase->save();
-    //
-    //    // Gather posted product data
-    //    $product_ids = $request->post('product_id');
-    //    $purchase_product_ids = $request->post('purchase_product_id'); // Hidden input in the form
-    //    $colors = $request->post('color');
-    //    $imeis = $request->post('imei');
-    //    $prices = $request->post('price');
-    //    $discounts = $request->post('discount');
-    //    $discountAmounts = $request->post('discount_amount');
-    //    $subtotals = $request->post('price_subtotal');
-    //    $taxes = $request->post('tax');
-    //    $taxAmounts = $request->post('tax_amount');
-    //    $totals = $request->post('product_total');
-    //
-    //    $received_ids = []; // Store all processed PurchaseProduct IDs
-    //
-    //    if (is_array($prices)) {
-    //        foreach ($prices as $index => $price) {
-    //            $pp_id = $purchase_product_ids[$index] ?? null;
-    //
-    //            $product = $pp_id ? PurchaseProduct::find($pp_id) : new PurchaseProduct();
-    //
-    //            if (!$product) {
-    //                $product = new PurchaseProduct();
-    //                $product->purchase_id = $purchase->id;
-    //            }
-    //
-    //            $product->purchase_id = $purchase->id;
-    //            $product->product_id = $product_ids[$index] ?? null;
-    //            $product->color = $colors[$index] ?? null;
-    //            $product->imei = $imeis[$index] ?? null;
-    //            $product->price = $price ?? 0;
-    //            $product->discount = $discounts[$index] ?? 0;
-    //            $product->discount_amount = $discountAmounts[$index] ?? 0;
-    //            $product->price_subtotal = $subtotals[$index] ?? 0;
-    //            $product->tax = $taxes[$index] ?? 0;
-    //            $product->tax_amount = $taxAmounts[$index] ?? 0;
-    //            $product->product_total = $totals[$index] ?? 0;
-    //            $product->save();
-    //
-    //            if ($pp_id) {
-    //                $received_ids[] = $pp_id;
-    //            } else {
-    //                $received_ids[] = $product->id;
-    //            }
-    //        }
-    //    }
-    //
-    //    // 💥 Delete removed products
-    //    PurchaseProduct::where('purchase_id', $purchase->id)
-    //        ->whereNotIn('id', $received_ids)
-    //        ->delete();
-    //
-    //    Session::flash('success', "Purchase Order updated!");
-    //    return redirect()->route('admin.purchase.index');
-    //}
-
 
     public function update(Request $request, $id)
     {
@@ -551,22 +465,16 @@ class PurchaseController extends Controller
 
     }
 
-public function destroyStock(Purchase $purchase, $id)
-{
-    $purchase = Purchase::find($id);
-    if (!$purchase) {
-        return response()->json(['error' => 'Not Found Any Stock '], 400);
+    public function destroyStock(Purchase $purchase, $id)
+    {
+        $purchase =  PurchaseProduct::where('id', $id)->delete();;
+        if (!$purchase) {
+            return response()->json(['error' => 'Not Found Any Stock '], 400);
+        }
+        return response()->json(['status' => 'success', 'message' => "Deleted Successfully "], 200);
     }
-    PurchaseProduct::where('purchase_id', $id)->delete();
 
-    $purchase->delete();
-
-    return response()->json(['status' => 'success', 'message' => "Deleted Successfully "], 200);
-}
-
-
-
-/**
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Purchase $purchase, $id)
