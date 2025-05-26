@@ -22,15 +22,16 @@ class ReportController extends Controller
 
     public function stockReport()
     {
-        $brands= Brand::all();
-        $productSearch= Product::all();
+        $brands = Brand::all();
+        $productSearch = Product::all();
         $products = Product::with(['brand', 'purchaseProducts'])
             ->get()
             ->map(function ($product) {
                 return [
                     'id' => $product->id,
                     'product_id' => $product->id,
-                    'brand_id' => $product->brand_id,2,
+                    'brand_id' => $product->brand_id,
+                    2,
                     'brand_name' => $product->brand->name ?? 'No Brand',
                     'product_name' => $product->product_name,
                     'null_status_and_invoice' => $product->purchaseProducts
@@ -41,7 +42,7 @@ class ReportController extends Controller
                         ->count(),
                 ];
             });
-        return view('reports.stock', compact('products','brands','productSearch'));
+        return view('reports.stock', compact('products', 'brands', 'productSearch'));
     }
 
     public function StockReportView($productId)
@@ -75,14 +76,14 @@ class ReportController extends Controller
                 ]);
             }
         }
-        return view('reports.imei', compact('products','flatProducts'));
+        return view('reports.imei', compact('products', 'flatProducts'));
     }
 
     public function saleReport()
     {
         $sales = Sale::with(['customer', 'saleProducts.brand', 'saleProducts.product', 'saleProducts'])->get();
-        $totalAmount = Sale::where('total_amount','>',0)->sum('total_amount');
-        return view('reports.sale',compact('sales','totalAmount'));
+        $totalAmount = Sale::where('total_amount', '>', 0)->sum('total_amount');
+        return view('reports.sale', compact('sales', 'totalAmount'));
     }
 
     // public function paymentReport()
@@ -95,33 +96,38 @@ class ReportController extends Controller
     // }
 
 
-     public function paymentReport()
-{
-    $transactions = SaleTransaction::leftjoin('sales', 'sales_transactions.invoice_id', '=', 'sales.id')
-        ->select('sales_transactions.payment_mode', 'sales_transactions.amount', 'sales.payment_method','sales.total_amount')
-        ->get();
+    public function paymentReport()
+    {
+        $financeTotals = SaleTransaction::leftJoin('sales', 'sales_transactions.invoice_id', '=', 'sales.id')
+            ->where('sales.payment_method', 2)
+            ->select('sales.id', 'sales.total_amount')
+            ->groupBy('sales.id', 'sales.total_amount') // prevent duplication
+            ->get()
+            ->sum('total_amount');
 
-    $totals = [
-        'finance' => 0,
-        'cash' => 0,
-        'online' => 0,
-    ];
+        $nonFinanceTotals = SaleTransaction::leftJoin('sales', 'sales_transactions.invoice_id', '=', 'sales.id')
+            ->where('sales.payment_method', '!=', 2)
+            ->select(
+                'sales_transactions.payment_mode',
+                DB::raw('SUM(sales_transactions.amount) as amount')
+            )
+            ->groupBy('sales_transactions.payment_mode')
+            ->get();
 
-    foreach ($transactions as $tx) {
-        if ($tx->payment_method == 2) {
-            // Finance sale: all its transactions are counted as Finance
-            $totals['finance'] += $tx->total_amount;
-        } else {
-            // Non-finance sale: determine by payment_mode
-            $mode = strtolower($tx->payment_mode);
-            if ($mode === '1') {
+        $totals = [
+            'finance' => $financeTotals,
+            'cash' => 0,
+            'online' => 0,
+        ];
+
+        foreach ($nonFinanceTotals as $tx) {
+            if ($tx->payment_mode === '1') {
                 $totals['cash'] += $tx->amount;
-            } elseif ($mode === '2') {
+            } elseif ($tx->payment_mode === '2') {
                 $totals['online'] += $tx->amount;
             }
         }
-    }
 
-    return view('reports.payment', compact('totals'));
-}
+        return view('reports.payment', compact('totals'));
+    }
 }
