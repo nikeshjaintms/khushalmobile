@@ -349,13 +349,10 @@
                 </div>
                 <div class="col-md-12">
                     <div class="card">
-{{--                        <strong><h4 style="text-align: center;margin-top: .5rem;">Sales Transactions</h4></strong>--}}
                         <h4 id="transactionTitle" style="text-align: center; margin-top: .5rem;"> Transactions</h4>
-
-
                         <div class="card-body" style="height: 20em; overflow-y: scroll;">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="transaction_type">Transactions<span style="color: red">*</span></label>
                                         <select name="transaction_type" id="transaction_type" class="form-control" required>
