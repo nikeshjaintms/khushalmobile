@@ -361,7 +361,7 @@
                                         <select name="transaction_type" id="transaction_type" class="form-control" required>
                                             <option value="all">Select Transaction Type</option>
                                             <option value="sales">Sales Transactions</option>
-                                            <option value="deductions">Deductions Transactions</option>
+                                            <option value="deductions">Emi Transactions</option>
                                         </select>
                                     </div>
                                 </div>
@@ -564,7 +564,7 @@
             if (selected === 'sales') {
                 title.text('Sales Transactions');
             } else if (selected === 'deductions') {
-                title.text('Deductions Transactions');
+                title.text('Emi Transactions');
             } else if (selected === 'all') {
                 title.text(' Transactions');
             } else {
