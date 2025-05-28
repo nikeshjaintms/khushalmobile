@@ -44,6 +44,14 @@
                 $('#transactionin').text('₹'+response.transactionin);
                 $('#transactionout').text('₹'+response.transactionout);
                 $('#sales').text('₹'+response.sales);
+                $('#salesAmountCash').text('₹'+response.salesAmountCash);
+                $('#salesAmountOnline').text('₹'+response.salesAmountOnline);
+                $('#transactionInCash').text('₹'+response.transactionInCash);
+                $('#transactionInOnline').text('₹'+response.transactionInOnline);
+                $('#deductionAmountOnline').text('₹'+response.deductionAmountOnline);
+                $('#deductionAmountCash').text('₹'+response.deductionAmountCash);
+                $('#transactionOutCash').text('₹'+response.transactionOutCash);
+                $('#transactionOutOnline').text('₹'+response.transactionOutOnline);
             },
             error: function () {
                 console.error("Failed to fetch dashboard data.");

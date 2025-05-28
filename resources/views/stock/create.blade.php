@@ -188,6 +188,13 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
     <script src="{{ asset('backend/assets/js/select2.min.js')}}"></script>
     <script>
+        document.getElementById('stockForm').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Stop form submission
+            }
+        });
+    </script>
+    <script>
         $(document).ready(function() {
             $('.product-select2').select2();
         });
@@ -290,13 +297,15 @@
             // Add new row
             $(document).on('click', '.add-row', function() {
                 let $row = $(this).closest('tr');
+                $row.find('.product-select2').select2('destroy');
                 let $newRow = $row.clone();
-
+                $row.find('.product-select2').select2();
                 // Clear input and select values
                 $newRow.find('input').val('');
                 $newRow.find('select').val('');
                 $newRow.find('input[name="tax[]"]').val(18);
 
+                $newRow.find('.product-select2').select2();
                 // Show remove button
                 $newRow.find('.remove-row').removeClass('d-none');
 
@@ -319,8 +328,9 @@
             // Duplicate row
             $(document).on('click', '.duplicate-row', function() {
                 let $row = $(this).closest('tr');
+                $row.find('.product-select2').select2('destroy');
                 let $dupRow = $row.clone();
-
+                $row.find('.product-select2').select2();
                 // Preserve values
 
                 $dupRow.find('input').val('');
@@ -343,6 +353,7 @@
                 $dupRow.find('input[ name="tax_amount[]"]').val(taxAmountValue);
                 $dupRow.find('input[ name="product_total[]"]').val(productTotalValue);
                 $dupRow.find('input[  name="price_subtotal[]"]').val(priceSubTotalValue);
+                $dupRow.find('.product-select2').select2();
                 $dupRow.find('.remove-row').removeClass('d-none');
 
                 // Append duplicated row

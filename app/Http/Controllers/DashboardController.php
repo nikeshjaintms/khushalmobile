@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\DailyNote;
+use App\Models\Deduction;
 use App\Models\Product;
 use App\Models\Transction;
 use App\Models\Sale;
@@ -26,15 +27,40 @@ class DashboardController extends Controller
         $sales = Sale::whereDate('created_at', Carbon::today())
             ->sum('total_amount') ?? 0.00;
 
+
         $transactionIn = Transction::where('type', 'in')->whereDate('created_at', Carbon::today())->sum('amount') ?? 0.00;
         $transactionOut = Transction::where('type', 'out')->whereDate('created_at', Carbon::today())->sum('amount') ?? 0.00;
+
+
+        $salesAmountCash= Sale::whereDate('created_at', Carbon::today())->where('payment_method', '1')->sum('total_amount');
+        $salesAmountOnline= Sale::whereDate('created_at', Carbon::today())->where('payment_method', '2')->sum('total_amount');
+
+        $transactionInCash = SaleTransaction::where('payment_mode','1')->whereDate('created_at', Carbon::today())->sum('amount') ?? 0.00;
+        $transactionInOnline = SaleTransaction::where('payment_mode','2')->whereDate('created_at', Carbon::today())->sum('amount') ?? 0.00;
+
+
+
+        $deductionAmountCash= Deduction::whereDate('created_at', Carbon::today())->where('payment_mode', '2')->sum('total');
+        $deductionAmountOnline= Deduction::whereDate('created_at', Carbon::today())->where('payment_mode', '1')->sum('total');
+
+        $transactionOutCash = Transction::where('payment_mode','1')->where('type', 'out')->whereDate('created_at', Carbon::today())->sum('amount') ?? 0.00;
+        $transactionOutOnline = Transction::where('payment_mode','2')->where('type', 'out')->whereDate('created_at', Carbon::today())->sum('amount') ?? 0.00;
+
 
         return response()->json([
             'product_count' => $productCount,
             'customer_count' => $customerCount,
+            'salesAmountCash' => $salesAmountCash,
+            'salesAmountOnline'=>$salesAmountOnline,
             'sales' => $sales,
             'transactionin' => $transactionIn,
             'transactionout' => $transactionOut,
+            'transactionInCash' => $transactionInCash,
+            'transactionInOnline' => $transactionInOnline,
+            'deductionAmountCash' => $deductionAmountCash,
+            'deductionAmountOnline' => $deductionAmountOnline,
+            'transactionOutCash'=>$transactionOutCash,
+            'transactionOutOnline'=>$transactionOutOnline,
         ]);
     }
 
@@ -44,6 +70,7 @@ class DashboardController extends Controller
         $transactionsOut = Transction::latest()->where('type', 'out')->orderBy('id', 'desc')->get();
 
         $sales_transactions = SaleTransaction::latest()->orderBy('id', 'desc')->get();
+
         return response()->json([
             'success' => true,
             'transactionsIn' => $transactionsIn,

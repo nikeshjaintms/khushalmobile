@@ -152,12 +152,24 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
     <script src="{{ asset('backend/assets/js/select2.min.js')}}"></script>
     <script>
+        document.getElementById('stockForm').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Stop form submission
+            }
+        });
+    </script>
+    <script>
 
         $(document).ready(function() {
             // $('.js-example-basic-single').select2();
-            $('.product-select2').select2();
-
+            // $('.product-select2').select2();
+            $('select.product-select2').select2({
+                placeholder: "Select product",
+                allowClear: true,
+                width: 'resolve'
+            });
         });
+
         $(document).ready(function() {
 
             // Function to get next serial number
@@ -232,33 +244,64 @@
                 });
 
             // Add new row
+            // $(document).on('click', '.add-row', function() {
+            //     let $row = $(this).closest('tr');
+            //     let $newRow = $row.clone();
+            //
+            //     // Clear input and select values
+            //     $newRow.find('input').val('');
+            //     $newRow.find('select').val('');
+            //     $newRow.find('input[name="tax[]"]').val(18);
+            //
+            //     // $newRow.find('.imei-input')
+            //     //     .val('')
+            //     //     .removeAttr('data-row-id');
+            //     // $newRow.find('.imei-input').val('').attr('data-row-id');
+            //     $newRow.find('.imei-input').val('').attr('data-row-id', '');
+            //
+            //
+            //
+            //     $newRow.apurchase_productendTo('#rows-container');
+            //
+            //     // Show remove button
+            //     $newRow.find('.remove-row').removeClass('d-none');
+            //
+            //     // Apurchase_productend the row
+            //     $row.closest('tbody').append($newRow);
+            //     resetActionButtons();
+            //     calculateGrandTotal();
+            // });<script>
+
             $(document).on('click', '.add-row', function() {
-                let $row = $(this).closest('tr');
-                let $newRow = $row.clone();
-
-                // Clear input and select values
+                let $lastRow = $('tbody tr').last();
+                // Clone last row, but must remove select2 from cloned select to avoid issues
+                // Destroy select2 in cloned select before cloning
+                let $cloneSelect = $lastRow.find('select.product-select2');
+                $cloneSelect.select2('destroy');
+                let $newRow = $lastRow.clone(false, false);
+                // Re-initialize select2 on original
+                $cloneSelect.select2({
+                    placeholder: "Select product",
+                    allowClear: true,
+                    width: 'resolve'
+                });
+                // Clear inputs/selects in new row
                 $newRow.find('input').val('');
-                $newRow.find('select').val('');
-                $newRow.find('input[name="tax[]"]').val(18);
-
-                // $newRow.find('.imei-input')
-                //     .val('')
-                //     .removeAttr('data-row-id');
-                // $newRow.find('.imei-input').val('').attr('data-row-id');
-                $newRow.find('.imei-input').val('').attr('data-row-id', '');
-
-
-
-                $newRow.apurchase_productendTo('#rows-container');
-
-                // Show remove button
-                $newRow.find('.remove-row').removeClass('d-none');
-
-                // Apurchase_productend the row
-                $row.closest('tbody').append($newRow);
+                $newRow.find('select').val(null).trigger('change');
+                // Append new row
+                $('tbody').append($newRow);
+                // Initialize select2 on the new row's select
+                $newRow.find('select.product-select2').select2({
+                    placeholder: "Select product",
+                    allowClear: true,
+                    width: 'resolve'
+                });
                 resetActionButtons();
-                calculateGrandTotal();
             });
+
+
+
+
 
             // Remove row
             $(document).on('click', '.remove-row', function() {

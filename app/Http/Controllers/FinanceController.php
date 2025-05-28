@@ -24,12 +24,7 @@ class FinanceController extends Controller
      */
     public function index()
     {
-
-        $finances = Finance::with('financeMaster')->get();
-        //foreach ($finances as $finance) {
-        //     $finance->financeMaster->name;
-        //}
-
+        $finances = Finance::with('financeMaster','customers')->get();
         return view('finance.index', compact('finances'));
     }
 
@@ -120,19 +115,39 @@ class FinanceController extends Controller
     public function edit(Finance $finance, $id)
     {
         $finances = Finance::with('financeMaster','customers')->findOrFail($id);
+
+        $deduction = Deduction::where('finance_id', $id)->first();
+
+//dd($deduction);
         $financeMaster = FinanceMaster::all();
         $customers = Customer::all();
-        return view('finance.edit', compact( 'finances','financeMaster','customers'));
+        return view('finance.edit', compact( 'finances','financeMaster','customers','deduction'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, $financeId)
     {
 
-        $finance = Finance::findOrFail($id);
-        $finance->update([
+        $finance = Finance::findOrFail($financeId);
+
+        // Check if any EMI has been paid for this finance
+        $emiPaid = Deduction::where('finance_id', $financeId)
+            ->where('status', 'paid')
+            ->exists();
+
+        if ($emiPaid) {
+            return back()->with('error', 'Cannot update finance. Some EMI payments have already been made.');
+
+        }
+
+
+        DB::beginTransaction();
+        try {
+
+            //$finance->update($request->all());
+            $finance->update([
             'ref_mobile_no' => $request->ref_mobile_no,
             'ref_city'=> $request->ref_city,
             'ref_name' => $request->ref_name,
@@ -149,24 +164,72 @@ class FinanceController extends Controller
             'penalty' => $request->penalty,
             'dedication_date' => $request->deduction_date,
             'finance_year' => $request->finance_year ?? date('Y')
-
-
         ]);
-// Now update associated Deduction
-        $deduction = $finance->deduction; // if hasOne
 
-        if ($deduction) {
-            $deduction->update([
-                'customer_id' => $finance->customer_id,
-                'finance_id' => $finance->id,
-                'status' => 'Unpaid',
-                //'emi_date' => $dueDate->format('Y-m-d'),
-                'emi_value' => $request->permonthvalue,
-                //'created_at' => $dueDate,
-                //'updated_at' => $dueDate,
-            ]);
+            // Delete old deduction EMI entries
+            Deduction::where('finance_id', $financeId)->delete();
+
+            // Create new deduction EMI entries (example)
+            $startDate = Carbon::createFromDate(now()->year, now()->month, $finance->dedication_date)->addMonth();
+            for ($i = 0; $i < $finance->month_duration; $i++) {
+                $dueDate = $startDate->copy()->addMonths($i);
+                Deduction::create([
+                    'customer_id' => $finance->customer_id,
+                    'finance_id' => $finance->id,
+                    'status' => 'Unpaid',
+                    'emi_date' => $dueDate->format('Y-m-d'),
+                    'emi_value' => $request->permonthvalue,
+                    'created_at' => $dueDate,
+                    'updated_at' => $dueDate,
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->route('admin.finance.index')->with('success', 'Finance and deduction updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Update failed. ' . $e->getMessage()
+            ], 500);
         }
-       return redirect()->route('admin.finance.index')->with('success', 'Finance updated successfully.');
+
+//        $finance = Finance::findOrFail($id);
+//        $finance->update([
+//            'ref_mobile_no' => $request->ref_mobile_no,
+//            'ref_city'=> $request->ref_city,
+//            'ref_name' => $request->ref_name,
+//            'file_no' => $request->file_no,
+//            'customer_id' => $request->customer_id,
+//            'mobile_security_charges' => $request->mobile_security_charges,
+//            'finances_master_id' => $request->finances_master_id,
+//            'downpayment' => $request->downpayment,
+//            'processing_fee' => $request->processing_fee,
+//            'emi_charger' => $request->emi_charger,
+//            'finance_amount' => is_numeric($request->finance_amount) ? $request->finance_amount : 0,
+//            'month_duration' => is_numeric($request->month_duration) ? $request->month_duration : 0,
+//            'emi_value' => $request->permonthvalue,
+//            'penalty' => $request->penalty,
+//            'dedication_date' => $request->deduction_date,
+//            'finance_year' => $request->finance_year ?? date('Y')
+//
+//
+//        ]);
+//// Now update associated Deduction
+//        $deduction = $finance->deduction; // if hasOne
+//
+//        if ($deduction) {
+//            $deduction->update([
+//                'customer_id' => $finance->customer_id,
+//                'finance_id' => $finance->id,
+//                'status' => 'Unpaid',
+//                //'emi_date' => $dueDate->format('Y-m-d'),
+//                'emi_value' => $request->permonthvalue,
+//                //'created_at' => $dueDate,
+//                //'updated_at' => $dueDate,
+//            ]);
+//        }
+       //return redirect()->route('admin.finance.index')->with('success', 'Finance updated successfully.');
 
     }
     /**

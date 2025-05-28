@@ -80,6 +80,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::delete('/notes/destroy/{id}', 'destroy')->name('notes.destroy');
         Route::get('/dashboard-data', 'index')->name('dashboard.data');
         Route::get('/transcation-display', 'displayTransactions')->name('transcation.display');
+        //Route::get('display-transactions', 'displayTransactions')->name('transcation.display');
+
         Route::get('/daily-notes', 'display')->name('daily-notes.index');
         Route::post('/daily-notes', 'store')->name('daily-note.store');
     });
@@ -125,16 +127,17 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::put('update/{id}', 'update')->name('admin.dealer.update');
         Route::delete('delete/{id}', 'destroy')->name('admin.dealer.delete')->middleware('permission:delete-dealer');
     });
-
-    Route::prefix('purchase')->controller(PurchaseController::class)->group(function () {
+    Route::prefix('stock')->controller(PurchaseController::class)->group(function () {
 
         Route::get('createStock', 'createStock')->name('admin.stock.create');
-        Route::get('indexStock', 'indexStock')->name('admin.stock.index');
+        Route::get('/', 'indexStock')->name('admin.stock.index');
         Route::post('storeStock', 'storeStock')->name('admin.stock.store');
         Route::get('editStock/{id}', 'editStock')->name('admin.stock.edit');
         Route::put('updateStock/{id}', 'updateStock')->name('admin.stock.update');
         Route::delete('deleteStock/{id}', 'destroyStock')->name('admin.stock.delete');
+    });
 
+    Route::prefix('purchase')->controller(PurchaseController::class)->group(function () {
 
         Route::get('/', 'index')->name('admin.purchase.index')->middleware('permission:index-purchase');
         Route::get('create', 'create')->name('admin.purchase.create')->middleware('permission:create-purchase');
@@ -167,7 +170,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('create', 'create')->name('admin.sale.create')->middleware('permission:create-sale');
         Route::post('store', 'store')->name('admin.sale.store');
         Route::get('edit/{id}', 'edit')->name('admin.sale.edit')->middleware('permission:edit-sale');
-        Route::put('update/{id}', 'update')->name('admin.sale.update');
+        Route::put('update/{id}/{financeId}', 'update')->name('admin.sale.update');
         Route::delete('delete/{id}', 'destroy')->name('admin.sale.delete')->middleware('permission:delete-sale');
         Route::get('/{id}', 'show')->name('admin.sale.show')->middleware('permission:delete-sale');
         Route::get('/get-imeis/{product_id}', 'getImeis')->name('admin.sale.get-imeis');
@@ -216,7 +219,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('create', 'create')->name('admin.finance.create');
         Route::post('store', 'store')->name('admin.finance.store');
         Route::get('edit/{id}', 'edit')->name('admin.finance.edit');
-        Route::put('update/{id}', 'update')->name('admin.finance.update');
+        Route::put('update/{id}/{financeId}', 'update')->name('admin.finance.update');
         Route::delete('delete/{id}', 'destroy')->name('admin.finance.delete');
     });
 

@@ -142,6 +142,166 @@
                     </div>
                 </div>
             </div>
+
+
+            <div class="row">
+                <div class="col-sm-6 col-md-3">
+                    <div class="card card-stats card-round">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-icon">
+                                    <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                </div>
+                                <div class="col col-stats ms-3 ms-sm-0">
+                                    <div class="numbers">
+                                        <p class="card-category">Sales Cash Amount</p>
+                                        <h4 class="card-title" id="salesAmountCash">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="card card-stats card-round">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-icon">
+                                    <div class="icon-big text-center icon-success bubble-shadow-small">
+                                        <i class="fas fa-luggage-cart"></i>
+                                    </div>
+                                </div>
+                                <div class="col col-stats ms-3 ms-sm-0">
+                                    <div class="numbers">
+                                        <p class="card-category"> Sales Online Amount</p>
+                                        <h4 id="salesAmountOnline">₹0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="card card-stats card-round">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-icon">
+                                    <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                                        <i class="far fa-check-circle"></i>
+                                    </div>
+                                </div>
+                                <div class="col col-stats ms-3 ms-sm-0">
+                                    <div class="numbers">
+                                        <p class="card-category">Today Transcation In Online</p>
+                                        <h4 id="transactionInOnline">₹ 0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="card card-stats card-round">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-icon">
+                                    <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                                        <i class="far fa-check-circle"></i>
+                                    </div>
+                                </div>
+                                <div class="col col-stats ms-3 ms-sm-0">
+                                    <div class="numbers">
+                                        <p class="card-category">Today Transcation In Cash</p>
+                                        <h4 id="transactionInCash">₹ 0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6 col-md-3">
+                    <div class="card card-stats card-round">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-icon">
+                                    <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                </div>
+                                <div class="col col-stats ms-3 ms-sm-0">
+                                    <div class="numbers">
+                                        <p class="card-category">Deductions Cash Amount</p>
+                                        <h4 class="card-title" id="deductionAmountCash">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="card card-stats card-round">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-icon">
+                                    <div class="icon-big text-center icon-success bubble-shadow-small">
+                                        <i class="fas fa-luggage-cart"></i>
+                                    </div>
+                                </div>
+                                <div class="col col-stats ms-3 ms-sm-0">
+                                    <div class="numbers">
+                                        <p class="card-category"> Deductions Online Amount</p>
+                                        <h4 id="deductionAmountOnline">₹0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="card card-stats card-round">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-icon">
+                                    <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                                        <i class="far fa-check-circle"></i>
+                                    </div>
+                                </div>
+                                <div class="col col-stats ms-3 ms-sm-0">
+                                    <div class="numbers">
+                                        <p class="card-category">Today Transcation Out Online</p>
+                                        <h4 id="transactionOutOnline">₹ 0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="card card-stats card-round">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-icon">
+                                    <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                                        <i class="far fa-check-circle"></i>
+                                    </div>
+                                </div>
+                                <div class="col col-stats ms-3 ms-sm-0">
+                                    <div class="numbers">
+                                        <p class="card-category">Today Transcation Out Cash</p>
+                                        <h4 id="transactionOutCash">₹ 0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-md-6">
                     <div class="card">
@@ -154,7 +314,7 @@
                                         <th>Sr no</th>
                                         <th>Amount</th>
                                         <th>Payment Mode</th>
-                                        <th>Reference</th>
+                                        <th>Remark</th>
                                     </tr>
                                 </thead>
                                 <tbody id="transactionListIn" >
@@ -176,7 +336,7 @@
                                         <th>Sr no</th>
                                         <th>Amount</th>
                                         <th>Payment Mode</th>
-                                        <th>Reference</th>
+                                        <th>Remark</th>
                                     </tr>
                                 </thead>
                                 <tbody id="transactionListOut" >
@@ -189,16 +349,30 @@
                 </div>
                 <div class="col-md-12">
                     <div class="card">
-                        <strong><h4 style="text-align: center;margin-top: .5rem;">Sales Transactions</h4></strong>
-                        <div class="card-body" style="height: 20em; overflow-y: scroll;">
-                            <table class="table table-striped" >
+{{--                        <strong><h4 style="text-align: center;margin-top: .5rem;">Sales Transactions</h4></strong>--}}
+                        <h4 id="transactionTitle" style="text-align: center; margin-top: .5rem;"> Transactions</h4>
 
+
+                        <div class="card-body" style="height: 20em; overflow-y: scroll;">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="transaction_type">Transactions<span style="color: red">*</span></label>
+                                        <select name="transaction_type" id="transaction_type" class="form-control" required>
+                                            <option value="all">Select Transaction Type</option>
+                                            <option value="sales">Sales Transactions</option>
+                                            <option value="deductions">Deductions Transactions</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table table-striped d-none">
                                 <thead>
                                     <tr>
                                         <th>Sr no</th>
                                         <th>Amount</th>
                                         <th>Payment Mode</th>
-                                        <th>Reference</th>
+                                        <th>Reference No</th>
                                     </tr>
                                 </thead>
                                 <tbody id="salesTransactionList" >
@@ -210,6 +384,8 @@
                     </div>
                 </div>
             </div>
+
+
 
             {{-- Notes Section --}}
             {{-- <form id="noteForm">
@@ -227,7 +403,11 @@
     </div>
 
     <script>
+
+
+
     $(document).ready(function () {
+
         function fetchTransactionsIn() {
             $.ajax({
                 url: "{{ route('transcation.display') }}",
@@ -248,7 +428,7 @@
                                         <td>${index + 1}</td>
                                         <td>${transaction.amount ?? '-'}</td>
                                         <td>${getPaymentModeName(transaction.payment_mode)}</td>
-                                        <td>${transaction.reference ?? '-'}</td>
+                                        <td>${transaction.remark ?? '-'}</td>
                                     </tr>
                                 `);
                             });
@@ -281,7 +461,7 @@
                                         <td>${index + 1}</td>
                                         <td>${transaction.amount ?? '-'}</td>
                                         <td>${getPaymentModeName(transaction.payment_mode)}</td>
-                                        <td>${transaction.reference ?? '-'}</td>
+                                        <td>${transaction.remark ?? '-'}</td>
                                     </tr>
                                 `);
                             });
@@ -295,29 +475,71 @@
         }
 
 
-         function fetchSalesTransactions() {
+        {{-- function fetchSalesTransactions() {--}}
+        {{--    $.ajax({--}}
+        {{--        url: "{{ route('transcation.display') }}",--}}
+        {{--        method: "GET",--}}
+        {{--        success: function (response) {--}}
+        {{--            if (response.success) {--}}
+        {{--                var sales_transactions = response.sales_transactions;--}}
+        {{--                var tbody = $("#salesTransactionList");--}}
+
+        {{--                tbody.empty();--}}
+
+        {{--                if (sales_transactions.length === 0) {--}}
+        {{--                    tbody.append("<tr><td colspan='4' class='text-center'>No transactions found</td></tr>");--}}
+        {{--                } else {--}}
+        {{--                    $.each(sales_transactions, function (index, transaction) {--}}
+        {{--                        tbody.append(`--}}
+        {{--                            <tr>--}}
+        {{--                                <td>${index + 1}</td>--}}
+        {{--                                <td>${transaction.amount ?? '-'}</td>--}}
+        {{--                                <td>${getPaymentModeName(transaction.payment_mode)}</td>--}}
+        {{--                                <td>${transaction.reference_no ?? '-'}</td>--}}
+        {{--                            </tr>--}}
+        {{--                        `);--}}
+        {{--                    });--}}
+        {{--                }--}}
+        {{--            }--}}
+        {{--        },--}}
+        {{--        error: function (xhr) {--}}
+        {{--            console.log(xhr.responseText);--}}
+        {{--        }--}}
+        {{--    });--}}
+        {{--}--}}
+
+        function fetchTransactions(type) {
             $.ajax({
                 url: "{{ route('transcation.display') }}",
                 method: "GET",
                 success: function (response) {
                     if (response.success) {
-                        var sales_transactions = response.sales_transactions;
                         var tbody = $("#salesTransactionList");
-
                         tbody.empty();
 
-                        if (sales_transactions.length === 0) {
+                        let transactions = [];
+
+                        if (type === "sales") {
+                            transactions = response.sales_transactions;
+                        } else if (type === "deductions") {
+                            // transactions = response.transactionsOut;
+                            transactions = [...response.transactionsOut, ...response.transactionsIn];
+                        }
+
+                        if (transactions.length === 0) {
                             tbody.append("<tr><td colspan='4' class='text-center'>No transactions found</td></tr>");
                         } else {
-                            $.each(sales_transactions, function (index, transaction) {
+                            $('table').removeClass('d-none');
+                            $.each(transactions, function (index, transaction) {
                                 tbody.append(`
-                                    <tr>
-                                        <td>${index + 1}</td>
-                                        <td>${transaction.amount ?? '-'}</td>
-                                        <td>${getPaymentModeName(transaction.payment_mode)}</td>
-                                        <td>${transaction.reference ?? '-'}</td>
-                                    </tr>
-                                `);
+
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${transaction.amount ?? '-'}</td>
+                                <td>${getPaymentModeName(transaction.payment_mode)}</td>
+                                <td>${transaction.reference_no ?? '-'}</td>
+                            </tr>
+                        `);
                             });
                         }
                     }
@@ -327,7 +549,29 @@
                 }
             });
         }
+        $('#transaction_type').on('change', function () {
+            const selectedType = $(this).val();
+            if (selectedType === "sales" || selectedType === "deductions") {
+                fetchTransactions(selectedType);
+            } else {
+                $("#salesTransactionList").empty();
+            }
+        });
+        $('#transaction_type').on('change', function () {
+            const selected = $(this).val();
+            const title = $('#transactionTitle');
 
+            if (selected === 'sales') {
+                title.text('Sales Transactions');
+            } else if (selected === 'deductions') {
+                title.text('Deductions Transactions');
+            } else if (selected === 'all') {
+                title.text(' Transactions');
+            } else {
+                title.text('Please select a transaction type');
+                $('#salesTransactionList').html("<tr><td colspan='5' class='text-center'>Please select a transaction type</td></tr>");
+            }
+        });
 
         function getPaymentModeName(mode) {
             switch (parseInt(mode)) {

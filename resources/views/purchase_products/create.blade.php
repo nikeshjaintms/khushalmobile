@@ -5,6 +5,7 @@
 {{-- @endif --}}
 
 @section('content-page')
+    <link rel="stylesheet" href="{{ asset('backend/assets/css/select2.min.css')}}" />
     <style>
         .table>tbody>tr>td,
         .table>tbody>tr>th {
@@ -125,12 +126,12 @@
                                                         @enderror
 
                                                     </td>
-                                                    <td><select name="product_id[]" class="form-control product-select"
-                                                            id="product_id"  required>
+                                                    <td><select name="product_id[]" class="form-control product-select product-select2 select2"
+                                                                id="product_id"  required>
                                                             <option value="" >Select Product</option>
                                                         </select>
                                                         @error('product_id[]')
-                                                            <div class="text-red-500">{{ $message }}</div>
+                                                        <div class="text-red-500">{{ $message }}</div>
                                                         @enderror
                                                     </td>
 
@@ -288,10 +289,13 @@
 
 @section('footer-script')
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-
+    <script src="{{ asset('backend/assets/js/select2.min.js')}}"></script>
     <script>
 
         $(document).ready(function() {
+            $(document).ready(function() {
+                $('.product-select2').select2();
+            });
 
             document.querySelectorAll(".imei-input").forEach(input => {
                 input.addEventListener("blur", function () {
@@ -388,23 +392,61 @@
                 });
 
             // Add new row
-            $(document).on('click', '.add-row', function() {
+            // $(document).on('click', '.add-row', function() {
+            //     let $row = $(this).closest('tr');
+            //     let $newRow = $row.clone();
+            //      // $newRow.find('.product-select2').select2('destroy');
+            //     // $newRow.find('.product-select2')
+            //     //     .removeAttr('data-select2-id')
+            //     //     .next('.select2')
+            //     //     .remove();
+            //     // Clear input and select values
+            //     $newRow.find('input').val('');
+            //     $newRow.find('select').val('');
+            //     $newRow.find('input[name="tax[]"]').val(18);
+            //      $newRow.find('.product-select2').select2();
+            //
+            //     // Show remove button
+            //     $newRow.find('.remove-row').removeClass('d-none');
+            //
+            //     // Append the row
+            //     $row.closest('tbody').append($newRow);
+            //     resetActionButtons();
+            //     calculateGrandTotal();
+            // });
+
+            $(document).on('click', '.add-row', function () {
                 let $row = $(this).closest('tr');
+
+                // Destroy Select2 on all select2 elements in the row
+                $row.find('.product-select2').select2('destroy');
+
+                // Clone the row after removing Select2 DOM wrappers
                 let $newRow = $row.clone();
 
-                // Clear input and select values
+                // Reinitialize Select2 in the original row
+                 $row.find('.product-select2').select2();
+
+                // Clear input/select values in the new row
                 $newRow.find('input').val('');
                 $newRow.find('select').val('');
                 $newRow.find('input[name="tax[]"]').val(18);
 
-                // Show remove button
+                // Append the new row to the table
+                $row.closest('tbody').append($newRow);
+
+                // Re-initialize Select2 in the new row
+                 $newRow.find('.product-select2').select2();
+
+                // Make remove button visible in the new row
                 $newRow.find('.remove-row').removeClass('d-none');
 
-                // Append the row
-                $row.closest('tbody').append($newRow);
                 resetActionButtons();
                 calculateGrandTotal();
             });
+
+
+
 
             // Remove row
             $(document).on('click', '.remove-row', function() {
@@ -419,28 +461,23 @@
             // Duplicate row
             $(document).on('click', '.duplicate-row', function() {
                 let $row = $(this).closest('tr');
+                $row.find('.product-select2').select2('destroy');
                 let $dupRow = $row.clone();
-
-                // Preserve values
+                $row.find('.product-select2').select2();
 
                 $dupRow.find('input').val('');
                 $dupRow.find('input[name="tax[]"]').val(18);
-
 
                 let selectedBrand = $row.find('.brand-select').val();
                 let selectedProduct = $row.find('.product-select').val();
 
                 $dupRow.find('.brand-select').val(selectedBrand);
+                $dupRow.find('.product-select2').select2();
                 $dupRow.find('.remove-row').removeClass('d-none');
 
-
-
-
-                // Append duplicated row
                 $row.closest('tbody').append($dupRow);
                 resetActionButtons();
                 calculateGrandTotal();
-
                 // Load products via AJAX
                 if (selectedBrand) {
                     let $productSelect = $dupRow.find('.product-select');

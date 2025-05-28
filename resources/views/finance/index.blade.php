@@ -46,7 +46,8 @@
                                     <thead>
                                     <tr>
                                         <th>Sr No</th>
-{{--                                        <th>Finance Name</th>--}}
+                                        <th>Customer Name</th>
+                                        <th>File Name</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
@@ -54,7 +55,8 @@
                                     @forelse($finances as $index => $item)
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
-{{--                                            <td>{{$finance}}</td>--}}
+                                            <td>{{$item->customers->name}}</td>
+                                            <td>{{$item -> file_no}}</td>
 
                                             <td>
 

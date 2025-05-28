@@ -41,9 +41,15 @@
                         <div class="card-header">
                             <div class="card-title">Edit Sale</div>
                         </div>
-                        <form method="POST" action="{{ route('admin.sale.update', $data->id) }}" id="saleForm">
+                        <form method="POST" action="{{ route('admin.sale.update', [$data->id , $deduction->finance_id]) }}" id="saleForm">
                             @csrf
                             @method('PUT')
+
+                            @if(Session::has('error'))
+                                <div class="alert alert-danger text-danger " id="error-alert">
+                                    {{Session::get('error')}}
+                                </div>
+                            @endif
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-4">
@@ -604,7 +610,11 @@
         //     window.onload = toggleFinanceDetails;
         // });
 
-
+        $(document).ready(function() {
+            setTimeout(function() {
+                $('#error-alert').fadeOut('slow');
+            }, 5000);
+        });
 
         document.addEventListener('DOMContentLoaded', function () {
             const paymentMethod = document.getElementById('paymentMethod');

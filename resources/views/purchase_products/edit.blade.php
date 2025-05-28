@@ -5,6 +5,7 @@
 {{-- @endif --}}
 
 @section('content-page')
+    <link rel="stylesheet" href="{{ asset('backend/assets/css/select2.min.css')}}" />
     <style>
         .table>tbody>tr>td,
         .table>tbody>tr>th {
@@ -119,13 +120,13 @@
                                                                 </option>
                                                             @endforeach
                                                         </select></td>
-                                                    <td><select name="product_id[]" class="form-control product-select" id="product_id_{{ $pp->id }}">
-                                                        @foreach ($products->where('brand_id', $pp->brand_id) as $product)
-                                                            <option value="{{ $product->id }}" {{ $product->id == $pp->product_id ? 'selected' : '' }}>
-                                                                {{ $product->product_name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
+                                                    <td><select name="product_id" class="form-control product-select product-select2 select2" id="product_id_{{ $pp->id }}">
+                                                            @foreach ($products->where('brand_id', $pp->brand_id) as $product)
+                                                                <option value="{{ $product->id }}" {{ $product->id == $pp->product_id ? 'selected' : '' }}>
+                                                                    {{ $product->product_name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
                                                     </td>
                                                     <td style="width: fit-content;">
                                                             <div class="input-wrapper">
@@ -244,11 +245,13 @@
 
 @section('footer-script')
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-
+    <script src="{{ asset('backend/assets/js/select2.min.js')}}"></script>
     <script>
         $(document).ready(function() {
+            $(document).ready(function() {
+                $('.product-select2').select2();
+            });
 
-            // Function to get next serial number
 
             function resetActionButtons() {
                 const $rows = $('#product-table tbody tr');
@@ -322,23 +325,18 @@
             // Add new row
             $(document).on('click', '.add-row', function() {
                 let $row = $(this).closest('tr');
+                $row.find('.product-select2').select2('destroy');
                 let $newRow = $row.clone();
-
+                $row.find('.product-select2').select2();
                 // Clear input and select values
                 $newRow.find('input').val('');
                 $newRow.find('select').val('');
                 $newRow.find('input[name="tax[]"]').val(18);
 
-                // $newRow.find('.imei-input')
-                //     .val('')
-                //     .removeAttr('data-row-id');
-                // $newRow.find('.imei-input').val('').attr('data-row-id');
                 $newRow.find('.imei-input').val('').attr('data-row-id', '');
 
-
-
                 $newRow.appendTo('#rows-container');
-
+                $newRow.find('.product-select2').select2();
                 // Show remove button
                 $newRow.find('.remove-row').removeClass('d-none');
 
@@ -361,8 +359,9 @@
             // Duplicate row
             $(document).on('click', '.duplicate-row', function() {
                 let $row = $(this).closest('tr');
+                $row.find('.product-select2').select2('destroy');
                 let $dupRow = $row.clone();
-
+                $row.find('.product-select2').select2();
                 // Preserve values
                 $dupRow.find('input').each(function() {
                     $(this).val($(this).val());
@@ -372,6 +371,7 @@
                 let selectedProduct = $row.find('.product-select').val();
 
                 $dupRow.find('.brand-select').val(selectedBrand);
+                $dupRow.find('.product-select2').select2();
                 $dupRow.find('.remove-row').removeClass('d-none');
 
 

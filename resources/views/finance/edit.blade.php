@@ -14,7 +14,7 @@
     <div class="container">
         <div class="page-inner">
             <div class="page-header">
-                <h3 class="fw-bold mb-3">Sale</h3>
+                <h3 class="fw-bold mb-3">Finance</h3>
                 <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
                         <a href="{{ route('dashboard') }}">
@@ -25,7 +25,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.finance.index') }}">Sale</a>
+                        <a href="{{ route('admin.finance.index') }}">Finance</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
@@ -41,9 +41,14 @@
                         <div class="card-header">
                             <div class="card-title">Edit Finance</div>
                         </div>
-                        <form method="POST" action="{{ route('admin.finance.update', $finances->id) }}" id="saleForm">
+                        <form method="POST" action="{{ route('admin.finance.update', [$finances->id, $deduction->finance_id]) }}" id="saleForm">
                             @csrf
                             @method('PUT')
+                            @if(Session::has('error'))
+                                <div class="alert alert-danger text-danger " id="error-alert-finance">
+                                    {{Session::get('error')}}
+                                </div>
+                            @endif
                             <div class="card-body">
                                 <div class="row">
 
@@ -188,7 +193,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Penalty Charges</label>
@@ -199,19 +203,19 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label> Per month value </label>
+                                                    <label> Per month Amount </label>
                                                     <input type="number" name="permonthvalue" id="permonthvalue"
                                                            class="form-control permonthvalue required" placeholder="--Per month value--"  value="{{ $finances->emi_value ?? '' }}" required>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group"><br><br>
-                                                    <h6><div id="permonth" style="color: red;"></div></h6>
-                                                    <input type="hidden" name="emi_value" id="permonthvalue"
-                                                           value="{{ $finances->emi_value ?? '' }}">
-                                                    <input type="hidden" name="finance_year" id="finance_year" value="">
-                                                </div>
-                                            </div>
+{{--                                            <div class="col-md-4">--}}
+{{--                                                <div class="form-group"><br><br>--}}
+{{--                                                    <h6><div id="permonth" style="color: red;"></div></h6>--}}
+{{--                                                    <input type="hidden" name="emi_value" id="permonthvalue"--}}
+{{--                                                           value="{{ $finances->emi_value ?? '' }}">--}}
+{{--                                                    <input type="hidden" name="finance_year" id="finance_year" value="">--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
                                         </div>
                                     <div class="card-action">
                                         <button class="btn btn-success" type="submit">Submit</button>
@@ -231,6 +235,12 @@
 @section('footer-script')
 
     <script>
+        $(document).ready(function() {
+            setTimeout(function() {
+                $('#error-alert-finance').fadeOut('slow');
+            }, 5000);
+        });
+
 
         document.addEventListener('DOMContentLoaded', function () {
             const paymentMethod = document.getElementById('paymentMethod');
@@ -274,9 +284,10 @@
                     });
                 }
             }
+
             function resetRowIndexes() {
-                $('#add-table-row tr').each(function(index, row) {
-                    $(row).find('input, select').each(function() {
+                $('#add-table-row tr').each(function (index, row) {
+                    $(row).find('input, select').each(function () {
                         let name = $(this).attr('name');
                         if (name) {
                             // Update number inside [ ]
@@ -290,42 +301,42 @@
                 });
             }
 
-        $('#datepicker').datepicker({
-            uiLibrary: 'bootstrap5',
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-            todayHighlight: true,
-            orientation: 'bottom',
-            startDate: new Date()
+            $('#datepicker').datepicker({
+                uiLibrary: 'bootstrap5',
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                todayHighlight: true,
+                orientation: 'bottom',
+                startDate: new Date()
 
-        });
+            });
 
-        $(document).on('change', '.product-select', function() {
-            var productId = $(this).val();
-            var $row = $(this).closest('tr');
-            if (productId) {
-                $.ajax({
-                    url: "{{ route('admin.product.getPrice', ':productId') }}".replace(':productId',
-                        productId),
-                    type: 'GET',
-                    success: function(data) {
-                        $row.find('.price').val(data.mrp);
-                        $row.find('.priceSubTotal').val(data.mrp);
-                        $row.find('.totalAmount').val(data.mrp);
-                        console.log(data.mrp);
-                    }
-                });
-            } else {
-                $('.price').val('');
-            }
-        });
+            $(document).on('change', '.product-select', function () {
+                var productId = $(this).val();
+                var $row = $(this).closest('tr');
+                if (productId) {
+                    $.ajax({
+                        url: "{{ route('admin.product.getPrice', ':productId') }}".replace(':productId',
+                            productId),
+                        type: 'GET',
+                        success: function (data) {
+                            $row.find('.price').val(data.mrp);
+                            $row.find('.priceSubTotal').val(data.mrp);
+                            $row.find('.totalAmount').val(data.mrp);
+                            console.log(data.mrp);
+                        }
+                    });
+                } else {
+                    $('.price').val('');
+                }
+            });
 
-        $(document).ready(function() {
-            $(document).on('click', '.add-payment-row', function() {
-                // Count current rows to generate a unique index
-                let paymentIndex = $(this).closest('tbody').find('tr').length;
+            $(document).ready(function () {
+                $(document).on('click', '.add-payment-row', function () {
+                    // Count current rows to generate a unique index
+                    let paymentIndex = $(this).closest('tbody').find('tr').length;
 
-                const newRow = `<tr>
+                    const newRow = `<tr>
             <td>
                 <select name="payment[${paymentIndex}][payment_mode]" class="form-control">
                     <option value="1">Cash</option>
@@ -340,139 +351,140 @@
                 <button type="button" class="btn btn-danger remove-payment-row">-</button>
             </td>
         </tr>`;
-                $(this).closest('tbody').append(newRow);
+                    $(this).closest('tbody').append(newRow);
+                });
+
+                $(document).on('click', '.remove-payment-row', function () {
+                    const totalRows = $(this).closest('tbody').find('tr').length;
+                    if (totalRows > 1) {
+                        $(this).closest('tr').remove();
+                    } else {
+                        alert('At least one payment entry is required.');
+                    }
+                });
             });
 
-            $(document).on('click', '.remove-payment-row', function() {
-                const totalRows = $(this).closest('tbody').find('tr').length;
-                if (totalRows > 1) {
-                    $(this).closest('tr').remove();
-                } else {
-                    alert('At least one payment entry is required.');
-                }
-            });
-        });
+            $(document).ready(function () {
 
-        $(document).ready(function() {
+                $(document).on('change', '.brand-select', function () {
+                    let brandId = $(this).val();
+                    let $productSelect = $(this).closest('tr').find('.product-select');
 
-            $(document).on('change', '.brand-select', function() {
-                let brandId = $(this).val();
-                let $productSelect = $(this).closest('tr').find('.product-select');
+                    $productSelect.html('<option value="">Loading...</option>');
 
-                $productSelect.html('<option value="">Loading...</option>');
-
-                if (brandId) {
-                    $.ajax({
-                        url: "{{ route('admin.product.getproducts', ':brand_id') }}"
-                            .replace(
-                                ':brand_id', brandId),
-                        type: 'GET',
-                        success: function(response) {
-                            $productSelect.empty().append(
-                                '<option value="">Select Product</option>');
-                            $.each(response, function(index, product) {
-                                $productSelect.append('<option value="' +
-                                    product.id +
-                                    '">' + product.product_name +
-                                    '</option>');
-                            });
-                        },
-                        error: function() {
-                            $productSelect.html(
-                                '<option value="">Error loading products</option>');
-                        }
-                    });
-                } else {
-                    $productSelect.html('<option value="">Select Product</option>');
-                }
-            });
-
-            function updateIMEIDropdowns() {
-                let selectedIMEIs = [];
-                $('.imei_id').each(function() {
-                    let selected = $(this).val();
-                    if (selected) {
-                        selectedIMEIs.push(selected);
+                    if (brandId) {
+                        $.ajax({
+                            url: "{{ route('admin.product.getproducts', ':brand_id') }}"
+                                .replace(
+                                    ':brand_id', brandId),
+                            type: 'GET',
+                            success: function (response) {
+                                $productSelect.empty().append(
+                                    '<option value="">Select Product</option>');
+                                $.each(response, function (index, product) {
+                                    $productSelect.append('<option value="' +
+                                        product.id +
+                                        '">' + product.product_name +
+                                        '</option>');
+                                });
+                            },
+                            error: function () {
+                                $productSelect.html(
+                                    '<option value="">Error loading products</option>');
+                            }
+                        });
+                    } else {
+                        $productSelect.html('<option value="">Select Product</option>');
                     }
                 });
 
-                $('.imei_id').each(function() {
-                    let currentVal = $(this).val();
-                    $(this).find('option').each(function() {
-                        let optionVal = $(this).val();
-                        if (optionVal === "" || optionVal === currentVal) {
-                            $(this).prop('disabled', false);
-                        } else {
-                            $(this).prop('disabled', selectedIMEIs.includes(optionVal));
+                function updateIMEIDropdowns() {
+                    let selectedIMEIs = [];
+                    $('.imei_id').each(function () {
+                        let selected = $(this).val();
+                        if (selected) {
+                            selectedIMEIs.push(selected);
                         }
                     });
+
+                    $('.imei_id').each(function () {
+                        let currentVal = $(this).val();
+                        $(this).find('option').each(function () {
+                            let optionVal = $(this).val();
+                            if (optionVal === "" || optionVal === currentVal) {
+                                $(this).prop('disabled', false);
+                            } else {
+                                $(this).prop('disabled', selectedIMEIs.includes(optionVal));
+                            }
+                        });
+                    });
+                }
+
+                $(document).on('change', '.product-select', function () {
+                    let $row = $(this).closest('tr'); // Get current row
+                    let productId = $(this).val();
+                    let imeiDropdown = $row.find('.imei_id');
+                    let urK = "{{ route('admin.sale.get-imeis', ':productId') }}".replace(':productId', productId);
+
+                    if (productId) {
+                        $.ajax({
+                            url: urK,
+                            method: 'GET',
+                            success: function (data) {
+                                imeiDropdown.empty().append('<option value="">Select IMEI No</option>');
+                                $.each(data, function (id, imei) {
+                                    imeiDropdown.append('<option value="' + id + '">' + imei + '</option>');
+                                });
+
+                                updateIMEIDropdowns();
+                            },
+                            error: function () {
+                                alert('Could not fetch IMEI numbers.');
+                            }
+                        });
+                    }
                 });
-            }
 
-            $(document).on('change', '.product-select', function () {
-                let $row = $(this).closest('tr'); // Get current row
-                let productId = $(this).val();
-                let imeiDropdown = $row.find('.imei_id');
-                let urK = "{{ route('admin.sale.get-imeis', ':productId') }}".replace(':productId', productId);
+                $(document).on('change', '.imei_id', function () {
+                    updateIMEIDropdowns();
+                });
 
-                if (productId) {
-                    $.ajax({
-                        url: urK,
-                        method: 'GET',
-                        success: function (data) {
-                            imeiDropdown.empty().append('<option value="">Select IMEI No</option>');
-                            $.each(data, function (id, imei) {
-                                imeiDropdown.append('<option value="' + id + '">' + imei + '</option>');
-                            });
+                // $('.tax, .discount, .total,.amount,.reference_no , .Processingfee,.emicharge , .DownPayment,.FinanceAmount,.MonthDuration,.DeductionDate , .Penalty').inputmask({
+                //     regex: "^[0-9.]*$",
+                //     placeholder: ''
+                // });
 
-                            updateIMEIDropdowns();
+                $('input[name="ref_mobile_no"]').mask('0000000000');
+
+                $('#name, #city').inputmask({
+                    regex: "^[a-zA-Z ]*$",
+                    placeholder: ''
+                });
+
+                $('#saleForm').validate({
+                    rules: {
+
+                        file_no: {
+                            required: true
                         },
-                        error: function () {
-                            alert('Could not fetch IMEI numbers.');
-                        }
-                    });
-                }
-            });
 
-            $(document).on('change', '.imei_id', function () {
-                updateIMEIDropdowns();
-            });
-
-            // $('.tax, .discount, .total,.amount,.reference_no , .Processingfee,.emicharge , .DownPayment,.FinanceAmount,.MonthDuration,.DeductionDate , .Penalty').inputmask({
-            //     regex: "^[0-9.]*$",
-            //     placeholder: ''
-            // });
-
-            $('input[name="ref_mobile_no"]').mask('0000000000');
-
-            $('#name, #city').inputmask({
-                regex: "^[a-zA-Z ]*$",
-                placeholder: ''
-            });
-
-            $('#saleForm').validate({
-                rules: {
-
-                    file_no:{
-                        required: true
                     },
+                    messages: {
 
-                },
-                messages: {
+                        file_no: {
+                            required: "Please enter a file Number",
+                        },
 
-                    file_no:{
-                        required: "Please enter a file Number",
                     },
-
-                },
-                errorElement: 'span',
-                errorClass: 'text-danger',
-                highlight: function(element, errorClass) {
-                    $(element).addClass("is-invalid");
-                },
-                unhighlight: function(element, errorClass) {
-                    $(element).removeClass("is-invalid");
-                }
+                    errorElement: 'span',
+                    errorClass: 'text-danger',
+                    highlight: function (element, errorClass) {
+                        $(element).addClass("is-invalid");
+                    },
+                    unhighlight: function (element, errorClass) {
+                        $(element).removeClass("is-invalid");
+                    }
+                });
             });
         });
 
