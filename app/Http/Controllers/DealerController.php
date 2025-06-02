@@ -75,9 +75,7 @@ class DealerController extends Controller
             'city' => 'required',
         ]);
         $dealer = Dealer::findOrFail($id);
-
         $dealer->update($validatedData);
-
         return redirect()->route('admin.dealer.index')->with('success', 'Dealer updated successfully.');
     }
 
