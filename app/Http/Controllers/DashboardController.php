@@ -22,6 +22,8 @@ class DashboardController extends Controller
 
         $productCount = Product::count();
 
+        $dealerCount = Customer::whereNull('deleted_at')->count();
+
         $customerCount = Customer::count();
 
         $sales = Sale::whereDate('created_at', Carbon::today())
@@ -49,6 +51,7 @@ class DashboardController extends Controller
 
         return response()->json([
             'product_count' => $productCount,
+            'dealer_count' => $dealerCount,
             'customer_count' => $customerCount,
             'salesAmountCash' => $salesAmountCash,
             'salesAmountOnline'=>$salesAmountOnline,

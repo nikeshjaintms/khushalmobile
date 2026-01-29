@@ -41,6 +41,7 @@
             success: function (response) {
                 $('#productCount').text(response.product_count);
                 $('#customerCount').text(response.customer_count);
+                $('#dealerCount').text(response.dealer_count);
                 $('#transactionin').text('₹'+response.transactionin);
                 $('#transactionout').text('₹'+response.transactionout);
                 $('#sales').text('₹'+response.sales);

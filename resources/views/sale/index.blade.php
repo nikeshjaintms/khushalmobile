@@ -84,7 +84,7 @@
                                                     @elseif($status === 'return')
                                                         <span class="badge bg-danger">Return</span>
                                                     @else
-                                                        <span class="badge bg-secondary">N/A</span>
+                                                        <span class="badge bg-secondary"></span>
                                                     @endif
                                                 @endforeach
                                             </td>
