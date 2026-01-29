@@ -24,7 +24,7 @@ class SaleController extends Controller
      */
     public function index()
     {
-        $sales = Sale::with(['customer', 'saleProducts.brand', 'saleProducts.product', 'saleProducts'])->get();
+        $sales = Sale::with(['customer', 'saleProducts.brand', 'saleProducts.product', 'saleProducts', 'saleProducts.purchaseProduct'])->get();
         return view('sale.index', compact('sales'));
     }
 

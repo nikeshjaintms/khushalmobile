@@ -51,6 +51,7 @@
                                         <th>Product</th>
                                         <th>IMEI</th>
                                         <th>Final Total amount</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
@@ -72,6 +73,21 @@
                                             </td>
                                             <td>{{ $product->purchaseProduct->imei ?? '-' }}</td>
                                             <td>{{ $item->total_amount}}</td>
+
+                                            {{-- Status (sold / return) --}}
+                                            <td>
+                                                @foreach ($item->saleProducts as $product)
+                                                    @php $status = $product->purchaseProduct->status ?? null; @endphp
+
+                                                    @if($status === 'sold')
+                                                        <span class="badge bg-success">Sold</span>
+                                                    @elseif($status === 'return')
+                                                        <span class="badge bg-danger">Return</span>
+                                                    @else
+                                                        <span class="badge bg-secondary">N/A</span>
+                                                    @endif
+                                                @endforeach
+                                            </td>
                                             <td>
                                                     <a href="{{ route('admin.invoice.index', $item->id) }}">
                                                         <i class="btn btn-link btn-danger">
