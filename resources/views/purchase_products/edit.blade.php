@@ -94,7 +94,7 @@
                                                     <th>IMEI</th>
                                                     <th>Color</th>
                                                     <th>Price</th>
-                                                    <th>Discount</th>
+                                                    {{-- <th>Discount</th> --}}
                                                     {{-- <th>Discount Amount</th> --}}
                                                     <th>SubTotal</th>
                                                     <th>Tax</th>
@@ -131,7 +131,13 @@
                                                     <td style="width: fit-content;">
                                                             <div class="input-wrapper">
                                                             <input type="text" class="form-control imei-input" name="imei[]"
-                                                                   id="imei" value="{{  $pp->imei }}" data-row-id="{{ $pp->id }}" required>
+                                                                   id="imei" value="{{  $pp->imei }}" data-row-id="{{ $pp->id }}" required
+                                                                   inputmode="numeric"
+                                                                    pattern="[0-9]{15}"
+                                                                    minlength="15"
+                                                                    maxlength="15"
+                                                                    oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,15)"
+                                                                    >
                                                                 <div class="error-message d-none text-danger"></div>
                                                             </div>
                                                             @error('imei.')
@@ -143,10 +149,10 @@
                                                             id="color" value="{{  $pp->color }}" required></td>
                                                     <td><input type="number" class="form-control" name="price[]"
                                                             id="price" value="{{  $pp->price }}" required></td>
-                                                    <td><input type="number" value="{{  $pp->discount }}" class="form-control" name="discount[]"
+                                                    {{-- <td><input type="number" value="{{  $pp->discount }}" class="form-control" name="discount[]"
                                                             id="discount" required></td>
                                                    <input type="hidden"  value="{{  $pp->discount_amount }}"   class="form-control" name="discount_amount[]"
-                                                            id="discount_amount" >
+                                                            id="discount_amount" > --}}
                                                     <td><input type="number" class="form-control" readonly name="price_subtotal[]"
                                                             id="price_subtotal" value="{{  $pp->price_subtotal }}" required></td>
                                                     <td><input type="number" class="form-control" name="tax[]"
@@ -207,10 +213,10 @@
                                         <div class="form-group">
                                             <label for="">Rounded Amount<span style="color: red">*</span></label>
                                             <input type="number" class="form-control  total round_diff"
-                                                   name="total_rounded" id="total" placeholder="Enter Total  Amount"
+                                                   name="total_rounded" id="total_rounded" placeholder="Enter Total  Amount"
                                                    value="{{$purchase->total_rounded}}"
                                                    readonly required />
-                                            @error('total_amount')
+                                            @error('total_rounded')
                                             <p style="color: red;">{{ $message }}</p>
                                             @enderror
                                         </div>
@@ -219,10 +225,10 @@
                                         <div class="form-group">
                                             <label for="">Total Amount <span style="color: red">*</span></label>
                                             <input type="number" class="form-control total_rounded"
-                                                   name="total" id="total_rounded" placeholder="Enter Total  Amount rounded"
+                                                   name="total" id="total" placeholder="Enter Total  Amount rounded"
                                                    value="{{$purchase->total}}"
                                                    readonly required />
-                                            @error('total_rounded')
+                                            @error('total_amount')
                                             <p style="color: red;">{{ $message }}</p>
                                             @enderror
                                         </div>

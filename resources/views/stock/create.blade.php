@@ -592,15 +592,23 @@
                         success: function (response) {
                             const $productReturned = $('#productReturned'); // Your message container
 
+                            console.log("Response:", response);
                             if (response.status === 200) {
+                                $('.error-message').html('').addClass('d-none').hide();
+                                $('#imei-error-id').addClass('d-none').hide();
+                                $('#productReturned').removeClass('text-danger');
+
                                 $productReturned
                                     .text(response.message)
                                     .css('color', 'green')
                                     .show();
 
-                                $('.error-message').text('').addClass('d-none').hide();
+
+                                // $('.error-message').text('').addClass('d-none').hide();
                                 form.submit(); // Assuming `form` is your form element
                             } else if (response.status === 422) {
+
+                                console.log("Validation errors:", response.invalid_numbers);
                                 // let mainMessage = 'IMEI validation error';
                                 let mainMessage ;
                                 if (response.message) {

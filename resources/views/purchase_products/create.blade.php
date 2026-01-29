@@ -101,7 +101,7 @@
                                                     <th>IMEI</th>
                                                     <th>Color</th>
                                                     <th>Price</th>
-                                                    <th>Discount</th>
+                                                    {{-- <th>Discount</th> --}}
                                                     {{-- <th>Discount Amount</th> --}}
                                                     <th> SubTotal</th>
                                                     <th>Tax</th>
@@ -160,12 +160,12 @@
                                                             <div class="text-red-500">{{ $message }}</div>
                                                         @enderror
                                                     </td>
-                                                    <td><input type="number" class="form-control" name="discount[]"
+                                                    {{-- <td><input type="number" class="form-control" name="discount[]"
                                                             id="discount" value="0" required>
                                                         @error('discount[]')
                                                             <div class="text-red-500">{{ $message }}</div>
                                                         @enderror
-                                                    </td>
+                                                    </td> --}}
                                                     <input type="hidden" class="form-control" readonly
                                                         name="discount_amount[]" id="discount_amount">
                                                     <td><input type="text" class="form-control" readonly
@@ -650,11 +650,11 @@
                         maxlength: 15,
                         uniqueIMEI: true,
                     },
-                    "discount[]": {
-                        required: true,
-                        number: true,
-                        min: 0
-                    },
+                    // "discount[]": {
+                    //     required: true,
+                    //     number: true,
+                    //     min: 0
+                    // },
                     "discount_amount[]": {
                         required: true,
                         number: true,
@@ -727,11 +727,11 @@
                         number: "Please enter a valid number",
                         min: "Quantity must be greater than 0"
                     },
-                    "discount[]": {
-                        required: "Discount is required",
-                        number: "Please enter a valid number",
-                        min: "Discount cannot be negative"
-                    },
+                    // "discount[]": {
+                    //     required: "Discount is required",
+                    //     number: "Please enter a valid number",
+                    //     min: "Discount cannot be negative"
+                    // },
                     "discount_amount[]": {
                         required: "Discount amount is required",
                         number: "Please enter a valid number",

@@ -25,8 +25,13 @@ class PurchaseController extends Controller
 
         $request->validate([
             'imei' => 'required|array|min:1',
-            'imei.*' => 'required|string|distinct|unique:purchase_product,imei',
-        ], [
+            'imei.*' => [
+                    'required',
+                    'string',
+                    'distinct',
+                    Rule::unique('purchase_product', 'imei')->whereNull('deleted_at'),
+                ],
+            ], [
             'imei.*.unique' => 'One or more IMEI numbers already exist in the system.',
             'imei.*.distinct' => 'IMEI numbers must be unique within the form.',
             'imei.*.required' => 'Each IMEI number is required.',
@@ -139,7 +144,7 @@ class PurchaseController extends Controller
         }
 
         // Check existing IMEIs in DB
-        $existingImeis = PurchaseProduct::whereIn('imei', $imeiNumbers)->get();
+        $existingImeis = PurchaseProduct::whereIn('imei', $imeiNumbers)->whereNull('deleted_at')->get();
 
         foreach ($existingImeis as $product) {
             $imei = $product->imei;
@@ -187,6 +192,7 @@ class PurchaseController extends Controller
         // Check existing IMEIs in DB, excluding ignored ones (from this edit)
         $existingProducts = PurchaseProduct::whereNotIn('id', $ignoreIds)
             ->whereIn('imei', $imeiNumbers)
+            ->whereNull('deleted_at')
             ->get();
 
         foreach ($existingProducts as $product) {
@@ -226,7 +232,14 @@ class PurchaseController extends Controller
 
        $request->validate([
             'imei' => 'required|array|min:1',
-            'imei.*' => 'required|string|distinct|unique:purchase_product,imei',
+            // 'imei.*' => 'required|string|distinct|unique:purchase_product,imei',
+            'imei.*' => [
+                'required',
+                'string',
+                'distinct',
+                Rule::unique('purchase_product', 'imei')
+                    ->whereNull('deleted_at'),
+            ],
         ], [
             'imei.*.unique' => 'One or more IMEI numbers already exist in the system.',
             'imei.*.distinct' => 'IMEI numbers must be unique within the form.',
@@ -480,13 +493,13 @@ class PurchaseController extends Controller
     public function destroy(Purchase $purchase, $id)
     {
         $purchase = Purchase::find($id);
+
         if (!$purchase) {
             return response()->json(['error' => 'Not Found Any Puchase Order'], 400);
         }
-        PurchaseProduct::where('purchase_id', $id)->delete();
-
+        $pp = PurchaseProduct::where('purchase_id', $id)->delete();
+        //  dd($pp);
         $purchase->delete();
-
         return response()->json(['status' => 'success', 'message' => "Deleted Successfully "], 200);
     }
 }
