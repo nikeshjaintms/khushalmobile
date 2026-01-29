@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\DailyNote;
+use App\Models\Dealer;
 use App\Models\Deduction;
 use App\Models\Product;
 use App\Models\Transction;
@@ -22,7 +23,7 @@ class DashboardController extends Controller
 
         $productCount = Product::count();
 
-        $dealerCount = Customer::whereNull('deleted_at')->count();
+        $dealerCount = Dealer::whereNull('deleted_at')->count();
 
         $customerCount = Customer::count();
 
