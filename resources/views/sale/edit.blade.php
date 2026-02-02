@@ -41,7 +41,7 @@
                         <div class="card-header">
                             <div class="card-title">Edit Sale</div>
                         </div>
-                        <form method="POST" action="{{ route('admin.sale.update', [$data->id , $deduction->finance_id]) }}" id="saleForm">
+                        <form method="POST" action="{{ route('admin.sale.update', [$data->id , optional($deduction)->finance_id]) }}" id="saleForm">
                             @csrf
                             @method('PUT')
 
@@ -50,6 +50,7 @@
                                     {{Session::get('error')}}
                                 </div>
                             @endif
+                                <input type="hidden" name="finance_id" value="{{ optional($deduction)->finance_id }}">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-4">

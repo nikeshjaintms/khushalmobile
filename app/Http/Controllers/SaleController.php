@@ -244,9 +244,18 @@ class SaleController extends Controller
 
         $selectfinance = Finance::where('customer_id', $sale->customer_id)->first();
 
-        $selectfinanceID = optional($selectfinance)->finances_master_id;
+        // $selectfinanceID = optional($selectfinance)->finances_master_id;
 
-        $deduction = Deduction::where('finance_id', $selectfinance->id)->first();
+        // $deduction = Deduction::where('finance_id', $selectfinance->id)->first();
+
+        $selectfinanceID = null; // ✅ ALWAYS define first
+
+        if ($selectfinance) {
+            $selectfinanceID = $selectfinance->finances_master_id;
+        }
+        $deduction = $selectfinance
+            ? Deduction::where('finance_id', $selectfinance->id)->first()
+            : null;
 
         return view('sale.edit', compact('data', 'data1', 'customers', 'selectedCustomer', 'products', 'brands', 'selectedProductId', 'selectedBrandId', 'imiNumbers', 'selectfinance', 'selectedImi', 'selectfinanceID', 'financeMaster', 'salestransc', 'deduction'));
     }
@@ -254,11 +263,12 @@ class SaleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Sale $sales, $id, $financeId)
+    public function update(Request $request, Sale $sales, $id)
     {
         DB::beginTransaction();
 
         try {
+                    $financeId = $request->input('finance_id'); // may be null
             // 1. Update sale
             $data = Sale::findOrFail($id);
             $data->update([
@@ -299,7 +309,7 @@ class SaleController extends Controller
             }
 
             // 4. Finance update with deduction logic
-            if ($request->has('finance')) {
+            if ($financeId && $request->has('finance')) {
                 $financeData = $request->finance;
 
                 $finance = Finance::findOrFail($financeId);

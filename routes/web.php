@@ -41,7 +41,7 @@ Route::post('/login', [UserController::class, 'login'])->name('admin.login.post'
 Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/', function () {
         return view('index');
-    })->name('dashboard');
+    })->name(name: 'dashboard');
 
     Route::get('/logout', [UserController::class, 'logout'])->name('admin.logout');
 
@@ -170,7 +170,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('create', 'create')->name('admin.sale.create')->middleware('permission:create-sale');
         Route::post('store', 'store')->name('admin.sale.store');
         Route::get('edit/{id}', 'edit')->name('admin.sale.edit')->middleware('permission:edit-sale');
-        Route::put('update/{id}/{financeId}', 'update')->name('admin.sale.update');
+        // Route::put('update/{id}/{financeId}', 'update')->name('admin.sale.update');
+        Route::put('update/{id}', 'update')->name('admin.sale.update');
         Route::delete('delete/{id}', 'destroy')->name('admin.sale.delete')->middleware('permission:delete-sale');
         Route::get('/{id}', 'show')->name('admin.sale.show')->middleware('permission:delete-sale');
         Route::get('/get-imeis/{product_id}', 'getImeis')->name('admin.sale.get-imeis');
