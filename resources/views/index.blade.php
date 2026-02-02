@@ -1,5 +1,3 @@
-{{--
-text/x-generic index.blade.php ( HTML document, UTF-8 Unicode text )
 @extends('layouts.app')
 
 @section('content-page')
@@ -349,23 +347,32 @@ text/x-generic index.blade.php ( HTML document, UTF-8 Unicode text )
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="card">
-                        <h4 id="transactionTitle" style="text-align: center; margin-top: .5rem;"> Transactions</h4>
+                        <h4 id="transactionTitle" style="text-align: center; margin-top: .5rem;">Sales Transactions</h4>
                         <div class="card-body" style="height: 20em; overflow-y: scroll;">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="transaction_type">Transactions<span style="color: red">*</span></label>
-                                        <select name="transaction_type" id="transaction_type" class="form-control" required>
-                                            <option value="all">Select Transaction Type</option>
-                                            <option value="sales">Sales Transactions</option>
-                                            <option value="deductions">Emi Transactions</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <table class="table table-striped d-none">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Sr no</th>
+                                        <th>Amount</th>
+                                        <th>Payment Mode</th>
+                                        <th>Reference No</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="salesTransactionList" >
+                                    <!-- Notes will be dynamically added here -->
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <h4 id="transactionTitle" style="text-align: center; margin-top: .5rem;">EMI Transactions</h4>
+                        <div class="card-body" style="height: 20em; overflow-y: scroll;">
+                            <table class="table table-striped">
                                 <thead>
                                     <tr>
                                         <th>Sr no</th>
@@ -507,81 +514,152 @@ text/x-generic index.blade.php ( HTML document, UTF-8 Unicode text )
         {{--    });--}}
         {{--}--}}
 
-        function fetchTransactions(type) {
-            $.ajax({
-                url: "{{ route('transcation.display') }}",
-                method: "GET",
-                success: function (response) {
-                    if (response.success) {
-                        var tbody = $("#salesTransactionList");
-                        tbody.empty();
+        // function fetchTransactions(type) {
+        //     $.ajax({
+        //         url: "{{ route('transcation.display') }}",
+        //         method: "GET",
+        //         success: function (response) {
+        //             if (response.success) {
+        //                 var tbody = $("#salesTransactionList");
+        //                 tbody.empty();
 
-                        let transactions = [];
+        //                 let transactions = [];
 
-                        if (type === "sales") {
-                            transactions = response.sales_transactions;
-                        } else if (type === "deductions") {
-                            // transactions = response.transactionsOut;
-                            transactions = [...response.transactionsOut, ...response.transactionsIn];
-                        }
+        //                 if (type === "sales") {
+        //                     transactions = response.sales_transactions;
+        //                 } else if (type === "deductions") {
+        //                     // transactions = response.transactionsOut;
+        //                     transactions = [...response.transactionsOut, ...response.transactionsIn];
+        //                 }
 
-                        if (transactions.length === 0) {
-                            tbody.append("<tr><td colspan='4' class='text-center'>No transactions found</td></tr>");
-                        } else {
-                            $('table').removeClass('d-none');
-                            $.each(transactions, function (index, transaction) {
-                                tbody.append(`
+        //                 if (transactions.length === 0) {
+        //                     tbody.append("<tr><td colspan='4' class='text-center'>No transactions found</td></tr>");
+        //                 } else {
+        //                     $('table').removeClass('d-none');
+        //                     $.each(transactions, function (index, transaction) {
+        //                         tbody.append(`
 
-                            <tr>
-                                <td>${index + 1}</td>
-                                <td>${transaction.amount ?? '-'}</td>
-                                <td>${getPaymentModeName(transaction.payment_mode)}</td>
-                                <td>${transaction.reference_no ?? '-'}</td>
-                            </tr>
-                        `);
-                            });
-                        }
-                    }
-                },
-                error: function (xhr) {
-                    console.log(xhr.responseText);
-                }
-            });
-        }
-        $('#transaction_type').on('change', function () {
-            const selectedType = $(this).val();
-            if (selectedType === "sales" || selectedType === "deductions") {
-                fetchTransactions(selectedType);
-            } else {
-                $("#salesTransactionList").empty();
+        //                     <tr>
+        //                         <td>${index + 1}</td>
+        //                         <td>${transaction.amount ?? '-'}</td>
+        //                         <td>${getPaymentModeName(transaction.payment_mode)}</td>
+        //                         <td>${transaction.reference_no ?? '-'}</td>
+        //                     </tr>
+        //                 `);
+        //                     });
+        //                 }
+        //             }
+        //         },
+        //         error: function (xhr) {
+        //             console.log(xhr.responseText);
+        //         }
+        //     });
+        // }
+        // $('#transaction_type').on('change', function () {
+        //     const selectedType = $(this).val();
+        //     if (selectedType === "sales" || selectedType === "deductions") {
+        //         fetchTransactions(selectedType);
+        //     } else {
+        //         $("#salesTransactionList").empty();
+        //     }
+        // });
+        // $('#transaction_type').on('change', function () {
+        //     const selected = $(this).val();
+        //     const title = $('#transactionTitle');
+
+        //     if (selected === 'sales') {
+        //         title.text('Sales Transactions');
+        //     } else if (selected === 'deductions') {
+        //         title.text('Emi Transactions');
+        //     } else if (selected === 'all') {
+        //         title.text(' Transactions');
+        //     } else {
+        //         title.text('Please select a transaction type');
+        //         $('#salesTransactionList').html("<tr><td colspan='5' class='text-center'>Please select a transaction type</td></tr>");
+        //     }
+        // });
+
+        // function getPaymentModeName(mode) {
+        //     switch (parseInt(mode)) {
+        //         case 1:
+        //             return "Cash";
+        //         case 2:
+        //             return "Online";
+        //         default:
+        //             return "Unknown";
+        //     }
+        // }
+
+
+
+    function fetchAllTransactions() {
+        $.ajax({
+            url: "{{ route('transcation.display') }}",
+            method: "GET",
+            success: function (response) {
+
+                if (!response.success) return;
+
+                renderSales(response.sales_transactions);
+                renderEmi(response.emi_transactions);
+            },
+            error: function (xhr) {
+                console.log(xhr.responseText);
             }
         });
-        $('#transaction_type').on('change', function () {
-            const selected = $(this).val();
-            const title = $('#transactionTitle');
+    }
 
-            if (selected === 'sales') {
-                title.text('Sales Transactions');
-            } else if (selected === 'deductions') {
-                title.text('Emi Transactions');
-            } else if (selected === 'all') {
-                title.text(' Transactions');
-            } else {
-                title.text('Please select a transaction type');
-                $('#salesTransactionList').html("<tr><td colspan='5' class='text-center'>Please select a transaction type</td></tr>");
-            }
-        });
+    function renderSales(data) {
+        const tbody = $("#salesTransactionList");
+        tbody.empty();
 
-        function getPaymentModeName(mode) {
-            switch (parseInt(mode)) {
-                case 1:
-                    return "Cash";
-                case 2:
-                    return "Online";
-                default:
-                    return "Unknown";
-            }
+        if (!data || data.length === 0) {
+            tbody.append("<tr><td colspan='4' class='text-center'>No Sales Found</td></tr>");
+            return;
         }
+
+        $.each(data, function (index, transaction) {
+            tbody.append(`
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${transaction.amount ?? '-'}</td>
+                    <td>${getPaymentModeName(transaction.payment_mode)}</td>
+                    <td>${transaction.reference_no ?? '-'}</td>
+                </tr>
+            `);
+        });
+    }
+
+    function renderEmi(data) {
+        const tbody = $("#emiTransactionList");
+        tbody.empty();
+
+        if (!data || data.length === 0) {
+            tbody.append("<tr><td colspan='4' class='text-center'>No EMI Found</td></tr>");
+            return;
+        }
+
+        $.each(data, function (index, transaction) {
+            tbody.append(`
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${transaction.amount ?? '-'}</td>
+                    <td>${getPaymentModeName(transaction.payment_mode)}</td>
+                    <td>${transaction.reference_no ?? '-'}</td>
+                </tr>
+            `);
+        });
+    }
+
+    function getPaymentModeName(mode) {
+        return parseInt(mode) === 1 ? 'Cash' : 'Online';
+    }
+
+    // Initial load
+    fetchAllTransactions();
+
+    // Auto refresh every 10 seconds
+    setInterval(fetchAllTransactions, 10000);
 
         // Run once immediately
         fetchTransactionsIn();
