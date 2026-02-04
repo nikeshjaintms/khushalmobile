@@ -46,7 +46,7 @@ class SaleController extends Controller
      */
     public function create(Request $request)
     {
-        $customers = Customer::all();
+        $customers = Customer::orderBy('created_at', 'desc')->get();
         $brands = Brand::all();
         $products = Product::all();
         $financeMasters = FinanceMaster::all();

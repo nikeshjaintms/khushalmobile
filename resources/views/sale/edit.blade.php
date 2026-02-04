@@ -128,7 +128,7 @@
 
                                                         <select name="brand_id[]"  class="form-control brand-name">
                                                             @foreach($brands as $brand)
-                                                                <option value="{{ $brand->id }}" {{ isset($selectedBrandId[$index]) && $selectedBrandId[$index] == $brand->id ? 'selected' : '' }}>
+                                                                <option value="{{ $brand->id }}" {{ isset($item->product->brand_id) && $item->product->brand_id == $brand->id ? 'selected' : '' }}>
                                                                     {{ $brand->name }}
                                                                 </option>
                                                             @endforeach
@@ -139,7 +139,7 @@
 
                                                         <select name="products[{{ $index }}][product_id]"  class="form-control product-name">
                                                             @foreach($products as $product)
-                                                                <option value="{{ $product->id }}" {{ isset($selectedProductId[$index]) && $selectedProductId[$index] == $product->id ? 'selected' : '' }}>
+                                                                <option value="{{ $product->id }}" {{ isset($item->product_id) && $item->product_id == $product->id ? 'selected' : '' }}>
                                                                     {{ $product->product_name }}
                                                                 </option>
                                                             @endforeach
@@ -152,7 +152,7 @@
                                                     <td>
                                                         <select name="products[{{ $index }}][imei_id]"  class="form-control imei_id">
                                                             @foreach($imiNumbers as $imi)
-                                                                <option value="{{ $imi->id }}" {{ isset($selectedImi[$index]) && $selectedImi[$index] == $imi->id ? 'selected' : '' }}>
+                                                                <option value="{{ $imi->id }}" {{ isset($item->imei_id) && $item->imei_id == $imi->id ? 'selected' : '' }}>
                                                                     {{ $imi->imei }}
                                                                 </option>
                                                             @endforeach
