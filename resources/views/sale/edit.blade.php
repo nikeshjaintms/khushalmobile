@@ -108,8 +108,8 @@
                                                 <th scope="col">Product</th>
                                                 <th scope="col">IMI No</th>
                                                 {{--                                                <th scope="col">Price</th> --}}
-                                                <th scope="col">Discount</th>
-                                                {{--                                                <th scope="col">Discount Amount</th> --}}
+                                                <!--<th scope="col">Discount</th>
+                                                {{--                                                <th scope="col">Discount Amount</th> --}}-->
                                                 <th scope="col">Sub Total</th>
                                                 <th scope="col">Tax</th>
                                                 <th scope="col">Tax Amount</th>
@@ -171,7 +171,7 @@
                                                     @enderror
 
 
-                                                    <td>
+                                                    <!--<td>
                                                         <div class="input-group">
                                                         <input type="text" class="form-control discount"
                                                                name="products[{{$index}}][discount]" id="discount"
@@ -192,7 +192,7 @@
                                                     @error('discount_amount')
                                                     <p style="color: red;">{{ $message }}</p>
                                                     @enderror
-
+                                                    -->
 
                                                     <td>
                                                         <div class="input-group">

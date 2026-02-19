@@ -95,8 +95,8 @@ class SaleController extends Controller
             'products' => 'required|array|min:1',
             'products.*.product_id' => 'required|exists:products,id',
             'products.*.price' => 'required|numeric|min:0',
-            'products.*.discount' => 'nullable|numeric|min:0',
-            'products.*.discount_amount' => 'nullable|numeric|min:0',
+            //'products.*.discount' => 'nullable|numeric|min:0',
+           // 'products.*.discount_amount' => 'nullable|numeric|min:0',
             'products.*.price_subtotal' => 'numeric|min:0',
             'products.*.tax' => 'numeric|min:0',
             'products.*.tax_amount' => 'numeric|min:0',
@@ -151,18 +151,18 @@ class SaleController extends Controller
                     'brand_id' => $product['brand_id'],
                     'imei_id' => $product['imei_id'],
                     'price' => $product['price'],
-                    'discount' => $product['discount'] ?? 0,
-                    'discount_amount' => $product['discount_amount'] ?? 0,
+                   // 'discount' => $product['discount'] ?? 0,
+                   // 'discount_amount' => $product['discount_amount'] ?? 0,
                     'price_subtotal' => $product['price_subtotal'] ?? 0,
                     'tax' => $product['tax'] ?? 0,
                     'tax_amount' => $product['tax_amount'] ?? 0,
                     'price_total' => $product['price_total'] ?? 0,
                 ]);
 
-                PurchaseProduct::where('product_id', $product['product_id'])->where('id', $product['imei_id'])
-                    ->update([
-                        'status' => 'sold',
-                        'invoice_id' => $sale->id,
+                 PurchaseProduct::where('product_id', $product['product_id'])->where('id', $product['imei_id'])
+        ->update([
+            'status' => 'sold',
+            'invoice_id' => $sale->id,
                     ]);
             }
 
@@ -289,8 +289,8 @@ class SaleController extends Controller
                     'product_id' => $product['product_id'],
                     'imei_id' => $product['imei_id'],
                     'price' => $product['price'],
-                    'discount' => $product['discount'] ?? 0,
-                    'discount_amount' => $product['discount_amount'] ?? 0,
+                   // 'discount' => $product['discount'] ?? 0,
+                    //'discount_amount' => $product['discount_amount'] ?? 0,
                     'price_subtotal' => $product['price_subtotal'] ?? 0,
                     'tax' => $product['tax'] ?? 0,
                     'tax_amount' => $product['tax_amount'] ?? 0,

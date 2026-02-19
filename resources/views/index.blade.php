@@ -381,7 +381,7 @@
                                         <th>Reference No</th>
                                     </tr>
                                 </thead>
-                                <tbody id="salesTransactionList" >
+                                <tbody id="emiTransactionList" >
                                     <!-- Notes will be dynamically added here -->
                                 </tbody>
 

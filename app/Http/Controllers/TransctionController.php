@@ -45,8 +45,8 @@ class TransctionController extends Controller
             'payment_mode' => $request->payment_mode,
             'amount' => $request->amount,
             'type' => $request->type,
-            'remark' => $request->remark ?? NULL,
             'reference_no' => $request->reference_no ?? NULL,
+            'remark' => $request->remark ?? NULL,
         ]);
         Session::flash('success','Transaction created successfully');
         return redirect()->route('admin.transaction.index')->with('success','Transaction created successfully');

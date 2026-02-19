@@ -65,7 +65,10 @@
                                         <th>Sr No</th>
                                         <th>Amount</th>
                                         <th>Type</th>
+                                        <th>Reference No</th>
+                                        <th>Remark</th>
                                         <th>Action</th>
+                                        
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -74,17 +77,23 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{$item->amount }}</td>
                                             <td>
-                                                @if($item->type == 'in')
-                                                    <span class="badge badge-success">
-                                    {{ Str::upper($item->type) }}
-                                </span>
+                                               
+                                                 @if($item->type == 'in')
+                                                <span class="badge badge-success">
+                                                {{ Str::upper($item->type) }}
+                                                 </span>
 
                                                 @elseif($item->type == 'out')
-                                                    <span class="badge badge-danger">
-                                    {{ Str::upper($item->type) }}
-                                </span>
+                                                <span class="badge badge-danger">
+                                                {{ Str::upper($item->type) }}
+                                                </span>
+
                                                 @endif
                                             </td>
+
+                                            <td>{{ $item->reference_no }}</td>
+                                            <td>{{ $item->remark }}</td>
+
                                                 <td>
                                                     @can('edit-transaction')
                                                         <a href="{{ route('admin.transaction.edit', $item->id) }}" class="btn btn-lg btn-link btn-primary">
@@ -102,7 +111,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="text-center">No data available</td>
+                                            <td colspan="6" class="text-center">No data available</td>
                                         </tr>
                                     @endforelse
                                     </tbody>
