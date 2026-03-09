@@ -523,6 +523,54 @@
 
     <script>
 
+        function calculateRow($row, isTotalAmountEdited) {
+            let price = parseFloat($row.find('.price').val()) || 0;
+            let discount = 0;
+            let tax = parseFloat($row.find('.tax').val()) || 0;
+            let totalAmount = parseFloat($row.find('.totalAmount').val()) || 0;
+
+            let discountAmount = 0;
+            if (isTotalAmountEdited) {
+                // When user edited totalAmount manually:
+                discountAmount = (totalAmount * discount) / 100;
+                price = totalAmount + discountAmount;  // back calculate price
+            } else {
+                // When user edited price/discount/tax:
+                discountAmount = (price * discount) / 100;
+                totalAmount = price - discountAmount;
+                $row.find('.totalAmount').val(totalAmount.toFixed(2));
+            }
+
+            const taxAmount = totalAmount - (totalAmount / (1 + (tax / 100)));
+            const subtotal = totalAmount - taxAmount;
+
+            $row.find('.discountAmount').val(discountAmount.toFixed(2));
+            $row.find('.priceSubTotal').val(subtotal.toFixed(2));
+            $row.find('.taxAmount').val(taxAmount.toFixed(2));
+        }
+
+            function calculateGrandTotal() {
+                let subtotalSum = 0, taxSum = 0, totalSum = 0;
+
+                $('#add-table-row tr').each(function () {
+                    subtotalSum += parseFloat($(this).find('.priceSubTotal').val()) || 0;
+                    taxSum += parseFloat($(this).find('.taxAmount').val()) || 0;
+                    totalSum += parseFloat($(this).find('.totalAmount').val()) || 0;
+                });
+
+                $('.subTotal').val(subtotalSum.toFixed(2));
+                $('.totalTaxAmount').val(taxSum.toFixed(2));
+                $('.finalTotalAmount').val(totalSum.toFixed(2));
+
+                const roundedTotal = (totalSum - Math.floor(totalSum) >= 0.5)
+                    ? Math.ceil(totalSum)
+                    : Math.floor(totalSum);
+                $('.total_amount_rounded').val(roundedTotal.toFixed(2));
+
+                const diff = roundedTotal - totalSum;
+                $('.round_diff').val(diff.toFixed(2));
+            }
+
         $(document).ready(function () {
             const today = new Date();
             const year = today.getFullYear();
@@ -576,56 +624,9 @@
             //     $row.find('.totalAmount').val(totalAmount.toFixed(2));
             // }
 
-            function calculateRow($row, isTotalAmountEdited) {
-                let price = parseFloat($row.find('.price').val()) || 0;
-                let discount = parseFloat($row.find('.discount').val()) || 0;
-                let tax = parseFloat($row.find('.tax').val()) || 0;
-                let totalAmount = parseFloat($row.find('.totalAmount').val()) || 0;
-
-                let discountAmount = 0;
-                if (isTotalAmountEdited) {
-                    // When user edited totalAmount manually:
-                    discountAmount = (totalAmount * discount) / 100;
-                    price = totalAmount + discountAmount;  // back calculate price
-                } else {
-                    // When user edited price/discount/tax:
-                    discountAmount = (price * discount) / 100;
-                    totalAmount = price - discountAmount;
-                    $row.find('.totalAmount').val(totalAmount.toFixed(2));
-                }
-
-                const taxAmount = totalAmount - (totalAmount / (1 + (tax / 100)));
-                const subtotal = totalAmount - taxAmount;
-
-                $row.find('.discountAmount').val(discountAmount.toFixed(2));
-                $row.find('.priceSubTotal').val(subtotal.toFixed(2));
-                $row.find('.taxAmount').val(taxAmount.toFixed(2));
-            }
-
-            function calculateGrandTotal() {
-                let subtotalSum = 0, taxSum = 0, totalSum = 0;
-
-                $('#add-table-row tr').each(function () {
-                    subtotalSum += parseFloat($(this).find('.priceSubTotal').val()) || 0;
-                    taxSum += parseFloat($(this).find('.taxAmount').val()) || 0;
-                    totalSum += parseFloat($(this).find('.totalAmount').val()) || 0;
-                });
-
-                $('.subTotal').val(subtotalSum.toFixed(2));
-                $('.totalTaxAmount').val(taxSum.toFixed(2));
-                $('.finalTotalAmount').val(totalSum.toFixed(2));
-
-                const roundedTotal = (totalSum - Math.floor(totalSum) >= 0.5)
-                    ? Math.ceil(totalSum)
-                    : Math.floor(totalSum);
-                $('.total_amount_rounded').val(roundedTotal.toFixed(2));
-
-                const diff = roundedTotal - totalSum;
-                $('.round_diff').val(diff.toFixed(2));
-            }
 
             // Input event: price, discount, tax
-            $(document).on('input', '.price, .discount, .tax ', function () {
+            $(document).on('input', '.price, .tax ', function () {
                 const $row = $(this).closest('tr');
                 calculateRow($row, false);
                 calculateGrandTotal();
@@ -781,11 +782,16 @@
                     success: function(data) {
                         $row.find('.price').val(data.mrp);
                         $row.find('.totalAmount').val(data.mrp);
-                        console.log(data.mrp);
+                        // console.log(data.mrp);
+
+                        calculateRow($row, false);
+                        calculateGrandTotal();
                     }
                 });
             } else {
-                $('.price').val('');
+                $row.find('.price').val('');
+                $row.find('.totalAmount').val('');
+                calculateGrandTotal();
             }
         });
 
