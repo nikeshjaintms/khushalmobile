@@ -41,6 +41,11 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
+                            <div class="float-end">
+                                <button type="button" class="btn btn-primary btn-sm btn-rounded" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+                                    <i class="fa fa-plus"></i> Add Customer Details
+                                </button>
+                            </div>
                             <div class="card-title">Add Sale</div>
                         </div>
                         <form method="POST" action="{{ route('admin.sale.store') }}" id="saleForm">
@@ -517,6 +522,44 @@
             </div>
         </div>
     </div>
+
+<div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCustomerModalLabel">Add New Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="ajaxCustomerForm">
+                @csrf
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Name<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Phone<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="phone" id="modal_phone" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Alternate Phone</label>
+                            <input type="text" class="form-control" name="alternate_phone">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">City<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="city" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success btn-rounded" id="saveCustomerBtn">Save Customer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('footer-script')
@@ -1057,5 +1100,105 @@
                 }
             });
         });
+
+        $(document).ready(function() {
+    // Initialize validation for the Modal Form
+    $('#ajaxCustomerForm').validate({
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 3
+                },
+                phone: {
+                    required: true,
+                    digits: true,
+                    minlength: 10,
+                    maxlength: 10
+                },
+                city: {
+                    required: true
+                }
+            },
+            messages: {
+                name: {
+                    required: "Please enter the customer's name",
+                    minlength: "Name must be at least 3 characters"
+                },
+                phone: {
+                    required: "Phone number is required",
+                    digits: "Please enter only numbers",
+                    minlength: "Phone number must be 10 digits",
+                    maxlength: "Phone number must be 10 digits"
+                },
+                city: "Please enter the city"
+            },
+            errorElement: 'span',
+            errorClass: 'text-danger',
+            highlight: function(element) {
+                $(element).addClass("is-invalid");
+            },
+            unhighlight: function(element) {
+                $(element).removeClass("is-invalid");
+            },
+            // This handles the actual AJAX submission only if validation passes
+            submitHandler: function(form) {
+                let $submitBtn = $('#saveCustomerBtn');
+                $submitBtn.prop('disabled', true).text('Saving...');
+
+                $.ajax({
+                    url: "{{ route('admin.customer.store') }}",
+                    method: "POST",
+                    data: $(form).serialize(),
+                    success: function(response) {
+                            if(response.status === "success" && response.customer) {
+
+                            // 1. Add and Select the new customer in the Sale dropdown
+                            let newOption = new Option(
+                                response.customer.name,
+                                response.customer.id,
+                                true,
+                                true
+                            );
+                            $('.customer').append(newOption).trigger('change');
+
+                            // 2. Show Success Notification using your notify system
+                            $.notify({
+                                icon: 'fas fa-check-circle',
+                                message: response.message // "Customer created successfully."
+                            },{
+                                type: 'success',
+                                placement: { from: "top", align: "right" },
+                                offset: { x: 20, y: 70 }
+                            });
+                            // 4. Close Modal and Reset
+                            $('#addCustomerModal').modal('hide');
+                            $(form)[0].reset();
+                            $(form).find(".is-invalid").removeClass("is-invalid");
+                        }
+                    },
+                    error: function(xhr) {
+                        // Handle Laravel Server-side validation errors
+                        if (xhr.status === 422) {
+                            let errors = xhr.responseJSON.errors;
+                            let errorMsg = '';
+                            $.each(errors, function(key, value) {
+                                errorMsg += value[0] + '\n';
+                            });
+                            alert(errorMsg);
+                        } else {
+                            alert('Something went wrong. Please try again.');
+                        }
+                    },
+                    complete: function() {
+                        $submitBtn.prop('disabled', false).text('Save Customer');
+                    }
+                });
+                return false; // Prevent default form submit
+            }
+        });
+
+        // Apply masks if necessary
+        $('#modal_phone').mask('0000000000');
+    });
     </script>
 @endsection

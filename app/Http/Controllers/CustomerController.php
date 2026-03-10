@@ -36,8 +36,22 @@ class CustomerController extends Controller
             'alternate_phone' => 'nullable|unique:customers',
             'city' => 'required',
         ]);
-        Customer::create($validatedData);
-        return redirect()->route('admin.customer.index')->with('success', 'Customer created successfully.');
+        $customer = Customer::create($validatedData);
+
+        if($request->ajax()){
+            
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Customer created successfully.',
+                'customer' => $customer,
+            ]);
+        }
+
+        if ($customer) {
+            return redirect()->route('admin.customer.index')->with('success', 'Customer created successfully.');
+        }
+
+        return redirect()->route('admin.customer.index')->with('error', 'Failed to create customer.');
     }
 
     /**
