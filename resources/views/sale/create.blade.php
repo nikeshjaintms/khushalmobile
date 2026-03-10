@@ -102,11 +102,11 @@
                                                 <th scope="col">sr no</th>
                                                 <th scope="col">Brand</th>
                                                 <th scope="col">Product</th>
-                                                <th scope="col">IMEI No</th>
+                                                <th scope="col" style="width: 20%">IMEI No</th>
                                                 <!--{{-- <th scope="col">Price</th> --}}-->
                                                 <!--<th scope="col">Discount</th>
                                                 {{-- <th scope="col">Discount Amount</th> --}}-->
-                                                <th scope="col"> Sub Total</th>
+                                                <th scope="col" > Sub Total</th>
                                                 <th scope="col">Tax</th>
                                                 <th scope="col">Tax Amount</th>
                                                 <th scope="col">Total</th>
@@ -148,7 +148,7 @@
                                                 <td>
                                                     <select class="form-control form-select imei_id imei-id"
                                                             name="products[0][imei_id]" aria-label="Default select example"
-                                                            required>
+                                                            required style="width: 100%">
                                                         <option selected> Select Imi No</option>
                                                     </select>
                                                     @error('imiNo') <p style="color: red;">{{ $message }}</p> @enderror
@@ -184,7 +184,6 @@
 
                                                 <td>
                                                     <div class="input-group">
-                                                    <span class="input-group-text" id="basic-addon2">₹</span>
                                                     <input type="number" class="form-control priceSubTotal" readonly
                                                            id="priceSubTotal" name="products[0][price_subtotal]"
                                                            required />
@@ -198,7 +197,6 @@
                                                     <div class="input-group">
                                                     <input type="number" class="form-control tax" id="tax"
                                                            name="products[0][tax]" value="18" required />
-                                                    <span class="input-group-text" id="basic-addon2">%</span>
                                                     </div>
                                                     @error('tax')
                                                     <p style="color: red;">{{ $message }}</p>
@@ -208,7 +206,6 @@
 
                                                 <td>
                                                     <div class="input-group">
-                                                        <span class="input-group-text" id="basic-addon2">₹</span>
                                                     <input type="number" class="form-control taxAmount tax-amount"
                                                            name="products[0][tax_amount]" id="tax_amount" readonly
                                                            required />
@@ -220,7 +217,6 @@
 
                                                 <td>
                                                     <div class="input-group">
-                                                        <span class="input-group-text" id="basic-addon2">₹</span>
                                                     <input type="number"
                                                            class="form-control total total-amount totalAmount"
                                                            id="totalAmount" name="products[0][price_total]" required />

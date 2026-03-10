@@ -106,7 +106,7 @@
                                                 <th scope="col">sr no</th>
                                                 <th scope="col">Brand</th>
                                                 <th scope="col">Product</th>
-                                                <th scope="col">IMEI No</th>
+                                                <th scope="col" style="width: 20%">IMEI No</th>
                                                 {{--                                                <th scope="col">Price</th> --}}
                                                 <!--<th scope="col">Discount</th>
                                                 {{--                                                <th scope="col">Discount Amount</th> --}}-->
@@ -150,7 +150,7 @@
                                                     </td>
 
                                                     <td>
-                                                        <select name="products[{{ $index }}][imei_id]"  class="form-control imei_id">
+                                                        <select name="products[{{ $index }}][imei_id]"  class="form-control imei_id" style="width: 100%">
                                                             @foreach($imiNumbers as $imi)
                                                                 <option value="{{ $imi->id }}" {{ isset($item->imei_id) && $item->imei_id == $imi->id ? 'selected' : '' }}>
                                                                     {{ $imi->imei }}
@@ -196,7 +196,6 @@
 
                                                     <td>
                                                         <div class="input-group">
-                                                        <span class="input-group-text" id="basic-addon2">₹</span>
                                                         <input type="number" class="form-control priceSubTotal"
                                                                id="priceSubTotal" name="products[{{$index}}][price_subtotal]"
                                                                value="{{ $item->price_subtotal }}" readonly required />
@@ -211,7 +210,6 @@
                                                         <input type="number" class="form-control tax" id="tax"
                                                                name="products[{{$index}}][tax]" value="{{ $item->tax }}"
                                                                required />
-                                                            <span class="input-group-text" id="basic-addon2">%</span>
                                                         </div>
                                                         @error('tax')
                                                         <p style="color: red;">{{ $message }}</p>
@@ -220,7 +218,6 @@
 
                                                     <td>
                                                         <div class="input-group">
-                                                            <span class="input-group-text" id="basic-addon2">₹</span>
                                                         <input type="number" class="form-control taxAmount tax-amount"
                                                                name="products[{{$index}}][tax_amount]" id="tax_amount"
                                                                value="{{ $item->tax_amount }}" readonly required />
@@ -229,10 +226,8 @@
                                                         <p style="color: red;">{{ $message }}</p>
                                                         @enderror
                                                     </td>
-
                                                     <td>
                                                         <div class="input-group">
-                                                            <span class="input-group-text" id="basic-addon2">₹</span>
                                                         <input type="number"
                                                                class="form-control total total-amount totalAmount"
                                                                id="totalAmount" name="products[{{$index}}][price_total]"
