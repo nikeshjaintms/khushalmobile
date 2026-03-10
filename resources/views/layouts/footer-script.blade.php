@@ -66,7 +66,7 @@
     });
 </script>
 <script src="{{ asset('backend/assets/js/demo.js')}}"></script>
-
+<script src="{{ asset('backend/assets/js/select2.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>

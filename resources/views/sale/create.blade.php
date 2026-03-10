@@ -56,11 +56,11 @@
                                         <div class="form-group">
                                             <div>
                                                 <label for="">Customer<span style="color: red">*</span></label>
-                                                <select class="form-select customer" name="customer_id"
+                                                <select class="form-select customer select2" name="customer_id"
                                                         aria-label="Default select example">
                                                     <option selected value=""> Select Customer</option>
                                                     @foreach ($customers as $item)
-                                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                        <option value="{{ $item->id }}" data-phone="{{ $item->phone }}" >{{ $item->name }}</option>
                                                     @endforeach
                                                     @error('customer_id')
                                                     <p style="color: red;">{{ $message }}</p>
@@ -1098,6 +1098,32 @@
         });
 
         $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: "Select Customer",
+                allowClear: true,
+                width: '100%'
+            });
+            $('.customer').select2({
+                placeholder: "Select Customer",
+                allowClear: true,
+                width: '100%',
+                matcher: function(params, data) {
+
+                    if ($.trim(params.term) === '') {
+                        return data;
+                    }
+
+                    let name = data.text.toLowerCase();
+                    let phone = $(data.element).data('phone')?.toString() || '';
+                    let term = params.term.toLowerCase();
+
+                    if (name.includes(term) || phone.includes(term)) {
+                        return data;
+                    }
+
+                    return null;
+                }
+            });
     // Initialize validation for the Modal Form
     $('#ajaxCustomerForm').validate({
             rules: {
@@ -1155,9 +1181,12 @@
                                 true,
                                 true
                             );
-                            $('.customer').append(newOption).trigger('change');
+                            // $('.customer').append(newOption).trigger('change');
 
-                            // 2. Show Success Notification using your notify system
+                                $('.customer')
+                                    .append(newOption)
+                                    .trigger('change')
+                                    .trigger('select2:select');                            // 2. Show Success Notification using your notify system
                             $.notify({
                                 icon: 'fas fa-check-circle',
                                 message: response.message // "Customer created successfully."
