@@ -106,7 +106,7 @@
                                                 <th scope="col">sr no</th>
                                                 <th scope="col">Brand</th>
                                                 <th scope="col">Product</th>
-                                                <th scope="col">IMI No</th>
+                                                <th scope="col">IMEI No</th>
                                                 {{--                                                <th scope="col">Price</th> --}}
                                                 <!--<th scope="col">Discount</th>
                                                 {{--                                                <th scope="col">Discount Amount</th> --}}-->
