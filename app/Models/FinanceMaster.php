@@ -23,4 +23,9 @@ protected $table = 'finances_masters';
     {
         return $this->hasMany(Finance::class, 'finances_master_id');
     }
+
+    public function sales()
+    {
+        return $this->hasMany(Sale::class);
+    }
 }

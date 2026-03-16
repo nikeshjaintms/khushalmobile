@@ -331,7 +331,97 @@
                                             @enderror
                                         </div>
                                     </div>
+                                    <div class="col-md-4" id="finance_master">
+                                        <div class="form-group">
+                                            <div>
+                                                <label> Select Finance </label>
+                                                <select class="form-select" name="finances_master_id" id="finance_type"
+                                                        aria-label="Default select example ">
+                                                    <option selected value=""> Select finance</option>
+                                                    @foreach ($financeMasters as $item)
+                                                        <option value="{{ $item->id }}" data-name="{{ $item->name }}">{{ $item->name }}</option>
+                                                    @endforeach
+                                                    @error('finances_master_id')
+                                                    <p style="color: red;">{{ $message }}</p>
+                                                    @enderror
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                     <div class="col-md-4 mt-4">
+                                        <div class="form-group">
+                                            <div>
+                                                <input type="checkbox" class="form-check-input"  name="is_exchange" id="is_exchange" value="1" >
+                                                <label class="form-check-label" for="is_exchange"> Is Exchange </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 mt-3" id="exchange_product_section" style="display:none;">
+                                        <h4>Exchange Product</h4>
 
+                                        <table class="table table-striped table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th>Brand</th>
+                                                <th>Product</th>
+                                                <th>IMEI</th>
+                                                <th>Price</th>
+                                                <th>Discount</th>
+                                                <th>SubTotal</th>
+                                                <th>Tax</th>
+                                                <th>Total</th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody>
+                                            <tr>
+                                                <td>
+                                                    <select name="exchange[brand_id]" class="form-control  brand-name brand-select">
+                                                        <option value="">Select Brand</option>
+                                                        @foreach ($brands as $brand)
+                                                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+
+                                                <td>
+                                                    <select name="exchange[product_id]" class="form-control product-name product-select product">
+                                                        <option value="">Select Product</option>
+                                                    </select>
+                                                </td>
+
+                                                <td>
+                                                    <input type="text" class="form-control" name="exchange[imei]" id="exchange-imei">
+                                                    <div class="error-message d-none"></div>
+                                                    <div id="productReturned" style="margin-top: 10px; font-weight: bold; display: none;"></div>
+                                                    @if ($errors->has("imei"))
+                                                        <div class="text-danger" >{{ $errors->first("imei.$index") }}</div>
+                                                    @endif
+                                                </td>
+
+                                                <td>
+                                                    <input type="number" class="form-control" name="exchange[price]" value="0">
+                                                </td>
+
+                                                <td>
+                                                    <input type="number" class="form-control" name="exchange[discount]" value="0">
+                                                </td>
+
+                                                <td>
+                                                    <input type="text" class="form-control" name="exchange[subtotal]" readonly>
+                                                </td>
+
+                                                <td>
+                                                    <input type="number" class="form-control" name="exchange[tax]" value="18">
+                                                </td>
+
+                                                <td>
+                                                    <input type="number" class="form-control" name="exchange[total]" readonly>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                     <div class="col-md-12">
                                         <h4>Payment</h4>
                                         <table class="display table table-striped table-hover">
@@ -403,23 +493,7 @@
                                                     >
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <div>
-                                                    <label> Select Finance </label>
-                                                    <select class="form-select" name="finances_master_id"
-                                                            aria-label="Default select example ">
-                                                        <option selected value=""> Select finance</option>
-                                                        @foreach ($financeMasters as $item)
-                                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                                        @endforeach
-                                                        @error('finances_master_id')
-                                                        <p style="color: red;">{{ $message }}</p>
-                                                        @enderror
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
+
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label> Processing Fee </label>
@@ -611,6 +685,32 @@
             }
 
         $(document).ready(function () {
+
+            $(document).on('blur', '#exchange-imei', function () {
+            let imei = $(this).val().trim();
+            let errorBox = $(this).closest('td').find('.error-message');
+
+            errorBox.text('').addClass('d-none');
+
+            if (imei !== '') {
+
+                $.ajax({
+                    url: '/admin/purchase/check-imei',
+                    type: 'GET',
+                    data: { imei: imei },
+                    success: function (res) {
+
+                        if (res.exists) {
+                            errorBox.text('IMEI already exists in system').removeClass('d-none');
+                        }
+
+                    }
+                });
+
+            }
+
+        });
+
             const today = new Date();
             const year = today.getFullYear();
             const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -729,6 +829,7 @@
                 resetRowIndexes();
 
             });
+
 
             // On page load, calculate totals
             calculateGrandTotal();
@@ -870,21 +971,36 @@
         $(document).ready(function() {
 
             // Initially hide the finance detail section
-            $('#finance_detail').hide();
-            $('#online_detail').hide();
+              $('#finance_master').hide();
+              $('#finance_detail').hide();
 
             // Listen to changes on the payment method dropdown
             $('.paymentMethod').change(function() {
                 var selected = $(this).val();
 
                 if (selected == '2') { // 2 = Finance
-                    $('#finance_detail').show();
+                    $('#finance_master').show();
                 } else {
+                    $('#finance_master').hide();
                     $('#finance_detail').hide();
                     // Optional: clear all inputs in the finance detail section when hidden
                     $('#finance_detail').find('input, select').val('');
                     $('#permonth').text('');
                     $('#permonthvalue').val('');
+                }
+
+            });
+
+             $('#finance_type').change(function(){
+
+                let financeName = $("#finance_type option:selected").data('name');
+                console.log(financeName);
+
+                if(financeName.toLowerCase().trim() == "personal finance"){
+
+                    $('#finance_detail').show();
+                }else{
+                    $('#finance_detail').hide();
                 }
 
             });
@@ -1225,5 +1341,19 @@
         // Apply masks if necessary
         $('#modal_phone').mask('0000000000');
     });
+
+        $(document).ready(function(){
+            $('#is_exchange').change(function(){
+
+
+                if($(this).is(':checked')){
+                    $('#exchange_product_section').show();
+                }else{
+                    $('#exchange_product_section').hide();
+                }
+
+            });
+
+        });
     </script>
 @endsection

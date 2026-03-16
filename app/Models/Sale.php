@@ -21,13 +21,15 @@ class Sale extends Model
         'total_amount',
         'total_amount_rounded',
         'payment_method',
+        'finance_master_id',
+        'exchange',
     ];
 
     public function customer()
     {
         return $this->belongsTo(Customer::class);
     }
-    
+
 
     public function saleProducts()
     {

@@ -33,7 +33,8 @@ class SaleController extends Controller
         $imeis = PurchaseProduct::where('product_id', $product_id)
             ->where(function ($query) {
                 $query->whereNull('status')
-                    ->orWhere('status', 'return');
+                    ->orWhere('status', 'return')
+                    ->orWhere('status', 'exchange');
             })
             ->whereNull('invoice_id') // Optional: filter only available
             ->pluck('imei', 'id');
@@ -82,6 +83,7 @@ class SaleController extends Controller
      */
     public function store(Request $request)
     {
+        // dump($request->all());
         $validatedData = $request->validate([
             'customer_id' => 'required',
             'invoice_no' => 'required',
@@ -92,6 +94,8 @@ class SaleController extends Controller
             'total_amount' => 'required',
             'total_amount_rounded' => 'required',
             'payment_method' => 'required',
+            'finance_master_id'=> 'nullable|exists:finances_masters,id',
+            'is_exchange' => 'nullable|boolean|in:0,1',
             'products' => 'required|array|min:1',
             'products.*.product_id' => 'required|exists:products,id',
             'products.*.price' => 'required|numeric|min:0',
@@ -107,6 +111,7 @@ class SaleController extends Controller
 
         try {
 
+        $isexhange = $request->post('is_exchange') ? 1 : 0;
             $sale = Sale::create([
                 'customer_id' => $request->customer_id,
                 'invoice_no' => $request->invoice_no,
@@ -117,31 +122,65 @@ class SaleController extends Controller
                 'total_amount' => $request->total_amount,
                 'total_amount_rounded' => $request->total_amount_rounded,
                 'payment_method' => $request->payment_method,
+                'finance_master_id' => $request->finances_master_id,
+                'exchange' =>  $request->has('is_exchange'),
+
             ]);
+            if($isexhange === '1'){
+
+                $existingStock = PurchaseProduct::where('product_id', $request->exchange['product_id'])
+                    ->where('imei', $request->exchange['imei'])
+                    ->first();
+
+                if ($existingStock) {
+
+                    // Update existing record
+                    $existingStock->update([
+                        'status' => 'exchange',
+                        'exchange_invoice_id' => $sale->id
+                    ]);
+
+                } else {
+
+                    // Create new record
+                $stock = PurchaseProduct::create([
+                        'product_id' => $request->exchange['product_id'],
+                        'imei' => $request->exchange['imei'],
+                        'status' => 'exchange',
+                        'exchange_invoice_id' => $sale->id
+                    ]);
+                }
+                dump($stock);
+            }
+
 
             $finance = null;
             if ($request->payment_method == '2') {
-                $finance = Finance::create([
-                    'invoice_id' => $sale->id,
-                    'product_id' => $request->products[0]['product_id'],
-                    'customer_id' => $request->customer_id,
-                    'ref_mobile_no' => $request->ref_mobile_no,
-                    'ref_city' => $request->ref_city,
-                    'ref_name' => $request->ref_name,
-                    'file_no' => $request->file_no,
-                    'mobile_security_charges' => $request->mobile_security_charges,
-                    'finances_master_id' => $request->finances_master_id,
-                    'price' => $request->sub_total,
-                    'downpayment' => $request->DownPayment,
-                    'processing_fee' => $request->Processing,
-                    'emi_charger' => $request->EMICharge,
-                    'finance_amount' => is_numeric($request->FinanceAmount) ? $request->FinanceAmount : 0,
-                    'month_duration' => is_numeric($request->MonthDuration) ? $request->MonthDuration : 0,
-                    'emi_value' => $request->permonthvalue,
-                    'penalty' => $request->Penalty,
-                    'dedication_date' => $request->DeductionDate,
-                    'finance_year' => $request->financ_year ?? date('Y')
-                ]);
+
+               $financeMaster = FinanceMaster::where('id', $request->finances_master_id)->first();
+               if ($financeMaster && strtolower(trim($financeMaster->name)) == 'personal finance') {
+                    $finance = Finance::create([
+                        'invoice_id' => $sale->id,
+                        'product_id' => $request->products[0]['product_id'],
+                        'customer_id' => $request->customer_id,
+                        'ref_mobile_no' => $request->ref_mobile_no,
+                        'ref_city' => $request->ref_city,
+                        'ref_name' => $request->ref_name,
+                        'file_no' => $request->file_no,
+                        'mobile_security_charges' => $request->mobile_security_charges,
+                        'finances_master_id' => $request->finances_master_id,
+                        'price' => $request->sub_total,
+                        'downpayment' => $request->DownPayment,
+                        'processing_fee' => $request->Processing,
+                        'emi_charger' => $request->EMICharge,
+                        'finance_amount' => is_numeric($request->FinanceAmount) ? $request->FinanceAmount : 0,
+                        'month_duration' => is_numeric($request->MonthDuration) ? $request->MonthDuration : 0,
+                        'emi_value' => $request->permonthvalue,
+                        'penalty' => $request->Penalty,
+                        'dedication_date' => $request->DeductionDate,
+                        'finance_year' => $request->financ_year ?? date('Y')
+                    ]);
+               }
             }
 
             // Insert related products
@@ -160,11 +199,11 @@ class SaleController extends Controller
                 ]);
 
                  PurchaseProduct::where('product_id', $product['product_id'])->where('id', $product['imei_id'])
-        ->update([
-            'status' => 'sold',
-            'invoice_id' => $sale->id,
-                    ]);
-            }
+                ->update([
+                    'status' => 'sold',
+                    'invoice_id' => $sale->id,
+                            ]);
+                    }
 
             foreach ($request->payment as $pay) {
                 SaleTransaction::create([
@@ -195,7 +234,7 @@ class SaleController extends Controller
             return redirect()->route('admin.sale.index')->with('success', 'Sale created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            //dd($e->getMessage());
+            // dd($e->getMessage());
             return redirect()->route('admin.sale.index')->with('error', 'Something went wrong. Please try again.');
         }
     }

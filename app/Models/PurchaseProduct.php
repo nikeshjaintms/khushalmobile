@@ -10,7 +10,7 @@ class PurchaseProduct extends Model
 {
     protected $table = "purchase_product";
     protected $primaryKey = "id";
-    protected $fillable = ['purchase_id','product_id','invoice_id','color','imei','price','discount','discount_amount','price_subtotal','tax','tax_amount','product_total','status'];
+    protected $fillable = ['purchase_id','product_id','invoice_id','exchange_invoice_id','color','imei','price','discount','discount_amount','price_subtotal','tax','tax_amount','product_total','status'];
     use HasFactory, SoftDeletes;
 
     public function saleProduct()
