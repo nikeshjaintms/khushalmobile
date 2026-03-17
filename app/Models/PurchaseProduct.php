@@ -31,6 +31,11 @@ class PurchaseProduct extends Model
         return $this->belongsTo(Sale::class, 'invoice_id');
     }
 
+    public function exchangeSale()
+    {
+        return $this->belongsTo(Sale::class, 'exchange_invoice_id');
+    }
+
 
 
 }

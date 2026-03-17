@@ -369,23 +369,111 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
+                                            <label for="">Payment Method<span style="color: red">*</span></label>
+                                            <select class="form-select paymentMethod" aria-label="Default select example"
+                                                    name="payment_method" id="paymentMethod">
+                                                <option > Select Payment Method</option>
+                                                <option value="1" {{ $data->payment_method == 1 ? 'selected' : '' }}>Online/Cash</option>
+                                                <option value="2" {{ $data->payment_method == 2 ? 'selected' : '' }}>Finance</option>
+                                            </select>
+                                            @error('payment_method')
+                                            <p style="color: red;">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" id="finance_master">
+                                        <div class="form-group">
                                             <div>
-                                                <label for="paymentMethod">Payment Method<span
-                                                        style="color: red">*</span></label>
-                                                <select class="form-select paymentMethod"
-                                                        aria-label="Default select example" name="payment_method"
-                                                        id="paymentMethod">
-                                                    <option selected> Select Payment Method</option>
-                                                    <option value="1"
-                                                        {{ $data->payment_method == 1 ? 'selected' : '' }}>Online/Cash</option>
-                                                    <option value="2"
-                                                        {{ $data->payment_method == 2 ? 'selected' : '' }}>Finance</option>
+                                                <label> Select Finance </label>
+                                                <select class="form-select" name="finances_master_id" id="finance_type"
+                                                        aria-label="Default select example ">
+                                                    <option selected value=""> Select finance</option>
+                                                    @foreach ($financeMaster as $item)
+                                                        <option value="{{ $item->id }}" data-name="{{ $item->name }}" {{ (isset($selectfinanceID) && $selectfinanceID == $item->id) ? 'selected' : '' }}>{{ $item->name }}</option>
+                                                    @endforeach
+                                                    @error('finances_master_id')
+                                                    <p style="color: red;">{{ $message }}</p>
+                                                    @enderror
                                                 </select>
-                                                @error('payment_method')
-                                                <p style="color: red;">{{ $message }}</p>
-                                                @enderror
                                             </div>
                                         </div>
+                                    </div>
+                                     <div class="col-md-4 mt-4">
+                                        <div class="form-group">
+                                            <div>
+                                                <input type="checkbox" class="form-check-input" name="is_exchange" id="is_exchange" value="1" {{ $data->exchange ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="is_exchange"> Is Exchange </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 mt-3" id="exchange_product_section" style="{{ $data->exchange ? '' : 'display:none;' }}">
+                                        <h4>Exchange Product</h4>
+
+                                        <table class="table table-striped table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th>Brand</th>
+                                                <th>Product</th>
+                                                <th>IMEI</th>
+                                                <th>Price</th>
+                                                <th>Discount</th>
+                                                <th>SubTotal</th>
+                                                <th>Tax</th>
+                                                <th>Total</th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody>
+                                            <tr>
+                                                <td>
+                                                    <select name="exchange[brand_id]" class="form-control brand-name brand-select">
+                                                        <option value="">Select Brand</option>
+                                                        @foreach ($brands as $brand)
+                                                            <option value="{{ $brand->id }}" {{ (isset($exchange) && $exchange->product->brand_id == $brand->id) ? 'selected' : '' }}>{{ $brand->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+
+                                                <td>
+                                                    <select name="exchange[product_id]" class="form-control product-name product-select product">
+                                                        <option value="">Select Product</option>
+                                                        @if(isset($exchange))
+                                                            @foreach($products as $prod)
+                                                                @if($prod->brand_id == $exchange->product->brand_id)
+                                                                    <option value="{{ $prod->id }}" {{ $exchange->product_id == $prod->id ? 'selected' : '' }}>{{ $prod->product_name }}</option>
+                                                                @endif
+                                                            @endforeach
+                                                        @endif
+                                                    </select>
+                                                </td>
+
+                                                <td>
+                                                    <input type="text" class="form-control" name="exchange[imei]" id="exchange-imei" value="{{ $exchange->imei ?? '' }}">
+                                                </td>
+
+                                                <td>
+                                                    <input type="number" class="form-control" name="exchange[price]" value="{{ $exchange->price ?? 0 }}">
+                                                </td>
+
+                                                <td>
+                                                    <input type="number" class="form-control" name="exchange[discount]" value="{{ $exchange->discount ?? 0 }}">
+                                                </td>
+
+                                                <td>
+                                                    <input type="text" class="form-control" name="exchange[subtotal]" value="{{ $exchange->price ?? 0 }}" readonly>
+                                                </td>
+
+                                                <td>
+                                                    <input type="number" class="form-control" name="exchange[tax]" value="{{ $exchange->tax ?? 18 }}">
+                                                </td>
+
+                                                <td>
+                                                    <input type="number" class="form-control" name="exchange[total]" value="{{ $exchange->total ?? 0 }}" readonly>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                     <div class="col-md-12">
                                         <h4>Payment</h4>
@@ -399,20 +487,20 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach($salestransc as $st)
+                                            @foreach($salestransc as $index => $st)
+                                                                         
                                                 <tr>
                                                     <td>
-                                                        <select name="payment[0][payment_mode]" id="mode"
+                                                        <select name="payment[{{ $index }}][payment_mode]" id="mode"
                                                                 class="form-control">
-                                                            <option {{ $st->payment_mode == '1' ? 'selected' : '' }}value="1">Cash</option>
-                                                            <option {{ $st->payment_mode == '2' ? 'selected' : '' }} value="2">Online</option>
-{{--                                                            <option {{ $st->payment_mode == '3' ? 'selected' : '' }} value="3">Finance</option>--}}
+                                                            <option {{ $st->payment_mode == 1 ? 'selected' : '' }}value="1">Cash</option>
+                                                            <option {{ $st->payment_mode == 2 ? 'selected' : '' }} value="2">Online</option>
                                                         </select>
                                                     </td>
-                                                    <td><input type="text" name="payment[0][amount]" id="amount"
+                                                    <td><input type="text" name="payment[{{ $index }}][amount]" id="amount"
                                                                value="{{ $st->amount ?? ''}}" class="form-control amount">
                                                     </td>
-                                                    <td><input type="text" name="payment[0][reference_no]"
+                                                    <td><input type="text" name="payment[{{ $index }}][reference_no]"
                                                                id="reference_no" value="{{ $st->reference_no ?? '' }}"
                                                                class="form-control reference_no "></td>
                                                     <td>
@@ -427,154 +515,125 @@
                                         </table>
                                     </div>
 
-                                    @if($selectfinance)
-                                        <div class="row mt-3 financeDetail" id="finance_detail">
-                                            <h4>Finance Details</h4>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label> Ref Name </label>
-                                                    <input type="text"  name="finance[ref_name]" id="ref_name"
-                                                           class="form-control  ref_name "  value="{{ $selectfinance->ref_name ?? '' }}" placeholder="Ref Name">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label> Ref Mobile Number </label>
-                                                    <input type="number" name="finance[ref_mobile_no]" id="ref_mobile_no"
-                                                           class="form-control  ref_mobile_no " value="{{ $selectfinance->ref_mobile_no ?? '' }}" placeholder="Ref Mobile Number"
-                                                    >
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label> Ref City </label>
-                                                    <input type="text" name="finance[ref_city]" id="ref_city"
-                                                           class="form-control  ref_city " placeholder="Ref city"
-                                                           value="{{ $selectfinance->ref_city ?? '' }}"
-                                                    >
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label> File No </label>
-                                                    <input type="number" name="finance[file_no]" id="file_no"
-                                                           class="form-control  file_no required" value="{{ $selectfinance->file_no ?? '' }}" placeholder="File number"
-                                                    >
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label>Select Finance</label>
-                                                    <select class="select2 form-control required" name="finance[finances_master_id]">
-                                                        @foreach ($financeMaster as $item)
-                                                            <option value="{{ $item->id }}" {{ $item->id == $selectfinanceID ? 'selected' : '' }}>
-                                                                {{ $item->name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                    @error('finance.finances_master_id')
-                                                    <p style="color: red;">{{ $message }}</p>
-                                                    @enderror
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label>Processing Fee</label>
-                                                    <input type="number" name="finance[processing_fee]" id="Processing"
-                                                           class="form-control required" placeholder="--Processing Fee--"
-                                                           value="{{ $selectfinance->processing_fee ?? '' }}" onkeyup="SetFinanceAmount()">
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label> Security Charge </label>
-                                                    <input type="number" name="finance[mobile_security_charges]" id="mobile_security_charges"
-                                                           class="form-control required" placeholder="--Security Charge--"
-                                                           value="{{ $selectfinance->mobile_security_charges ?? '' }}"
-                                                           onkeyup="SetFinanceAmount()" ;>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label>Per Month EMI Charge</label>
-                                                    <input type="number" name="finance[emi_charger]" id="EMICharge"
-                                                           class="form-control required" placeholder="--EMI Charge--"
-                                                           value="{{ $selectfinance->emi_charger ?? '' }}" onkeyup="SetMonthDuration()">
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label>Down Payment</label>
-                                                    <input type="number" name="finance[downpayment]" id="DownPayment"
-                                                           class="form-control required" placeholder="--Down Payment--"
-                                                           value="{{ $selectfinance->downpayment ?? '' }}" onkeyup="SetFinanceAmount()">
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label>Payable Amount</label>
-                                                    <input type="number" name="finance[finance_amount]" id="FinanceAmount"
-                                                           class="form-control required" placeholder="--Payable Amount--"
-                                                           value="{{ $selectfinance->finance_amount ?? '' }}" readonly>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label>Month Duration</label>
-                                                    <input type="number" name="finance[month_duration]" id="MonthDuration"
-                                                           class="form-control required" placeholder="--Month Duration--"
-                                                           value="{{ $selectfinance->month_duration ?? '' }}" onkeyup="SetMonthDuration()">
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label>Deduction Date</label>
-                                                    <select class="form-control required" name="finance[deduction_date]" id="DeductionDate">
-{{--                                                        @for ($i = 1; $i <= 28; $i++)--}}
-{{--                                                            <option value="{{ $i }}" {{ $i == $selectfinance->deduction_date ? 'selected' : '' }}>--}}
-{{--                                                                {{ $i }}--}}
-{{--                                                            </option>--}}
-{{--                                                        @endfor--}}
-                                                        @foreach ([1, 5, 10, 15, 20] as $i)
-                                                            <option value="{{ $i }}" {{ $i == $selectfinance->deduction_date ? 'selected' : '' }}>
-                                                                {{ $i }}
-                                                            </option>
-                                                        @endforeach
-
-
-
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label>Penalty Charges</label>
-                                                    <input type="number" name="finance[penalty]" id="Penalty"
-                                                           class="form-control required" placeholder="--Penalty Charges--"
-                                                           value="{{ $selectfinance->penalty ?? '' }}">
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group"><br><br>
-                                                    <h6><div id="permonth" style="color: red;"></div></h6>
-                                                    <input type="hidden" name="finance[emi_value]" id="permonthvalue"
-                                                           value="{{ $selectfinance->emi_value ?? '' }}">
-                                                    <input type="hidden" name="finance[finance_year]" id="finance_year" value="">
-                                                </div>
+                                    <div class="row mt-3 financeDetail" id="finance_detail" style="{{ $data->payment_method == 2 ? '' : 'display:none;' }}">
+                                        <h4>Finance Details</h4>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label> Ref Name </label>
+                                                <input type="text" name="finance[ref_name]" id="ref_name"
+                                                       class="form-control ref_name" value="{{ $selectfinance->ref_name ?? '' }}" placeholder="Ref Name">
                                             </div>
                                         </div>
-                                    @endif
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label> Ref Mobile Number </label>
+                                                <input type="number" name="finance[ref_mobile_no]" id="ref_mobile_no"
+                                                       class="form-control ref_mobile_no" value="{{ $selectfinance->ref_mobile_no ?? '' }}" placeholder="Ref Mobile Number">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label> Ref City </label>
+                                                <input type="text" name="finance[ref_city]" id="ref_city"
+                                                       class="form-control ref_city" placeholder="Ref city"
+                                                       value="{{ $selectfinance->ref_city ?? '' }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label> File No </label>
+                                                <input type="number" name="finance[file_no]" id="file_no"
+                                                       class="form-control file_no required" value="{{ $selectfinance->file_no ?? '' }}" placeholder="File number">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Processing Fee</label>
+                                                <input type="number" name="finance[processing_fee]" id="Processing"
+                                                       class="form-control required" placeholder="--Processing Fee--"
+                                                       value="{{ $selectfinance->processing_fee ?? '' }}" onkeyup="SetFinanceAmount()">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label> Security Charge </label>
+                                                <input type="number" name="finance[mobile_security_charges]" id="mobile_security_charges"
+                                                       class="form-control required" placeholder="--Security Charge--"
+                                                       value="{{ $selectfinance->mobile_security_charges ?? '' }}"
+                                                       onkeyup="SetFinanceAmount()">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Per Month EMI Charge</label>
+                                                <input type="number" name="finance[emi_charger]" id="EMICharge"
+                                                       class="form-control required" placeholder="--EMI Charge--"
+                                                       value="{{ $selectfinance->emi_charger ?? '' }}" onkeyup="SetMonthDuration()">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Down Payment</label>
+                                                <input type="number" name="finance[downpayment]" id="DownPayment"
+                                                       class="form-control required" placeholder="--Down Payment--"
+                                                       value="{{ $selectfinance->downpayment ?? '' }}" onkeyup="SetFinanceAmount()">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Payable Amount</label>
+                                                <input type="number" name="finance[finance_amount]" id="FinanceAmount"
+                                                       class="form-control required" placeholder="--Payable Amount--"
+                                                       value="{{ $selectfinance->finance_amount ?? '' }}" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Month Duration</label>
+                                                <input type="number" name="finance[month_duration]" id="MonthDuration"
+                                                       class="form-control required" placeholder="--Month Duration--"
+                                                       value="{{ $selectfinance->month_duration ?? '' }}" onkeyup="SetMonthDuration()">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Deduction Date</label>
+                                                <select class="form-control required" name="finance[dedication_date]" id="DeductionDate">
+                                                    @foreach ([1, 5, 10, 15, 20] as $i)
+                                                        <option value="{{ $i }}" {{ (isset($selectfinance) && $i == $selectfinance->dedication_date) ? 'selected' : '' }}>
+                                                            {{ $i }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Penalty Charges</label>
+                                                <input type="number" name="finance[penalty]" id="Penalty"
+                                                       class="form-control required" placeholder="--Penalty Charges--"
+                                                       value="{{ $selectfinance->penalty ?? '' }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group"><br><br>
+                                                <h6><div id="permonth" style="color: red;"></div></h6>
+                                                <input type="hidden" name="finance[emi_value]" id="permonthvalue"
+                                                       value="{{ $selectfinance->emi_value ?? '' }}">
+                                                <input type="hidden" name="finance[finance_year]" id="finance_year" value="">
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="card-action">
                                         <button class="btn btn-success" type="submit">Submit</button>
                                         <a href="{{ route('admin.sale.index') }}" class="btn btn-danger">Cancel</a>
@@ -612,34 +671,68 @@
             }, 5000);
         });
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const paymentMethod = document.getElementById('paymentMethod');
-            const financeDetails = document.getElementById('finance_detail');
-            const onlineDetails = document.getElementById('online_detail');
-
-            function toggleDetails() {
-                const selected = paymentMethod.value;
-                if (selected === '2') {
-                    financeDetails.style.display = 'flex';
-                    if (onlineDetails) onlineDetails.style.display = 'none';
-                } else {
-                    financeDetails.style.display = 'none';
-                    if (financeDetails) {
-                        financeDetails.querySelectorAll('input, select').forEach(el => el.value = '');
-                        document.getElementById('permonth').innerText = '';
-                        document.getElementById('permonthvalue').value = '';
-                    }
+        $(document).ready(function () {
+            // Toggling Finance Master and Details based on initial state
+            if ($('#paymentMethod').val() == '2') {
+                $('#finance_master').show();
+                let financeName = $("#finance_type option:selected").data('name');
+                if(financeName && financeName.toLowerCase().trim() == "personal finance"){
+                    $('#finance_detail').show();
                 }
+            } else {
+                $('#finance_master').hide();
+                $('#finance_detail').hide();
             }
 
-            // Initial run on page load
-            toggleDetails();
+            $('.paymentMethod').change(function() {
+                var selected = $(this).val();
+                if (selected == '2') {
+                    $('#finance_master').show();
+                } else {
+                    $('#finance_master').hide();
+                    $('#finance_detail').hide();
+                }
+            });
 
-            // On change
-            paymentMethod.addEventListener('change', toggleDetails);
-        });
+            $('#finance_type').change(function(){
+                let financeName = $("#finance_type option:selected").data('name');
+                if(financeName && financeName.toLowerCase().trim() == "personal finance"){
+                    $('#finance_detail').show();
+                }else{
+                    $('#finance_detail').hide();
+                }
+            });
 
-        $(document).ready(function () {
+            // Toggling Exchange section
+            $('#is_exchange').change(function(){
+                if($(this).is(':checked')){
+                    $('#exchange_product_section').show();
+                }else{
+                    $('#exchange_product_section').hide();
+                }
+            });
+
+            // Brand selection for Exchange section
+            $(document).on('change', '.brand-select', function() {
+                let brandId = $(this).val();
+                let $productSelect = $(this).closest('tr').find('.product-select');
+                $productSelect.html('<option value="">Loading...</option>');
+                if (brandId) {
+                    $.ajax({
+                        url: "{{ route('admin.product.getproducts', ':brand_id') }}".replace(':brand_id', brandId),
+                        type: 'GET',
+                        success: function(response) {
+                            $productSelect.empty().append('<option value="">Select Product</option>');
+                            $.each(response, function(index, product) {
+                                $productSelect.append('<option value="' + product.id + '">' + product.product_name + '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $productSelect.html('<option value="">Select Product</option>');
+                }
+            });
+
             function resetActionButtons() {
                 const $rows = $('#add-table-row tr');
                 if ($rows.length === 1) {
@@ -929,40 +1022,7 @@
         });
 
         $(document).ready(function() {
-            // Initially hide the finance detail section
-            $('#finance_detail').hide();
-            $('#online_detail').hide();
-            // Listen to changes on the payment method dropdown
-            $('.paymentMethod').change(function() {
-                var selected = $(this).val();
-                if (selected == '2') { // 2 = Finance
-                    $('#finance_detail').show();
-                } else {
-                    $('#finance_detail').hide();
-                    // Optional: clear all inputs in the finance detail section when hidden
-                    $('#finance_detail').find('input, select').val('');
-                    $('#permonth').text('');
-                    $('#permonthvalue').val('');
-                }
-            });
 
-            $(document).ready(function () {
-                function toggleDetails() {
-                    var selected = $('#paymentMethod').val();
-
-                    if (selected === '2') {
-                        $('#finance_detail').show();
-                        $('#online_detail').hide();
-                    } else {
-                        $('#finance_detail').hide().find('input, select').val('');
-                        $('#permonth').text('');
-                        $('#permonthvalue').val('');
-                        $('#online_detail').show();
-                    }
-                }
-                toggleDetails();
-               $('#paymentMethod').on('load', toggleDetails);
-            });
 
             $(document).on('change', '.brand-select', function() {
                 let brandId = $(this).val();

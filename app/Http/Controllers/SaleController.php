@@ -32,10 +32,10 @@ class SaleController extends Controller
     {
         $imeis = PurchaseProduct::where('product_id', $product_id)
             ->where(function ($query) {
-                $query->whereNull('status')
-                    ->orWhere('status', 'return')
-                    ->orWhere('status', 'exchange');
-            })
+            $query->whereNull('status')
+                ->orWhere('status', 'return')
+                ->orWhere('status', 'exchange');
+        })
             ->whereNull('invoice_id') // Optional: filter only available
             ->pluck('imei', 'id');
 
@@ -60,7 +60,8 @@ class SaleController extends Controller
         if (date('m') < 4) {
             // Before April 1st, use the previous fiscal year
             $fiscalYear = ($previousYear % 100) . '-' . ($currentYear % 100);
-        } else {
+        }
+        else {
             // From April 1st onwards, use the current fiscal year
             $fiscalYear = ($currentYear % 100) . '-' . ($nextYear % 100);
         }
@@ -70,11 +71,13 @@ class SaleController extends Controller
         if ($latestInvoice) {
             $lastNumber = intval(explode('/', $latestInvoice->invoice_no)[2]);
             $nextNumber = $lastNumber + 1;
-        } else {
+        }
+        else {
             $nextNumber = 1; // Reset if no invoice exists for this fiscal year
         }
 
-        $invoiceNo = 'INV/' . $fiscalYear . '/' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);;
+        $invoiceNo = 'INV/' . $fiscalYear . '/' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        ;
         return view('sale.create', compact('customers', 'invoiceNo', 'brands', 'products', 'financeMasters'));
     }
 
@@ -94,13 +97,13 @@ class SaleController extends Controller
             'total_amount' => 'required',
             'total_amount_rounded' => 'required',
             'payment_method' => 'required',
-            'finance_master_id'=> 'nullable|exists:finances_masters,id',
+            'finance_master_id' => 'nullable|exists:finances_masters,id',
             'is_exchange' => 'nullable|boolean|in:0,1',
             'products' => 'required|array|min:1',
             'products.*.product_id' => 'required|exists:products,id',
             'products.*.price' => 'required|numeric|min:0',
             //'products.*.discount' => 'nullable|numeric|min:0',
-           // 'products.*.discount_amount' => 'nullable|numeric|min:0',
+            // 'products.*.discount_amount' => 'nullable|numeric|min:0',
             'products.*.price_subtotal' => 'numeric|min:0',
             'products.*.tax' => 'numeric|min:0',
             'products.*.tax_amount' => 'numeric|min:0',
@@ -111,7 +114,7 @@ class SaleController extends Controller
 
         try {
 
-        $isexhange = $request->post('is_exchange') ? 1 : 0;
+            $isexhange = $request->post('is_exchange') ? 1 : 0;
             $sale = Sale::create([
                 'customer_id' => $request->customer_id,
                 'invoice_no' => $request->invoice_no,
@@ -123,10 +126,10 @@ class SaleController extends Controller
                 'total_amount_rounded' => $request->total_amount_rounded,
                 'payment_method' => $request->payment_method,
                 'finance_master_id' => $request->finances_master_id,
-                'exchange' =>  $request->has('is_exchange'),
+                'exchange' => $request->has('is_exchange'),
 
             ]);
-            if($isexhange === '1'){
+            if ($isexhange === 1) {
 
                 $existingStock = PurchaseProduct::where('product_id', $request->exchange['product_id'])
                     ->where('imei', $request->exchange['imei'])
@@ -140,25 +143,25 @@ class SaleController extends Controller
                         'exchange_invoice_id' => $sale->id
                     ]);
 
-                } else {
+                }
+                else {
 
                     // Create new record
-                $stock = PurchaseProduct::create([
+                    $stock = PurchaseProduct::create([
                         'product_id' => $request->exchange['product_id'],
                         'imei' => $request->exchange['imei'],
                         'status' => 'exchange',
                         'exchange_invoice_id' => $sale->id
                     ]);
                 }
-                dump($stock);
             }
 
 
             $finance = null;
             if ($request->payment_method == '2') {
 
-               $financeMaster = FinanceMaster::where('id', $request->finances_master_id)->first();
-               if ($financeMaster && strtolower(trim($financeMaster->name)) == 'personal finance') {
+                $financeMaster = FinanceMaster::where('id', $request->finances_master_id)->first();
+                if ($financeMaster && strtolower(trim($financeMaster->name)) == 'personal finance') {
                     $finance = Finance::create([
                         'invoice_id' => $sale->id,
                         'product_id' => $request->products[0]['product_id'],
@@ -180,7 +183,7 @@ class SaleController extends Controller
                         'dedication_date' => $request->DeductionDate,
                         'finance_year' => $request->financ_year ?? date('Y')
                     ]);
-               }
+                }
             }
 
             // Insert related products
@@ -190,20 +193,20 @@ class SaleController extends Controller
                     'brand_id' => $product['brand_id'],
                     'imei_id' => $product['imei_id'],
                     'price' => $product['price'],
-                   // 'discount' => $product['discount'] ?? 0,
-                   // 'discount_amount' => $product['discount_amount'] ?? 0,
+                    // 'discount' => $product['discount'] ?? 0,
+                    // 'discount_amount' => $product['discount_amount'] ?? 0,
                     'price_subtotal' => $product['price_subtotal'] ?? 0,
                     'tax' => $product['tax'] ?? 0,
                     'tax_amount' => $product['tax_amount'] ?? 0,
                     'price_total' => $product['price_total'] ?? 0,
                 ]);
 
-                 PurchaseProduct::where('product_id', $product['product_id'])->where('id', $product['imei_id'])
-                ->update([
+                PurchaseProduct::where('product_id', $product['product_id'])->where('id', $product['imei_id'])
+                    ->update([
                     'status' => 'sold',
                     'invoice_id' => $sale->id,
-                            ]);
-                    }
+                ]);
+            }
 
             foreach ($request->payment as $pay) {
                 SaleTransaction::create([
@@ -232,7 +235,8 @@ class SaleController extends Controller
             }
             DB::commit();
             return redirect()->route('admin.sale.index')->with('success', 'Sale created successfully.');
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             DB::rollBack();
             // dd($e->getMessage());
             return redirect()->route('admin.sale.index')->with('error', 'Something went wrong. Please try again.');
@@ -281,7 +285,7 @@ class SaleController extends Controller
 
         $financeMaster = FinanceMaster::all();
 
-        $selectfinance = Finance::where('customer_id', $sale->customer_id)->first();
+        $selectfinance = Finance::where('invoice_id', $id)->first();
 
         // $selectfinanceID = optional($selectfinance)->finances_master_id;
 
@@ -293,10 +297,16 @@ class SaleController extends Controller
             $selectfinanceID = $selectfinance->finances_master_id;
         }
         $deduction = $selectfinance
-            ? Deduction::where('finance_id', $selectfinance->id)->first()
+            ?Deduction::where('finance_id', $selectfinance->id)->first()
             : null;
 
-        return view('sale.edit', compact('data', 'data1', 'customers', 'selectedCustomer', 'products', 'brands', 'selectedProductId', 'selectedBrandId', 'imiNumbers', 'selectfinance', 'selectedImi', 'selectfinanceID', 'financeMaster', 'salestransc', 'deduction'));
+        $exchange = null;
+        if ($data->exchange == 1) {
+            $exchange = PurchaseProduct::with('product')->where('exchange_invoice_id', $id)->first();
+        }
+
+        // dd($exchange);
+        return view('sale.edit', compact('data', 'data1', 'customers', 'selectedCustomer', 'products', 'brands', 'selectedProductId', 'selectedBrandId', 'imiNumbers', 'selectfinance', 'selectedImi', 'selectfinanceID', 'financeMaster', 'salestransc', 'deduction', 'exchange'));
     }
 
     /**
@@ -307,7 +317,7 @@ class SaleController extends Controller
         DB::beginTransaction();
 
         try {
-                    $financeId = $request->input('finance_id'); // may be null
+            $financeId = $request->input('finance_id'); // may be null
             // 1. Update sale
             $data = Sale::findOrFail($id);
             $data->update([
@@ -320,7 +330,44 @@ class SaleController extends Controller
                 'total_amount' => $request->total_amount,
                 'total_amount_rounded' => $request->total_amount_rounded,
                 'payment_method' => $request->payment_method,
+                'exchange' => $request->has('is_exchange') ? '1' : '0',
             ]);
+
+            // Handle Exchange logic
+            $isExchange = $request->post('is_exchange') ? 1 : 0;
+            if ($isExchange) {
+                $existingExchange = PurchaseProduct::where('exchange_invoice_id', $id)->where('status', 'exchange')->first();
+                
+                if ($existingExchange) {
+                    // Update existing exchange record
+                    $existingExchange->update([
+                        'product_id' => $request->exchange['product_id'],
+                        'imei' => $request->exchange['imei'],
+                    ]);
+                } else {
+                    // Search for existing stock or create new (same logic as store)
+                    $existingStock = PurchaseProduct::where('product_id', $request->exchange['product_id'])
+                        ->where('imei', $request->exchange['imei'])
+                        ->first();
+
+                    if ($existingStock) {
+                        $existingStock->update([
+                            'status' => 'exchange',
+                            'exchange_invoice_id' => $id
+                        ]);
+                    } else {
+                        PurchaseProduct::create([
+                            'product_id' => $request->exchange['product_id'],
+                            'imei' => $request->exchange['imei'],
+                            'status' => 'exchange',
+                            'exchange_invoice_id' => $id
+                        ]);
+                    }
+                }
+            } else {
+                // Remove exchange entry if it exists
+                PurchaseProduct::where('exchange_invoice_id', $id)->where('status', 'exchange')->delete();
+            }
 
             // 2. Update SaleProducts (optional: consider deleting first and re-inserting if multiple products)
             foreach ($request->products as $product) {
@@ -328,7 +375,7 @@ class SaleController extends Controller
                     'product_id' => $product['product_id'],
                     'imei_id' => $product['imei_id'],
                     'price' => $product['price'],
-                   // 'discount' => $product['discount'] ?? 0,
+                    // 'discount' => $product['discount'] ?? 0,
                     //'discount_amount' => $product['discount_amount'] ?? 0,
                     'price_subtotal' => $product['price_subtotal'] ?? 0,
                     'tax' => $product['tax'] ?? 0,
@@ -337,7 +384,8 @@ class SaleController extends Controller
                 ]);
             }
 
-            // 3. Add new sale payments
+            // 3. Update sale payments (Refresh all)
+            SaleTransaction::where('invoice_id', $id)->delete();
             foreach ($request->payment as $pay) {
                 SaleTransaction::create([
                     'invoice_id' => $data->id,
@@ -348,64 +396,107 @@ class SaleController extends Controller
             }
 
             // 4. Finance update with deduction logic
-            if ($financeId && $request->has('finance')) {
-                $financeData = $request->finance;
+            if ($request->payment_method == '2') {
+                $financeMaster = FinanceMaster::where('id', $request->finances_master_id)->first();
+                if ($financeMaster && strtolower(trim($financeMaster->name)) == 'personal finance') {
+                    $financeData = $request->finance;
 
-                $finance = Finance::findOrFail($financeId);
+                    if ($financeId) {
+                        $finance = Finance::findOrFail($financeId);
 
-                // Check if any EMI is already paid
-                $emiPaid = Deduction::where('finance_id', $financeId)
-                    ->where('status', 'paid')
-                    ->exists();
+                        // Check if any EMI is already paid
+                        $emiPaid = Deduction::where('finance_id', $financeId)
+                            ->where('status', 'paid')
+                            ->exists();
 
-                if ($emiPaid) {
-                    DB::rollBack();
-                    return back()->with('error', 'Cannot update finance. Some EMI payments have already been made.');
+                        if ($emiPaid) {
+                            DB::rollBack();
+                            return back()->with('error', 'Cannot update finance. Some EMI payments have already been made.');
+                        }
+
+                        // Update Finance
+                        $finance->update([
+                            'finances_master_id' => $request->finances_master_id,
+                            'ref_mobile_no' => $financeData['ref_mobile_no'],
+                            'ref_name' => $financeData['ref_name'],
+                            'ref_city' => $financeData['ref_city'],
+                            'file_no' => $financeData['file_no'],
+                            'downpayment' => $financeData['downpayment'],
+                            'processing_fee' => $financeData['processing_fee'],
+                            'emi_charger' => $financeData['emi_charger'],
+                            'finance_amount' => $financeData['finance_amount'],
+                            'month_duration' => $financeData['month_duration'],
+                            'emi_value' => $financeData['emi_value'],
+                            'penalty' => $financeData['penalty'],
+                            'dedication_date' => $financeData['dedication_date'],
+                        ]);
+
+                        // Delete previous EMI deductions
+                        Deduction::where('finance_id', $financeId)->delete();
+                    } else {
+                        // Create new Finance record if switching to finance during edit
+                        $finance = Finance::create([
+                            'invoice_id' => $id,
+                            'product_id' => $request->products[0]['product_id'],
+                            'customer_id' => $request->customer_id,
+                            'ref_mobile_no' => $financeData['ref_mobile_no'] ?? null,
+                            'ref_name' => $financeData['ref_name'] ?? null,
+                            'ref_city' => $financeData['ref_city'] ?? null,
+                            'file_no' => $financeData['file_no'] ?? null,
+                            'finances_master_id' => $request->finances_master_id,
+                            'price' => $request->sub_total,
+                            'downpayment' => $financeData['downpayment'],
+                            'processing_fee' => $financeData['processing_fee'],
+                            'emi_charger' => $financeData['emi_charger'] ?? 0,
+                            'finance_amount' => $financeData['finance_amount'],
+                            'month_duration' => $financeData['month_duration'],
+                            'emi_value' => $financeData['emi_value'],
+                            'penalty' => $financeData['penalty'] ?? 0,
+                            'dedication_date' => $financeData['dedication_date'] ?? 1,
+                        ]);
+                        $financeId = $finance->id;
+                    }
+
+                    // Create new deduction entries
+                    $deductionDate = $financeData['dedication_date'] ?? 1;
+                    $startDate = Carbon::createFromDate(now()->year, now()->month, $deductionDate)->addMonth();
+
+                    for ($i = 0; $i < $financeData['month_duration']; $i++) {
+                        $dueDate = $startDate->copy()->addMonths($i);
+                        Deduction::create([
+                            'finance_id' => $financeId,
+                            'customer_id' => $request->customer_id,
+                            'emi_value' => $financeData['emi_value'],
+                            'emi_date' => $dueDate->format('Y-m-d'),
+                            'status' => 'Unpaid',
+                            'created_at' => $dueDate,
+                            'updated_at' => $dueDate,
+                        ]);
+                    }
                 }
+            } else {
+                // If payment method changed FROM Finance to something else, reverse the finance record
+                $existingFinance = Finance::where('invoice_id', $id)->first();
+                if ($existingFinance) {
+                    // Safety check: Don't delete if EMIs are already paid (unless user explicitly wants total wipe)
+                    $emiPaid = Deduction::where('finance_id', $existingFinance->id)
+                        ->where('status', 'paid')
+                        ->exists();
 
-                // Update Finance
-                $finance->update([
-                    'finances_master_id' => $financeData['finances_master_id'],
-                    'ref_mobile_no' => $financeData['ref_mobile_no'],
-                    'ref_name' => $financeData['ref_name'],
-                    'ref_city' => $financeData['ref_city'],
-                    'file_no' => $financeData['file_no'],
-                    'downpayment' => $financeData['downpayment'],
-                    'processing_fee' => $financeData['processing_fee'],
-                    'emi_charger' => $financeData['emi_charger'],
-                    'finance_amount' => $financeData['finance_amount'],
-                    'month_duration' => $financeData['month_duration'],
-                    'emi_value' => $financeData['emi_value'],
-                    'penalty' => $financeData['penalty'],
-                    'deduction_date' => $financeData['deduction_date'],
-                ]);
+                    if ($emiPaid) {
+                        DB::rollBack();
+                        return back()->with('error', 'Cannot reverse finance. Some EMI payments have already been made.');
+                    }
 
-                // Delete previous EMI deductions
-                Deduction::where('finance_id', $financeId)->delete();
-
-                // Create new deduction entries
-                $startDateRaw = $financeData['deduction_date']; // e.g., '1'
-
-                if (is_numeric($startDateRaw)) {
-                    $startDate = now()->addMonths((int)$startDateRaw); // e.g., now() + 1 month
-                } else {
-                    $startDate = Carbon::parse($startDateRaw); // fallback if user gives actual date string
-                }
-
-                for ($i = 0; $i < $financeData['month_duration']; $i++) {
-                    Deduction::create([
-                        'finance_id' => $financeId,
-                        'customer_id' => $request->customer_id,
-                        'amount' => $financeData['emi_value'],
-                        'due_date' => $startDate->copy()->addMonths($i),
-                        'status' => 'Unpaid',
-                    ]);
+                    Deduction::where('finance_id', $existingFinance->id)->delete();
+                    $existingFinance->delete();
                 }
             }
 
             DB::commit();
             return redirect()->route('admin.sale.index')->with('success', 'Sale and finance updated successfully.');
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Update failed: ' . $e->getMessage());
         }
@@ -420,10 +511,10 @@ class SaleController extends Controller
         $data->delete();
 
         return response()->json(
-            [
-                'status' => 'success',
-                'message' => 'Sale deleted successfully.',
-            ]
+        [
+            'status' => 'success',
+            'message' => 'Sale deleted successfully.',
+        ]
         );
     }
 }

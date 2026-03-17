@@ -28,4 +28,5 @@ protected $table = 'finances_masters';
     {
         return $this->hasMany(Sale::class);
     }
+
 }
