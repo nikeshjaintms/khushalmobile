@@ -114,7 +114,7 @@ class SaleController extends Controller
 
         try {
 
-            $isexhange = $request->post('is_exchange') ? 1 : 0;
+            $isexhange = (int) $request->input('is_exchange', 0);
             $sale = Sale::create([
                 'customer_id' => $request->customer_id,
                 'invoice_no' => $request->invoice_no,
@@ -126,7 +126,7 @@ class SaleController extends Controller
                 'total_amount_rounded' => $request->total_amount_rounded,
                 'payment_method' => $request->payment_method,
                 'finance_master_id' => $request->finances_master_id,
-                'exchange' => $request->has('is_exchange'),
+                'exchange' =>  $isexhange ,
 
             ]);
             if ($isexhange === 1) {
@@ -337,7 +337,7 @@ class SaleController extends Controller
             $isExchange = $request->post('is_exchange') ? 1 : 0;
             if ($isExchange) {
                 $existingExchange = PurchaseProduct::where('exchange_invoice_id', $id)->where('status', 'exchange')->first();
-                
+
                 if ($existingExchange) {
                     // Update existing exchange record
                     $existingExchange->update([
