@@ -16,6 +16,9 @@ use App\Models\Transction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Psy\Util\Str;
+
+use function Symfony\Component\String\s;
 
 class SaleController extends Controller
 {
@@ -114,7 +117,7 @@ class SaleController extends Controller
 
         try {
 
-            $isexhange = (int) $request->input('is_exchange', 0);
+            $isexhange = $request->input('is_exchange') == '1' ? '1' : '0';
             $sale = Sale::create([
                 'customer_id' => $request->customer_id,
                 'invoice_no' => $request->invoice_no,
