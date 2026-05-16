@@ -16,4 +16,9 @@ class SaleTransaction extends Model
         'reference_no',
 
     ];
+
+    public function sale()
+    {
+        return $this->belongsTo(Sale::class, 'invoice_id');
+    }
 }

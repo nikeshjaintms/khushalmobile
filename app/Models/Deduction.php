@@ -8,12 +8,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Deduction extends Model
 {
+    use HasFactory, SoftDeletes;
+
     protected $table = 'deductions';
     protected $parimaryKey = 'id';
 
-protected $timestamp = true;
+    protected $timestamp = true;
 
-    use SoftDeletes;
     protected $dates = ['deleted_at'];
     protected $fillable = [
         'customer_id',
@@ -28,7 +29,6 @@ protected $timestamp = true;
         'refernce_no',
         'status',
     ];
-    use HasFactory, SoftDeletes;
 
     public function finance()
     {

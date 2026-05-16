@@ -13,29 +13,81 @@ use Illuminate\Support\Facades\Session;
 
 class DeductionController extends Controller
 {
+    // /**
+    //  * Display a listing of the resource.
+    //  */
+    // public function index()
+    // {
+    //     //$deductions = Deduction::leftjoin('customers', 'deductions.customer_id', '=', 'customers.id')
+    //     //    ->select('deductions.*', 'customers.name as customer_name')
+    //     //    ->where('deductions.status', 'paid')
+    //     //    ->get();
+    //     //$finances = Finance::join('customers', 'finances.customer_id', '=', 'customers.id')
+    //     //    ->leftJoin('deductions', 'finances.id', '=', 'deductions.finance_id')
+    //     //    ->select('finances.*', 'customers.name as customer_name', 'customers.phone as phone', 'customers.city as city','deductions.emi_value_paid','deductions.emi_value_paid','deductions.remaining','deductions.total','finances.month_duration','finances.emi_value')
+    //     //    ->distinct('finances.id')
+    //     //    ->get();
+
+    //     $finances = DB::table('finances')
+    //         ->join('customers', 'finances.customer_id', '=', 'customers.id')
+    //         ->leftJoin('deductions', function ($join) {
+    //             $join->on('finances.id', '=', 'deductions.finance_id')
+    //                 ->where('deductions.status', '=', 'paid');
+    //         })
+    //         ->select(
+
+    //             'finances.id',
+    //             'finances.invoice_id',
+    //             'finances.customer_id',
+    //             'finances.month_duration',
+    //             'finances.emi_value',
+    //             'finances.downpayment',
+    //             'finances.status',
+    //             'deductions.total',
+    //             'finances.finance_amount',
+    //             'customers.name as customer_name',
+    //             'customers.phone',
+    //             'customers.city',
+
+    //             DB::raw('COUNT(deductions.id) as paid_emi_count'),
+    //             DB::raw('finances.month_duration - COUNT(deductions.id) as remaining_emi_count')
+    //         )
+    //         ->groupBy(
+
+    //             'finances.id',
+    //             'finances.invoice_id',
+    //             'finances.customer_id',
+    //             'finances.month_duration',
+    //             'finances.emi_value',
+    //             'finances.downpayment',
+    //             'finances.status',
+    //             'finances.finance_amount',
+    //             'deductions.total',
+    //             'customers.name',
+    //             'customers.phone',
+    //             'customers.city'
+    //         )
+    //         ->get();
+
+
+    //     //dd($finances);
+
+
+    //     return view('deduction.index', compact( 'finances'));
+    // }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)  // Add Request parameter
     {
-        //$deductions = Deduction::leftjoin('customers', 'deductions.customer_id', '=', 'customers.id')
-        //    ->select('deductions.*', 'customers.name as customer_name')
-        //    ->where('deductions.status', 'paid')
-        //    ->get();
-        //$finances = Finance::join('customers', 'finances.customer_id', '=', 'customers.id')
-        //    ->leftJoin('deductions', 'finances.id', '=', 'deductions.finance_id')
-        //    ->select('finances.*', 'customers.name as customer_name', 'customers.phone as phone', 'customers.city as city','deductions.emi_value_paid','deductions.emi_value_paid','deductions.remaining','deductions.total','finances.month_duration','finances.emi_value')
-        //    ->distinct('finances.id')
-        //    ->get();
-
-        $finances = DB::table('finances')
+        $query = DB::table('finances')
             ->join('customers', 'finances.customer_id', '=', 'customers.id')
             ->leftJoin('deductions', function ($join) {
                 $join->on('finances.id', '=', 'deductions.finance_id')
                     ->where('deductions.status', '=', 'paid');
             })
             ->select(
-
                 'finances.id',
                 'finances.invoice_id',
                 'finances.customer_id',
@@ -48,12 +100,10 @@ class DeductionController extends Controller
                 'customers.name as customer_name',
                 'customers.phone',
                 'customers.city',
-
                 DB::raw('COUNT(deductions.id) as paid_emi_count'),
                 DB::raw('finances.month_duration - COUNT(deductions.id) as remaining_emi_count')
             )
             ->groupBy(
-
                 'finances.id',
                 'finances.invoice_id',
                 'finances.customer_id',
@@ -66,14 +116,36 @@ class DeductionController extends Controller
                 'customers.name',
                 'customers.phone',
                 'customers.city'
-            )
-            ->get();
+            );
+        
+        // Apply filters
+        if ($request->filled('customer_name')) {
+            $query->where('customers.name', 'LIKE', '%' . $request->customer_name . '%');
+        }
+        
+        if ($request->filled('phone')) {
+            $query->where('customers.phone', 'LIKE', '%' . $request->phone . '%');
+        }
+        
+        if ($request->filled('city')) {
+            $query->where('customers.city', 'LIKE', '%' . $request->city . '%');
+        }
+        
+        if ($request->filled('status')) {
+            $query->where('finances.status', $request->status);
+        }
+        
+        if ($request->filled('emi_from')) {
+            $query->having('paid_emi_count', '>=', $request->emi_from);
+        }
+        
+        if ($request->filled('emi_to')) {
+            $query->having('paid_emi_count', '<=', $request->emi_to);
+        }
+        
+        $finances = $query->get();
 
-
-        //dd($finances);
-
-
-        return view('deduction.index', compact( 'finances'));
+        return view('deduction.index', compact('finances'));
     }
 
 
