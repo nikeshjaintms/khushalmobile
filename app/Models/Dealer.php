@@ -15,4 +15,10 @@ class Dealer extends Model
         'address',
         'city',
     ];
+
+       // Add this relationship
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class, 'dealer_id');
+    }
 }

@@ -232,7 +232,11 @@
                                         <span class="sub-item">Payment Report</span>
                                     </a>
                                 </li>
-
+                                <li>
+                                    <a href="{{ route('admin.report.dealer') }}">
+                                        <span class="sub-item">Dealer Outstanding Report</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </li>

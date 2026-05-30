@@ -58,7 +58,7 @@
                                     @forelse($purchases as $index => $item)
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
-                                            <td>{{ $item->product->product_name }}</td>
+                                            <td>{{ optional($item->product)->product_name }}</td>
                                             <td>{{ $item->price }}</td>
                                             <td>{{ $item->imei }}</td>
                                             <td>

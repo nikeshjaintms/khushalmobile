@@ -229,8 +229,9 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('imei', 'imeiReport')->name('admin.report.imei');
         Route::get('sale', 'saleReport')->name('admin.report.sale');
         Route::get('payment', 'paymentReport')->name('admin.report.payment');
+        Route::get('dealer-outstanding', 'dealerOutstandingReport')->name('admin.report.dealer');
+        Route::get('dealer-purchases', 'getDealerPurchases')->name('admin.report.dealer.purchases');
         Route::get('/{id}', 'StockReportView')->name('admin.stock.show');
-
     });
 
     Route::prefix('return')->controller(ReturnController::class)->group(function () {

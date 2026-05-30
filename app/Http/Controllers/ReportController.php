@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Brand;
+use App\Models\Dealer;
 use App\Models\Product;
+use App\Models\Purchase;
 use App\Models\PurchaseProduct;
 use App\Models\Sale;
 use App\Models\SaleTransaction;
@@ -130,4 +132,81 @@ class ReportController extends Controller
 
         return view('reports.payment', compact('totals'));
     }
+
+    /**
+ * Dealer Outstanding Report
+ * Shows payments due to dealers based on purchase orders
+ */
+    public function dealerOutstandingReport()
+    {
+        // Get all dealers with their purchase totals and payment status
+        $dealers = Dealer::with(['purchases.purchaseProducts' => function($query) {
+            $query->whereNull('deleted_at');
+        }])->get();
+        
+        $dealerOutstanding = [];
+        
+        foreach ($dealers as $dealer) {
+            $totalPurchaseAmount = 0;
+            $totalPaidAmount = 0;
+            
+            foreach ($dealer->purchases as $purchase) {
+                // Calculate total purchase amount from purchase products
+                $purchaseTotal = $purchase->purchaseProducts->sum('product_total');
+                $totalPurchaseAmount += $purchaseTotal;
+                
+                // You can add payment tracking if you have a payment table for purchases
+                // For now, we'll consider the total as outstanding since no payment tracking exists
+                // If you have a PurchasePayment model, uncomment the lines below
+                /*
+                $totalPaidAmount += PurchasePayment::where('purchase_id', $purchase->id)->sum('amount');
+                */
+            }
+            
+            $outstandingAmount = $totalPurchaseAmount - $totalPaidAmount;
+            
+            // Only include dealers with outstanding amount > 0
+            if ($outstandingAmount > 0) {
+                $dealerOutstanding[] = (object)[
+                    'dealer_id' => $dealer->id,
+                    'dealer_name' => $dealer->name,
+                    'dealer_contact' => $dealer->contact ?? 'N/A',
+                    'dealer_email' => $dealer->email ?? 'N/A',
+                    'total_purchase_amount' => $totalPurchaseAmount,
+                    'total_paid_amount' => $totalPaidAmount,
+                    'outstanding_amount' => $outstandingAmount,
+                    'purchase_count' => $dealer->purchases->count(),
+                ];
+            }
+        }
+        
+        // Sort by outstanding amount descending
+        usort($dealerOutstanding, function($a, $b) {
+            return $b->outstanding_amount <=> $a->outstanding_amount;
+        });
+        
+        // Calculate totals
+        $totalOutstanding = array_sum(array_column($dealerOutstanding, 'outstanding_amount'));
+        $totalPurchaseValue = array_sum(array_column($dealerOutstanding, 'total_purchase_amount'));
+        // dd($dealerOutstanding, $totalOutstanding, $totalPurchaseValue);
+        
+        return view('reports.dealerOutstanding', compact('dealerOutstanding', 'totalOutstanding', 'totalPurchaseValue'));
+    }
+
+    /**
+     * Get purchases by dealer for modal view
+     */
+        public function getDealerPurchases(Request $request)
+        {
+            $dealerId = $request->get('dealer_id');
+            
+            $purchases = Purchase::where('dealer_id', $dealerId)
+                ->orderBy('po_date', 'desc')
+                ->get(['id', 'po_no', 'po_date', 'sub_total', 'total_tax_amount', 'total']);
+            
+            return response()->json([
+                'success' => true,
+                'purchases' => $purchases
+            ]);
+        }
 }
